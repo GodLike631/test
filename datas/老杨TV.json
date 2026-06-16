@@ -3,6 +3,13 @@
     "wallpaper": "http://127.0.0.1:9978/proxy?do=wallpaper",
     "logo": "http://127.0.0.1:9978/file/TVBox/logo.png",
     "sites": [
+        {
+            "key": "Nostr_Laoyang",
+            "name": "👑老杨TV · 官方公告首页",
+            "type": 3,
+            "api": "csp_Nostr",
+            "homePage": "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/Ly_me/refs/heads/main/index.html"
+        },
     {
          "key":"AQY",
         "name":"🐬爱奇艺 海豚影视完全免费，如有收费的都是骗子",
