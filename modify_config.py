@@ -48,7 +48,7 @@ if haitun_lives_text and '"lives": [' in final_json_text:
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
 
 # ====================================================================
-# 🌐 【原生纯净网页源码 - 自动套用鱼壳 2026 兼容防线】
+# 🌐 【原生纯净网页源码 - 荧光绿返回键高亮定版】
 # ====================================================================
 html_source = """<!DOCTYPE html>
 <html lang="zh-CN">
@@ -123,28 +123,19 @@ html_source = """<!DOCTYPE html>
 </body>
 </html>"""
 
-# 🔒 执行最顶级的 Base64 内存混淆加密，生成纯净直链数据
+# 🔒 执行 Base64 内存混淆加密，将网页真身直接化为 JSON 内部密文
 b64_html = base64.b64encode(html_source.encode('utf-8')).decode('utf-8')
 encoded_homepage = f"data:text/html;base64,{b64_html}"
 
 # ====================================================================
-# 🌟 【零漏洞·本地闭环包名锁公告首页】
-# 页面直接高强度密文化，不依赖任何外部网页服务器，无痕、零延迟、绝对安全！
+# 🌟 【零外部依赖·本地闭环公告首页（纯净零校验版）】
 # ====================================================================
 laoyang_homepage_json = f"""{{
             "key": "Nostr_Laoyang",
             "name": "👑老杨TV · 官方公告首页",
             "type": 3,
             "api": "csp_Nostr",
-            "homePage": "{encoded_homepage}",
-            "extensions": [
-                {{
-                    "id": "laoyang-package-lock",
-                    "name": "老杨专属防盗包名锁",
-                    "runAt": "document-start",
-                    "code": "window.addEventListener('fmsdk', function() {{ if(window.fm && typeof window.fm.device === 'function') {{ window.fm.device().then(function(dev) {{ if(dev && dev.name !== 'com.fongmi.android') {{ if(typeof window.fm.back === 'function') {{ window.fm.ext.toast('⚠️ 检测到盗版山寨软件，拒绝提供线路服务！'); setTimeout(function(){{ window.fm.back(); }}, 1500); }} }} }}); }} }});"
-                }}
-            ]
+            "homePage": "{encoded_homepage}"
         }},"""
 
 if '"sites": [' in final_json_text:
@@ -185,4 +176,4 @@ final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【终极无痕安全版】网页已高强度加密，闭环融合输出至 老杨TV.json！")
+print("🎉 【纯净无校验加密版】打包完毕，已输出为 老杨TV.json！")
