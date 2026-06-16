@@ -3,7 +3,7 @@ import re
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
-output_path = 'datas/老杨TV.json'  # 🌟 已经精准修改为你的专属后缀文件名
+output_path = 'datas/老杨TV.json'  # 🌟 专属后缀文件名
 
 def read_file_text(path):
     if not os.path.exists(path):
@@ -73,6 +73,26 @@ final_json_text = final_json_text.replace('./py/', 'https://cnb.cool/fish2018/xs
 # ====================================================================
 final_json_text = final_json_text.replace('"warningText": "欢迎使用鱼儿自用缝合专线，完全免费！"', '"warningText": "欢迎使用老杨自用全量缝合专线，本接口完全免费！"')
 
+# ====================================================================
+# 🌟 新增：全方位名称大清洗与品牌脱敏手术 🌟
+# ====================================================================
+# 1. 靶向切除“🐬”、“海豚影视”、“海豚”以及可能残留的各类连带竖线装饰符
+final_json_text = final_json_text.replace('🐬', '')
+final_json_text = final_json_text.replace('海豚影视', '')
+final_json_text = final_json_text.replace('海豚', '')
+
+# 2. 自动修正因为删掉品牌词后，名字前缀残留的“｜”或“丨”符号
+final_json_text = final_json_text.replace('"name": "｜', '"name": "')
+final_json_text = final_json_text.replace('"name": "丨', '"name": "')
+final_json_text = final_json_text.replace('"name": " ', '"name": "')
+
+# 3. 靶向替换特定的广告词和联系方式，锁定你的全新 Tg 频道链接
+final_json_text = final_json_text.replace('@hshsjk9', '@huliys9')
+final_json_text = final_json_text.replace('交流群', 'Tg频道')
+
+# ====================================================================
+# 5. 格式微调与存盘
+# ====================================================================
 # 强力消除尾部符号瑕疵
 final_json_text = re.sub(r'\[\s*,', '[', final_json_text)
 final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
@@ -81,4 +101,4 @@ final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【专属定制版】已经成功输出为 老杨TV.json！")
+print("🎉 【专属定制版】已经成功清洗所有品牌干扰，并输出为 老杨TV.json！")
