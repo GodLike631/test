@@ -52,7 +52,7 @@ if haitun_lives_text and '"lives": [' in final_json_text:
 # ====================================================================
 laoyang_homepage_json = """{
             "key": "Nostr_Laoyang_GitHub",
-            "name": "👑老杨TV · 官方公告首页",
+            "name": "👑官方公告首页",
             "type": 3,
             "api": "csp_Nostr",
             "homePage": "https://godlike631.github.io/tv_home/"
