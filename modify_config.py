@@ -46,7 +46,7 @@ if haitun_lives_text and '"lives": [' in final_json_text:
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
 
 # ====================================================================
-# 🌐 【原生纯净网页源码 - 注入第一次进入自动纠偏重载雷达】
+# 🌐 【原生纯净网页源码 - 换用纯前端无痕定时器，彻底根治白屏与非法URL报错】
 # ====================================================================
 html_source = """<!DOCTYPE html>
 <html lang="zh-CN">
@@ -54,6 +54,19 @@ html_source = """<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>老杨TV · 官方导航首页</title>
+    <script>
+        // 🌟 核心修复：纯前端无干扰重载机制，避开 fm.reload() 改写 URL 的大坑
+        (function() {
+            var hasReloaded = localStorage.getItem('ly_home_reloaded_v2');
+            if (!hasReloaded) {
+                localStorage.setItem('ly_home_reloaded_v2', 'true');
+                // 300毫秒后进行纯内部刷新，完美唤醒鱼壳主线程，绝不污染 Base64 结构
+                setTimeout(function() {
+                    window.location.reload();
+                }, 300);
+            }
+        })();
+    </script>
     <style>
         html, body { background-color: #0d0d11; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
         body { padding-top: 90px; padding-left: 20px; padding-right: 20px; padding-bottom: 40px; padding-top: calc(90px + var(--fm-safe-top, 0px)); padding-left: calc(20px + var(--fm-safe-left, 0px)); padding-right: calc(20px + var(--fm-safe-right, 0px)); padding-bottom: calc(40px + var(--fm-safe-bottom, 0px)); display: flex; flex-direction: column; align-items: center; }
@@ -118,24 +131,6 @@ html_source = """<!DOCTYPE html>
         <div class="statement-item"><strong>4. 版权处理：</strong>若相关资源涉及版权或其他侵权问题，请联系上游源头资源提供方或版权方进行删除处理。本自动同步仓库在收到通知后，会积极配合在 24 小时内移除相关缓存索引。</div>
     </div>
 </div>
-
-<script>
-    (function() {
-        // 利用本地持久缓存，标记当前订阅是否属于新线路的“第一次进入”
-        var hasLoaded = localStorage.getItem('ly_home_loaded');
-        if (!hasLoaded) {
-            localStorage.setItem('ly_home_loaded', 'true');
-            // 延迟 300 毫秒，等主线程拉取完 Jar 包后，自动在本地重载刷新一次，打碎白屏硬伤
-            setTimeout(function() {
-                if (window.fm && typeof window.fm.reload === 'function') {
-                    window.fm.reload(); 
-                } else {
-                    window.location.reload();
-                }
-            }, 300);
-        }
-    })();
-</script>
 </body>
 </html>"""
 
@@ -144,7 +139,7 @@ b64_html = base64.b64encode(html_source.encode('utf-8')).decode('utf-8')
 encoded_homepage = f"data:text/html;base64,{b64_html}"
 
 # ====================================================================
-# 🌟 【零外部依赖·本地闭环公告首页（抗白屏定稿版）】
+# 🌟 【零外部依赖·本地闭环公告首页（抗白屏+不改URL定稿版）】
 # ====================================================================
 laoyang_homepage_json = f"""{{
             "key": "Nostr_Laoyang",
@@ -191,4 +186,4 @@ final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【抗白屏无痕完结版】合并成功，老杨TV.json 已经完美封顶！")
+print("🎉 【终极无瑕版】ERR_INVALID_URL 彻底根除，大功告成！")
