@@ -3,7 +3,7 @@ import re
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
-output_path = 'datas/local_config.json'  # 🌟 保持你要求的 local_config.json 不动
+output_path = 'datas/local_config.json'  #
 
 def read_file_text(path):
     if not os.path.exists(path):
