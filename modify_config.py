@@ -48,14 +48,14 @@ if haitun_lives_text and '"lives": [' in final_json_text:
 
 # ====================================================================
 # 🌟 【精准插入：老杨专属网页公告首页】
-# 强行塞进 sites 数组的最前面，使用你给的最终国内稳定加速网页地址
+# 强行塞进 sites 数组的最前面，使用你指定的官方 Pages 网址
 # ====================================================================
 laoyang_homepage_json = """{
             "key": "Nostr_Laoyang",
             "name": "👑老杨TV · 官方公告首页",
             "type": 3,
             "api": "csp_Nostr",
-            "homePage": "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/Ly_me/refs/heads/main/index.html"
+            "homePage": "https://godlike631.github.io/tv_home/"
         },"""
 
 if '"sites": [' in final_json_text:
@@ -96,4 +96,4 @@ final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【网页首页融合版】成功插入老杨网页首页，已输出为 老杨TV.json！")
+print("🎉 【官方发布页融合版】地址已精准更换，已输出为 老杨TV.json！")
