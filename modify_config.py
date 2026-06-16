@@ -4,7 +4,7 @@ import base64
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
-output_path = 'datas/老杨TV.json'  # 🌟 保持你要求的初始文件名不动
+output_path = 'datas/老杨TV.json'
 
 def read_file_text(path):
     if not os.path.exists(path):
@@ -16,7 +16,7 @@ text_cnb = read_file_text(cnb_path)
 text_haitun = read_file_text(haitun_path)
 
 # ====================================================================
-# 1. 物理提取海豚源里的 sites（视频站）和 lives（直播源）内部的纯文本
+# 1. 物理提取海豚源里的 sites 和 lives 内部的纯文本
 # ====================================================================
 def get_array_inner_text(content, key):
     split_key = f'"{key}": ['
@@ -37,18 +37,16 @@ haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 # ====================================================================
 final_json_text = text_cnb
 
-# 注入视频站点
 if haitun_sites_text and '"sites": [' in final_json_text:
     haitun_sites_text = haitun_sites_text.rstrip(',')
     final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n    {haitun_sites_text},\n    ', 1)
 
-# 注入直播源
 if haitun_lives_text and '"lives": [' in final_json_text:
     haitun_lives_text = haitun_lives_text.rstrip(',')
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
 
 # ====================================================================
-# 🌐 【原生纯净网页源码 - 荧光绿返回键高亮 + 正确Tg频道地址】
+# 🌐 【原生纯净网页源码 - 注入第一次进入自动纠偏重载雷达】
 # ====================================================================
 html_source = """<!DOCTYPE html>
 <html lang="zh-CN">
@@ -120,15 +118,33 @@ html_source = """<!DOCTYPE html>
         <div class="statement-item"><strong>4. 版权处理：</strong>若相关资源涉及版权或其他侵权问题，请联系上游源头资源提供方或版权方进行删除处理。本自动同步仓库在收到通知后，会积极配合在 24 小时内移除相关缓存索引。</div>
     </div>
 </div>
+
+<script>
+    (function() {
+        // 利用本地持久缓存，标记当前订阅是否属于新线路的“第一次进入”
+        var hasLoaded = localStorage.getItem('ly_home_loaded');
+        if (!hasLoaded) {
+            localStorage.setItem('ly_home_loaded', 'true');
+            // 延迟 300 毫秒，等主线程拉取完 Jar 包后，自动在本地重载刷新一次，打碎白屏硬伤
+            setTimeout(function() {
+                if (window.fm && typeof window.fm.reload === 'function') {
+                    window.fm.reload(); 
+                } else {
+                    window.location.reload();
+                }
+            }, 300);
+        }
+    })();
+</script>
 </body>
 </html>"""
 
-# 🔒 执行 Base64 内存混淆加密，将网页真身直接化为 JSON 内部密文
+# 🔒 执行 Base64 加密
 b64_html = base64.b64encode(html_source.encode('utf-8')).decode('utf-8')
 encoded_homepage = f"data:text/html;base64,{b64_html}"
 
 # ====================================================================
-# 🌟 【零外部依赖·本地闭环公告首页（完美定稿版）】
+# 🌟 【零外部依赖·本地闭环公告首页（抗白屏定稿版）】
 # ====================================================================
 laoyang_homepage_json = f"""{{
             "key": "Nostr_Laoyang",
@@ -172,8 +188,7 @@ final_json_text = final_json_text.replace('"warningText": "欢迎使用鱼儿自
 final_json_text = re.sub(r'\[\s*,', '[', final_json_text)
 final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
 
-# 写入本地文件存盘
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【完美终结版】地址修正完毕，已输出为 老杨TV.json！")
+print("🎉 【抗白屏无痕完结版】合并成功，老杨TV.json 已经完美封顶！")
