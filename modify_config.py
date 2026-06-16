@@ -55,7 +55,7 @@ laoyang_homepage_json = """{
             "name": "👑官方公告首页",
             "type": 3,
             "api": "csp_Nostr",
-            "homePage": "https://godlike631.github.io/tv_home/"
+            "homePage": "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/Ly_me/refs/heads/main/index.html"
         },"""
 
 if '"sites": [' in final_json_text:
