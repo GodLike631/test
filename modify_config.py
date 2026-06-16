@@ -3,7 +3,7 @@ import re
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
-output_path = 'datas/local_config.json'  #
+output_path = 'datas/老杨TV.json'  # 🌟 已经精准修改为你的专属后缀文件名
 
 def read_file_text(path):
     if not os.path.exists(path):
@@ -47,31 +47,21 @@ if haitun_lives_text and '"lives": [' in final_json_text:
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
 
 # ====================================================================
-# 🌟 【老杨专属：GitHub Pages 独立网页官方公告首页】
-# 纯净无污染，严格符合标准 URL 规范，初次订阅与后续更新接口永不报错！
+# 3. 靶向拦截手术：揪出这两个瘫痪的 4K 线路，强行切断 CNB 依赖，锁死海豚核心
 # ====================================================================
-laoyang_homepage_json = """{
-            "key": "Nostr_Laoyang_GitHub",
-            "name": "👑官方公告首页",
-            "type": 3,
-            "api": "csp_Nostr",
-            "homePage": "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/Ly_me/refs/heads/main/index.html"
-        },"""
-
-if '"sites": [' in final_json_text:
-    final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n        {laoyang_homepage_json}', 1)
+final_json_text = final_json_text.replace(
+    '"key": "hajim-腾讯备"', 
+    '"spider": "./tvbox.jar",\n           "key": "hajim-腾讯备"'
+)
+final_json_text = final_json_text.replace(
+    '"key": "茫茫"', 
+    '"spider": "./tvbox.jar",\n        "key": "茫茫"'
+)
 
 # ====================================================================
-# 【全方位无死角路径清洗手术】：
-# 必须彻底斩断所有相对路径的隐患，不管是带有 "./" 的、还是漏掉的，
-# 全部死死地锁定到 CNB 的官方网络绝对路径上！
+# 【全方位无死角路径清洗】：让 CNB 的其余线路走官方绝对 network 链接
 # ====================================================================
-# 1. 核心蜘蛛包无脑物理替换
-final_json_text = final_json_text.replace('"./spider.jar"', '"https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar"')
-final_json_text = final_json_text.replace('"/spider.jar"', '"https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar"')
-final_json_text = final_json_text.replace(' "spider.jar"', '"https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar"')
-
-# 2. 各种相对路径子文件夹，批量地毯式轰炸替换
+final_json_text = final_json_text.replace('./spider.jar', 'https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar')
 final_json_text = final_json_text.replace('./XBPQ/', 'https://cnb.cool/fish2018/xs/-/git/raw/main/XBPQ/')
 final_json_text = final_json_text.replace('./XYQHiker/', 'https://cnb.cool/fish2018/xs/-/git/raw/main/XYQHiker/')
 final_json_text = final_json_text.replace('./js/', 'https://cnb.cool/fish2018/xs/-/git/raw/main/js/')
@@ -79,7 +69,7 @@ final_json_text = final_json_text.replace('./json/', 'https://cnb.cool/fish2018/
 final_json_text = final_json_text.replace('./py/', 'https://cnb.cool/fish2018/xs/-/git/raw/main/py/')
 
 # ====================================================================
-# 3. 定制老杨自用全量缝合专线品牌头部
+# 4. 定制老杨自用全量缝合专线 brand 头部
 # ====================================================================
 final_json_text = final_json_text.replace('"warningText": "欢迎使用鱼儿自用缝合专线，完全免费！"', '"warningText": "欢迎使用老杨自用全量缝合专线，本接口完全免费！"')
 
@@ -91,4 +81,4 @@ final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🚀 【全覆盖无死角清洗版】合流成功，GitHub 官方首页已就位！")
+print("🎉 【专属定制版】已经成功输出为 老杨TV.json！")
