@@ -74,14 +74,14 @@ final_json_text = final_json_text.replace('./py/', 'https://cnb.cool/fish2018/xs
 final_json_text = final_json_text.replace('"warningText": "欢迎使用鱼儿自用缝合专线，完全免费！"', '"warningText": "欢迎使用老杨自用全量缝合专线，本接口完全免费！"')
 
 # ====================================================================
-# 🌟 新增：全方位名称大清洗与品牌脱敏手术 🌟
+# 5. 全方位名称大清洗与品牌脱敏手术
 # ====================================================================
-# 1. 靶向切除“🐬”、“海豚影视”、“海豚”以及可能残留的各类连带竖线装饰符
+# 1. 靶向切除“🐬”、“海豚影视”、“海豚”
 final_json_text = final_json_text.replace('🐬', '')
 final_json_text = final_json_text.replace('海豚影视', '')
 final_json_text = final_json_text.replace('海豚', '')
 
-# 2. 自动修正因为删掉品牌词后，名字前缀残留的“｜”或“丨”符号
+# 2. 自动修正因为删掉品牌词后，名字前缀残留的“｜”或“丨”等符号
 final_json_text = final_json_text.replace('"name": "｜', '"name": "')
 final_json_text = final_json_text.replace('"name": "丨', '"name": "')
 final_json_text = final_json_text.replace('"name": " ', '"name": "')
@@ -91,14 +91,16 @@ final_json_text = final_json_text.replace('@hshsjk9', '@huliys9')
 final_json_text = final_json_text.replace('交流群', 'Tg频道')
 
 # ====================================================================
-# 5. 格式微调与存盘
+# 6. 安全、高效地消除尾部逗号瑕疵（摒弃危险的正则回溯）
 # ====================================================================
-# 强力消除尾部符号瑕疵
-final_json_text = re.sub(r'\[\s*,', '[', final_json_text)
-final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
+# 用安全的精准字符串替换来消除可能由于注入引起的 `[,` 或者 `, ]` 问题
+final_json_text = final_json_text.replace('[\n    ,', '[')
+final_json_text = final_json_text.replace('[\n,', '[')
+final_json_text = final_json_text.replace(',\n    ]', '\n    ]')
+final_json_text = final_json_text.replace(',\n  ]', '\n  ]')
 
 # 写入本地文件存盘
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【专属定制版】已经成功清洗所有品牌干扰，并输出为 老杨TV.json！")
+print("🎉 【专属定制版】已经完成秒级清洗，成功输出为 老杨TV.json！")
