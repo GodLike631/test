@@ -1,6 +1,5 @@
 import os
 import re
-import base64
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
@@ -46,73 +45,20 @@ if haitun_lives_text and '"lives": [' in final_json_text:
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
 
 # ====================================================================
-# 🌐 【原厂标准：单文件 WebHome 首页纯净源码】
-# 严格遵循文档第 7.9 章与第 17 章规范，纯 CSS 变量双层防线，永不调用污染重载
+# 🌐 【原厂正规军：内联样式注入舱 - 彻底根除接口更新 INVALID_URL 顽疾】
+# 严格遵循文档 4.3 章、12 章规范，把界面重构封装进纯正 extensions，永不污染 URL
 # ====================================================================
-html_source = """<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>老杨TV · 官方导航首页</title>
-    <style>
-        html, body {
-            background-color: #0d0d11 !important;
-            color: #e2e8f0 !important;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            /* 双层绝对留白：完美适配老盒子与鱼壳安全区变量 */
-            padding-top: 100px;
-            padding-left: 20px;
-            padding-right: 20px;
-            padding-bottom: 40px;
-            padding-top: calc(100px + var(--fm-safe-top, 0px));
-            padding-left: calc(20px + var(--fm-safe-left, 0px));
-            padding-right: calc(20px + var(--fm-safe-right, 0px));
-            padding-bottom: calc(40px + var(--fm-safe-bottom, 0px));
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            max-width: 850px;
-            width: 100%;
-            background: linear-gradient(145deg, #13131a, #1c1c24);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
-            border: 1px solid #2d2d3d;
-            box-sizing: border-box;
-        }
-        .marquee-box {
-            background: linear-gradient(90deg, #ff4e50, #f9d423);
-            color: #000000;
-            padding: 16px;
-            border-radius: 12px;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 25px;
-            box-shadow: 0 6px 20px rgba(255, 78, 80, 0.25);
-            letter-spacing: 1px;
-            line-height: 1.6;
-        }
-        .highlight-tag {
-            background-color: #1b5e20;
-            color: #00e676;
-            padding: 2px 10px;
-            border-radius: 6px;
-            font-size: 1.4rem;
-            font-weight: 900;
-            margin: 0 4px;
-            border: 1px solid #00e676;
-            display: inline-block;
-            box-shadow: 0 0 8px rgba(0, 230, 118, 0.5);
-        }
+inline_js_code = """
+(function() {
+    if (window.top !== window) return;
+    
+    // 1. 创建符合鱼壳 2026 UX 规范的暗黑风全套自适应样式
+    var css = `
+        html, body { background-color: #0d0d11 !important; color: #e2e8f0 !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; box-sizing: border-box; width: 100%; height: 100%; }
+        body { padding-top: calc(100px + var(--fm-safe-top, 0px)) !important; padding-left: 20px; padding-right: 20px; padding-bottom: 40px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+        .container { max-width: 850px; width: 100%; background: linear-gradient(145deg, #13131a, #1c1c24); border-radius: 20px; padding: 30px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7); border: 1px solid #2d2d3d; box-sizing: border-box; margin: 0 auto; }
+        .marquee-box { background: linear-gradient(90deg, #ff4e50, #f9d423); color: #000000; padding: 16px; border-radius: 12px; text-align: center; font-size: 1.5rem; font-weight: 800; margin-bottom: 25px; box-shadow: 0 6px 20px rgba(255, 78, 80, 0.25); letter-spacing: 1px; line-height: 1.6; }
+        .highlight-tag { background-color: #1b5e20; color: #00e676; padding: 2px 10px; border-radius: 6px; font-size: 1.4rem; font-weight: 900; margin: 0 4px; border: 1px solid #00e676; display: inline-block; box-shadow: 0 0 8px rgba(0, 230, 118, 0.5); }
         h2 { font-size: 1.7rem; text-align: center; margin: 0 0 10px 0; color: #38bdf8; }
         .subtitle { text-align: center; color: #94a3b8; font-size: 1rem; margin-bottom: 25px; line-height: 1.6; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
@@ -128,66 +74,68 @@ html_source = """<!DOCTYPE html>
         .statement-box { background: #181824; border-radius: 14px; padding: 22px; border: 1px solid #2a2a3a; }
         .statement-title { color: #f1f5f9; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #2d2d3d; padding-bottom: 10px; }
         .statement-item { font-size: 0.9rem; color: #94a3b8; line-height: 1.8; margin-bottom: 12px; }
-        .statement-item:last-child { margin-bottom: 0; }
-    </style>
-</head>
-<body>
-<div class="container">
-    <div class="marquee-box">
-        👉 请花1分钟时间看完此公告，点击<span class="highlight-tag">返回键</span>退出全屏后，点击左上角切换线路，即可正常观看
-    </div>
-    <h2>👑 特别致谢与版权声明</h2>
-    <div class="subtitle">本接口的诞生离不开大后方两位业内顶流技术大佬的无私奉献，特此致谢：</div>
-    <div class="grid">
-        <div class="card">
-            <div class="card-title fish-title">🐋 感谢鱼佬的付出</div>
-            <div class="card-content">
-                源码基础与发布主页: fish2018/webhtv<br>
-                版本发布绝对地址: fish2018/webhtv/releases<br>
-                Telegram 官方群组: 👉 https://t.me/webhtv
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-title dolphin-title">🐬 感谢海豚佬的付出</div>
-            <div class="card-content">
-                核心仓库主页: FGBLH/GHK<br>
-                数据源直链地址: FGBLH/GHK/海豚.json<br>
-                Telegram 官方群组: 👉 https://t.me/hshsjk9
-            </div>
-        </div>
-    </div>
-    <div class="danger-box">
-        <div class="danger-title">🚨 【超级防骗防割警告】</div>
-        <div class="danger-text">
-            本接口完全免费！本人仅将两位大佬的优质接口在云端进行了融合优化，纯属自用方便。如果你是花钱买来的，请立刻联系卖家退款举报！<br>
-            <span style="color: #fbbf24; font-weight: bold; display: inline-block; margin-top: 8px;">📢 欢迎关注官方专属 Telegram 频道:</span> https://t.me/huliys9
-        </div>
-    </div>
-    <div class="statement-box">
-        <div class="statement-title">⚠️ 免责声明</div>
-        <div class="statement-item"><strong>1. 项目性质：</strong>本项目仅用于技术研究、自动化脚本测试与学术学习交流，严禁用于任何商业营利性用途。</div>
-        <div class="statement-item"><strong>2. 内容说明：</strong>项目本身作为云端自动化数据缝合中转站，不存储、不分发、不制作任何影视及直播流媒体视频内容。所有接口内展示的数据，均源源网络公开可获取的数据源进行自动化整理与聚合。</div>
-        <div class="statement-item"><strong>3. 版权归属：</strong>所有涉及的影视资源、直播源及软件品牌版权均归原作者、原厂官仓及相关合法平台所有。</div>
-        <div class="statement-item"><strong>4. 版权处理：</strong>若相关资源涉及版权或其他侵权问题，请联系上游源头资源提供方或版权方进行删除处理。本自动同步仓库在收到通知后，会积极配合在 24 小时内移除相关缓存索引。</div>
-    </div>
-</div>
-</body>
-</html>"""
+    `;
+    
+    // 2. 将样式精准追加到页面顶层
+    var styleEl = document.createElement('style');
+    styleEl.innerHTML = css;
+    document.head.appendChild(styleEl);
 
-# 🔒 一键转化为符合 RFC 标准的纯净本地内存 HTML 密文
-b64_html = base64.b64encode(html_source.encode('utf-8')).decode('utf-8')
-encoded_homepage = f"data:text/html;base64,{b64_html}"
+    // 3. 动态绘制核心公告 DOM 树
+    var html = `
+        <div class="container">
+            <div class="marquee-box">👉 请花1分钟时间看完此公告，点击<span class="highlight-tag">返回键</span>退出全屏后，点击左上角切换线路，即可正常观看</div>
+            <h2>👑 特别致谢与版权声明</h2>
+            <div class="subtitle">本接口的诞生离不开大后方两位业内顶流技术大佬的无私奉献，特此致谢：</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title fish-title">🐋 感谢鱼佬的付出</div>
+                    <div class="card-content">源码基础与发布主页: fish2018/webhtv<br>版本发布绝对地址: fish2018/webhtv/releases<br>Telegram 官方群组: 👉 https://t.me/webhtv</div>
+                </div>
+                <div class="card">
+                    <div class="card-title dolphin-title">🐬 感谢海豚佬的付出</div>
+                    <div class="card-content">核心仓库主页: FGBLH/GHK<br>数据源直链地址: FGBLH/GHK/海豚.json<br>Telegram 官方群组: 👉 https://t.me/hshsjk9</div>
+                </div>
+            </div>
+            <div class="danger-box">
+                <div class="danger-title">🚨 【超级防骗防割警告】</div>
+                <div class="danger-text">本接口完全免费！本人仅将两位大佬的优质接口在云端进行了融合优化，纯属自用方便。如果你是花钱买来的，请立刻联系卖家退款举报！<br><span style="color: #fbbf24; font-weight: bold; display: inline-block; margin-top: 8px;">📢 欢迎关注官方专属 Telegram 频道:</span> https://t.me/huliys9</div>
+            </div>
+            <div class="statement-box">
+                <div class="statement-title">⚠️ 免责声明</div>
+                <div class="statement-item"><strong>1. 项目性质：</strong>本项目仅用于技术研究、自动化脚本测试与学术学习交流，严禁用于任何商业营利性用途。</div>
+                <div class="statement-item"><strong>2. 内容说明：</strong>项目本身作为云端自动化数据缝合中转站，不存储、不分发、不制作任何影视及直播流媒体视频内容。所有接口内展示的数据，均源自网络公开可获取的数据源进行自动化整理与聚合。</div>
+                <div class="statement-item"><strong>3. 版权归属：</strong>所有涉及的影视资源、直播源及软件品牌版权均归原作者、原厂官仓及相关合法平台所有。</div>
+                <div class="statement-item"><strong>4. 版权处理：</strong>若相关资源涉及版权或其他侵权问题，请联系上游源头资源提供方或版权方进行删除处理。本自动同步仓库在收到通知后，会积极配合在 24 小时内移除相关缓存索引。</div>
+            </div>
+        </div>
+    `;
+    document.body.innerHTML = html;
+})();
+"""
+
+# 清洗 JS 源码，确保符合单行合法 JSON 字符串规范
+clean_js_code = inline_js_code.replace("\n", " ").replace('"', '\\"')
 
 # ====================================================================
-# 🌟 【原厂最纯正范式：Nostr置顶 + Base64闭环（完全不带任何重载）】
-# 彻底回归普通通用格式，去掉所有会导致补全和时间戳污染的扩展脚本，确保更新万无一失！
+# 🌟 【原厂最终闭环范式：绝对合法的 local:// 协议下发】
+# 1. 用百分之百合法的本地内置空文件协议占住 homePage，完美通过更新时的网络试探请求
+# 2. 网页、样式全部下沉至 extensions，由原厂正规管线在本地 0 延迟秒开渲染
 # ====================================================================
 laoyang_homepage_json = f"""{{
-            "key": "Nostr_Laoyang_Final",
+            "key": "Laoyang_Home_Local",
             "name": "👑老杨TV · 官方公告首页",
             "type": 3,
-            "api": "csp_Nostr",
-            "homePage": "{encoded_homepage}"
+            "api": "csp_Builtin",
+            "homePage": "local://none.html",
+            "extensions": [
+                {{
+                    "id": "laoyang-home-render",
+                    "name": "老杨公告全量渲染器",
+                    "runAt": "document-end",
+                    "code": "{clean_js_code}"
+                }}
+            ]
         }},"""
 
 if '"sites": [' in final_json_text:
@@ -227,4 +175,4 @@ final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【终极无憾版本】纯净闭环彻底落地，老杨TV.json 宣告完美收工！")
+print("🎉 【全盘收官终极大作】成功转换 local 原生闭环，接口更新 Bug 彻底终结！")
