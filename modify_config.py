@@ -48,7 +48,7 @@ if haitun_lives_text and '"lives": [' in final_json_text:
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
 
 # ====================================================================
-# 🌐 【原生纯净网页源码 - 荧光绿返回键高亮定版】
+# 🌐 【原生纯净网页源码 - 荧光绿返回键高亮 + 正确Tg频道地址】
 # ====================================================================
 html_source = """<!DOCTYPE html>
 <html lang="zh-CN">
@@ -109,7 +109,7 @@ html_source = """<!DOCTYPE html>
         <div class="danger-title">🚨 【超级防骗防割警告】</div>
         <div class="danger-text">
             本接口完全免费！本人仅将两位大佬的优质接口在云端进行了融合优化，纯属自用方便。如果你是花钱买来的，请立刻联系卖家退款举报！<br>
-            <span style="color: #fbbf24; font-weight: bold; display: inline-block; margin-top: 8px;">📢 欢迎关注官方专属 Telegram 频道:</span> https://t.me/huliyings
+            <span style="color: #fbbf24; font-weight: bold; display: inline-block; margin-top: 8px;">📢 欢迎关注官方专属 Telegram 频道:</span> https://t.me/huliys9
         </div>
     </div>
     <div class="statement-box">
@@ -128,7 +128,7 @@ b64_html = base64.b64encode(html_source.encode('utf-8')).decode('utf-8')
 encoded_homepage = f"data:text/html;base64,{b64_html}"
 
 # ====================================================================
-# 🌟 【零外部依赖·本地闭环公告首页（纯净零校验版）】
+# 🌟 【零外部依赖·本地闭环公告首页（完美定稿版）】
 # ====================================================================
 laoyang_homepage_json = f"""{{
             "key": "Nostr_Laoyang",
@@ -176,4 +176,4 @@ final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【纯净无校验加密版】打包完毕，已输出为 老杨TV.json！")
+print("🎉 【完美终结版】地址修正完毕，已输出为 老杨TV.json！")
