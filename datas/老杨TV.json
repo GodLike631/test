@@ -1,7 +1,8 @@
 {
+    "warningText": "👑 特别致谢与版权声明\n本接口的诞生离不开大后方两位业内顶流技术大佬的无私奉献，特此致谢：\n🐋 感谢鱼佬的付出\n源码基础与发布主页: fish2018/webhtv\n版本发布绝对地址: fish2018/webhtv/releases\nTelegram 官方群组: 👉 https://t.me/webhtv\n 感谢佬的付出\n核心仓库主页: FGBLH/GHK\n数据源直链地址: FGBLH/GHK/.json\nTelegram 官方群组: 👉 https://t.me/hshsjk9",
     "spider": "https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar",
     "wallpaper": "http://127.0.0.1:9978/proxy?do=wallpaper",
-    "logo": "http://127.0.0.1:9978/file/TVBox/logo.png",
+    "logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg",
     "sites": [
     {
          "key":"AQY",
@@ -459,6 +460,14 @@
             "searchable": 1,
             "changeable": 1
         },
+		{
+      "key": "push_agent",
+      "name": "推送",
+      "type": 3,
+      "api": "csp_PushGuard",
+      "searchable": 1,
+      "changeable": 0
+       },
     
         {
             "key": "Nostr",
