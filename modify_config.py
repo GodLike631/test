@@ -71,27 +71,29 @@ final_json_text = final_json_text.replace('./py/', 'https://cnb.cool/fish2018/xs
 # ====================================================================
 # 4. 定制老杨自用全量缝合专线 brand 头部
 # ====================================================================
-# 1. 将无法显示的本地 logo 替换为你上传到图床上的在线蝴蝶版 Logo 链接
-# 💡 请把下面的 https://你的图床地址/老杨TV_logo.png 替换成你真实的图床链接
+# 1. 精准锁定头部唯一图片，替换为你的专属蝴蝶 Logo 链接
 final_json_text = final_json_text.replace(
     '"logo": "http://127.0.0.1:9978/file/TVBox/logo.png"', 
     '"logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg"'
 )
 
-# 2. 强行在头部注入你专属的欢迎语（因为 CNB 原始文件里没有 warningText 字段）
-if '"logo":' in final_json_text and '"warningText":' not in final_json_text:
+# 2. 锁定 JSON 唯一的开头首行，精准插入专属长篇致谢声明
+if '"warningText":' not in final_json_text:
+    thanks_warning = (
+        '👑 特别致谢与版权声明\\n'
+        '本接口的诞生离不开大后方两位业内顶流技术大佬的无私奉献，特此致谢：\\n'
+        '🐋 感谢鱼佬的付出\\n'
+        '源码基础与发布主页: fish2018/webhtv\\n'
+        '版本发布绝对地址: fish2018/webhtv/releases\\n'
+        'Telegram 官方群组: 👉 https://t.me/webhtv\\n'
+        '🐬 感谢海豚佬的付出\\n'
+        '核心仓库主页: FGBLH/GHK\\n'
+        '数据源直链地址: FGBLH/GHK/海豚.json\\n'
+        'Telegram 官方群组: 👉 https://t.me/hshsjk9'
+    )
     final_json_text = final_json_text.replace(
-        '    "logo":',
-        '    "warningText": "👑 特别致谢与版权声明
-本接口的诞生离不开大后方两位业内顶流技术大佬的无私奉献，特此致谢：
-🐋 感谢鱼佬的付出
-源码基础与发布主页: fish2018/webhtv
-版本发布绝对地址: fish2018/webhtv/releases
-Telegram 官方群组: 👉 https://t.me/webhtv
-🐬 感谢海豚佬的付出
-核心仓库主页: FGBLH/GHK
-数据源直链地址: FGBLH/GHK/海豚.json
-Telegram 官方群组: 👉 https://t.me/hshsjk9",\n    "logo":'
+        '{\n    "spider":',
+        f'{{\n    "warningText": "{thanks_warning}",\n    "spider":'
     )
 
 # ====================================================================
@@ -120,8 +122,8 @@ final_json_text = final_json_text.replace('[\n,', '[')
 final_json_text = final_json_text.replace(',\n    ]', '\n    ]')
 final_json_text = final_json_text.replace(',\n  ]', '\n  ]')
 
-# 写入本地文件存盘
+# 写入本地 file 存盘
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【专属定制版】已经完成秒级清洗，成功输出为 老杨TV.json！")
+print("🎉 【专属定制致谢版】已经完成秒级清洗，成功输出为 老杨TV.json！")
