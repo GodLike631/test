@@ -3,7 +3,7 @@ import re
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
-output_path = 'datas/老杨TV.json'  # 🌟 专属后缀文件名
+output_path = 'datas/老杨TV.json'  # 🌟 如需修改输出文件名，改这里即可
 
 def read_file_text(path):
     if not os.path.exists(path):
@@ -34,7 +34,6 @@ haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 # ====================================================================
 # 【海豚专属尾缀手术】在合并前，单独为海豚的线路名称末尾加上 ｜Tg：@huliys9
 # ====================================================================
-# 🛠️ 1 & 2. 更改此处的分隔符为 ｜
 name_regex = r'"name"\s*:\s*"([^"]+)"'
 if haitun_sites_text:
     haitun_sites_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_sites_text)
@@ -120,23 +119,24 @@ final_json_text = final_json_text.replace('交流群 TG：@hshsjk9', '')
 def clean_and_add_butterfly(match):
     name_val = match.group(1)
     
-    # 🛠️ 3. 更改脱敏函数内部的截取特征为 ｜
     tg_suffix = ""
     if "｜Tg：@huliys9" in name_val:
         name_val = name_val.replace("｜Tg：@huliys9", "")
         tg_suffix = "｜Tg：@huliys9"
         
-    # 清洗核心线路名称两端的杂质字符 (注意：这里不要包含 ｜，否则会被误切)
     for char in ['丨', '┃', ' ']:
         name_val = name_val.strip(char)
         
-    # 修复名称中间的多余双空格
     name_val = re.sub(r'\s+', ' ', name_val)
-    
-    # 重新组装：🦋 + 清洗后的名称 + [｜Tg：@huliys9]
     return f'"name": "🦋{name_val}{tg_suffix}"'
 
 final_json_text = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, final_json_text)
+
+# 3. 🎯【精准拦截替换】单独将爱奇艺线路名称升级为长篇免责声明版本
+final_json_text = final_json_text.replace(
+    '"name": "🦋爱奇艺｜Tg：@huliys9"',
+    '"name": "🦋爱奇艺｜此接口非原创，合并自海豚佬和鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"'
+)
 
 # ====================================================================
 # 6. 安全、高效地消除尾部逗号瑕疵（摒弃危险的正则回溯）
@@ -150,4 +150,4 @@ final_json_text = final_json_text.replace(',\n  ]', '\n  ]')
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【全角 ｜ 符号替换版】已更新成功！")
+print("🎉 【全能无暇版】已完美输出！爱奇艺长声明已单独生效。")
