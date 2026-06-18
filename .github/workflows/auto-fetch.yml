@@ -2,8 +2,10 @@ name: 自动双源无损强行合并-备用线
 
 on:
   schedule:
+    # 🌟 准时在每天北京时间早上 8 点和晚上 8 点自动触发线路合流清洗
     - cron: '0 0,12 * * *'
-  workflow_dispatch:
+  workflow_dispatch: 
+
 
 jobs:
   fetch-and-sync:
