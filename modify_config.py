@@ -32,14 +32,13 @@ haitun_sites_text = get_array_inner_text(text_haitun, "sites")
 haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 
 # ====================================================================
-# 【新增：海豚专属尾缀手术】在合并前，单独为海豚的线路名称末尾加上 Tg 频道
+# 【海豚专属尾缀手术】在合并前，单独为海豚的线路名称末尾加上 |Tg：@huliys9
 # ====================================================================
-# 匹配 "name": "xxx" 并将其替换为 "name": "xxx Tg：@huliys9"
-name_regex = r'("name"\s*:\s*"[^"]+)"'
+name_regex = r'"name"\s*:\s*"([^"]+)"'
 if haitun_sites_text:
-    haitun_sites_text = re.sub(name_regex, r'\1 Tg：@huliys9"', haitun_sites_text)
+    haitun_sites_text = re.sub(name_regex, r'"name": "\1|Tg：@huliys9"', haitun_sites_text)
 if haitun_lives_text:
-    haitun_lives_text = re.sub(name_regex, r'\1 Tg：@huliys9"', haitun_lives_text)
+    haitun_lives_text = re.sub(name_regex, r'"name": "\1|Tg：@huliys9"', haitun_lives_text)
 
 # ====================================================================
 # 2. 逆向注入：把海豚的内容，无缝贴进 CNB 对应的数组最前面
@@ -109,28 +108,38 @@ if '"warningText":' not in final_json_text:
 # ====================================================================
 # 5. 全方位名称大清洗与品牌脱敏手术
 # ====================================================================
-# 1. 靶向切除“🐬”、“海豚影视”、“海豚”
+# 1. 批量拔除各种旧品牌的残留和无关话术
 final_json_text = final_json_text.replace('🐬', '')
 final_json_text = final_json_text.replace('海豚影视', '')
 final_json_text = final_json_text.replace('海豚', '')
-
-# 2. 自动修正因为删掉品牌词后，名字前缀残留的各种杂质符号与空格
-final_json_text = final_json_text.replace('"name": "｜', '"name": "')
-final_json_text = final_json_text.replace('"name": "丨', '"name": "')
-final_json_text = final_json_text.replace('"name": " ', '"name": "')
-final_json_text = final_json_text.replace('"name": "┃', '"name": "')
-
-# 3. 清理掉可能存在的残留无效广告语（如海豚原有的多余话术，保持干净）
 final_json_text = final_json_text.replace('完全免费，如有收费的都是骗子', '')
 final_json_text = final_json_text.replace('交流群 TG：@hshsjk9', '')
 
-# 4. 【核心升级：全线路蝴蝶前缀注入】为所有的站点与直播线路名称前面强行挂载 🦋
-final_json_text = final_json_text.replace('"name": "', '"name": "🦋')
+# 2. 精准格式化与全线路 🦋 前缀注入
+def clean_and_add_butterfly(match):
+    name_val = match.group(1)
+    
+    # 针对海豚线路的处理：提取可能已经带上的 |Tg：@huliys9 后缀
+    tg_suffix = ""
+    if "|Tg：@huliys9" in name_val:
+        name_val = name_val.replace("|Tg：@huliys9", "")
+        tg_suffix = "|Tg：@huliys9"
+        
+    # 清洗核心线路名称两端的杂质字符
+    for char in ['｜', '丨', '┃', ' ']:
+        name_val = name_val.strip(char)
+        
+    # 修复名称中间的多余双空格
+    name_val = re.sub(r'\s+', ' ', name_val)
+    
+    # 重新组装：🦋 + 清洗后的名称 + [|Tg：@huliys9]
+    return f'"name": "🦋{name_val}{tg_suffix}"'
+
+final_json_text = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, final_json_text)
 
 # ====================================================================
 # 6. 安全、高效地消除尾部逗号瑕疵（摒弃危险的正则回溯）
 # ====================================================================
-# 用安全的精准字符串替换来消除可能由于注入引起的 `[,` 或者 `, ]` 问题
 final_json_text = final_json_text.replace('[\n    ,', '[')
 final_json_text = final_json_text.replace('[\n,', '[')
 final_json_text = final_json_text.replace(',\n    ]', '\n    ]')
@@ -140,4 +149,4 @@ final_json_text = final_json_text.replace(',\n  ]', '\n  ]')
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【专属定制：全线蝴蝶+海豚加群标签版】已经完美输出为 老杨TV.json！")
+print("🎉 【完美分隔符版】已完美输出为 老杨TV.json！")
