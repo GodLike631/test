@@ -32,6 +32,16 @@ haitun_sites_text = get_array_inner_text(text_haitun, "sites")
 haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 
 # ====================================================================
+# 【新增：海豚专属尾缀手术】在合并前，单独为海豚的线路名称末尾加上 Tg 频道
+# ====================================================================
+# 匹配 "name": "xxx" 并将其替换为 "name": "xxx Tg：@huliys9"
+name_regex = r'("name"\s*:\s*"[^"]+)"'
+if haitun_sites_text:
+    haitun_sites_text = re.sub(name_regex, r'\1 Tg：@huliys9"', haitun_sites_text)
+if haitun_lives_text:
+    haitun_lives_text = re.sub(name_regex, r'\1 Tg：@huliys9"', haitun_lives_text)
+
+# ====================================================================
 # 2. 逆向注入：把海豚的内容，无缝贴进 CNB 对应的数组最前面
 # ====================================================================
 final_json_text = text_cnb
@@ -104,14 +114,18 @@ final_json_text = final_json_text.replace('🐬', '')
 final_json_text = final_json_text.replace('海豚影视', '')
 final_json_text = final_json_text.replace('海豚', '')
 
-# 2. 自动修正因为删掉品牌词后，名字前缀残留的“｜”或“丨”等符号
+# 2. 自动修正因为删掉品牌词后，名字前缀残留的各种杂质符号与空格
 final_json_text = final_json_text.replace('"name": "｜', '"name": "')
 final_json_text = final_json_text.replace('"name": "丨', '"name": "')
 final_json_text = final_json_text.replace('"name": " ', '"name": "')
+final_json_text = final_json_text.replace('"name": "┃', '"name": "')
 
-# 3. 靶向替换特定的广告词和联系方式，锁定你的全新 Tg 频道链接
-final_json_text = final_json_text.replace('@hshsjk9', '@huliys9')
-final_json_text = final_json_text.replace('交流群', 'Tg频道')
+# 3. 清理掉可能存在的残留无效广告语（如海豚原有的多余话术，保持干净）
+final_json_text = final_json_text.replace('完全免费，如有收费的都是骗子', '')
+final_json_text = final_json_text.replace('交流群 TG：@hshsjk9', '')
+
+# 4. 【核心升级：全线路蝴蝶前缀注入】为所有的站点与直播线路名称前面强行挂载 🦋
+final_json_text = final_json_text.replace('"name": "', '"name": "🦋')
 
 # ====================================================================
 # 6. 安全、高效地消除尾部逗号瑕疵（摒弃危险的正则回溯）
@@ -122,8 +136,8 @@ final_json_text = final_json_text.replace('[\n,', '[')
 final_json_text = final_json_text.replace(',\n    ]', '\n    ]')
 final_json_text = final_json_text.replace(',\n  ]', '\n  ]')
 
-# 写入本地 file 存盘
+# 写入本地文件存盘
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【专属定制致谢版】已经完成秒级清洗，成功输出为 老杨TV.json！")
+print("🎉 【专属定制：全线蝴蝶+海豚加群标签版】已经完美输出为 老杨TV.json！")
