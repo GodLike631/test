@@ -13,42 +13,49 @@ lock_file_path = 'datas/控制开关.txt'
 tracker_path = 'datas/最新接口文件名.txt'
 
 # ====================================================================
+# 🚨 【老杨专属：全自动地毯式大扫除补丁】
+# 专门对付手机端无法手动删除文件的 Bug， Actions 一跑，历史垃圾全部灰飞烟灭！
+# ====================================================================
+garbage_files = [
+    'datas/local_config.json',
+    *glob.glob('datas/config_*.json')  # 揪出所有 config_ 开头的历史死线
+]
+for garbage in garbage_files:
+    if os.path.exists(garbage):
+        try:
+            os.remove(garbage)
+            print(f"🧹 【大扫除成功】已自动强擦历史残留文件: {garbage}")
+        except:
+            pass
+
+# ====================================================================
 # ⏰ 【方案 A 定时自动脱壳机制：老杨TV + 3位随机字符定制版】
 # ====================================================================
-# 1. 拿到今天的日期和号数
 today = datetime.datetime.now()
-is_reset_day = (today.day == 1)  # 🌟 默认每月 1 号自动洗牌断流
+is_reset_day = (today.day == 1)
 
 current_token = ""
 
-# 2. 如果今天不是洗牌日，优先去读现有的控制开关
 if not is_reset_day and os.path.exists(lock_file_path):
     with open(lock_file_path, 'r', encoding='utf-8') as f:
         current_token = f.read().strip()
 
-# 3. 如果今天是洗牌日（或者开关文件意外丢失了），立刻换新通关密码
 if not current_token:
-    # 🎲 随机抽取 3 位小写字母和数字的组合
     current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
-    # 将 3 位密码锁死在开关文件里，供这个月剩下的日子天天自动同步使用
     with open(lock_file_path, 'w', encoding='utf-8') as f:
         f.write(current_token)
-    print(f"⏰ 【触发定时金蝉脱壳】已全自动更换 3 位新密锁: {current_token}")
+    print(f"⏰ 【触发金蝉脱壳】已全自动更换 3 位新密锁: {current_token}")
 
-# 👑 严格按照老杨的要求：固定的品牌前缀 + 3位乱码尾缀
 output_filename = f"老杨TV{current_token}.json"
 output_path = f"datas/{output_filename}"
 
-# ====================================================================
-# 🛡️ 【斩草除根：旧线自动物理清除雷达】
-# 只要名字里带“老杨TV”且不是当前的最新文件名，通通就地蒸发！
-# ====================================================================
+# 物理擦除不合规的过期老线
 old_configs = glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
         try:
             os.remove(old_file)
-            print(f"🗑️ 【防盗断流】已物理抹除历史过期老线: {old_file}")
+            print(f"🗑️ 【断流成功】已物理抹除历史过期老线: {old_file}")
         except Exception as e:
             pass
 
@@ -62,7 +69,7 @@ text_cnb = read_file_text(cnb_path)
 text_haitun = read_file_text(haitun_path)
 
 # ====================================================================
-# 1. 物理提取海豚源里的 sites（视频站）和 lives（直播源）内部的纯文本
+# 1. 物理提取海豚源里的 sites 和 lives 内部的纯文本
 # ====================================================================
 def get_array_inner_text(content, key):
     split_key = f'"{key}": ['
@@ -78,7 +85,7 @@ def get_array_inner_text(content, key):
 haitun_sites_text = get_array_inner_text(text_haitun, "sites")
 haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 
-# 【海豚专属尾缀手术】在合并前，单独为海豚的线路名称末尾加上 ｜Tg：@huliys9
+# 【海豚专属尾缀手术】
 name_regex = r'"name"\s*:\s*"([^"]+)"'
 if haitun_sites_text:
     haitun_sites_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_sites_text)
@@ -99,7 +106,7 @@ if haitun_lives_text and '"lives": [' in final_json_text:
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
 
 # ====================================================================
-# 3. 靶向拦截手术：揪出这两个瘫痪的 4K 线路，强行切断 CNB 依赖，锁死海豚核心
+# 3. 靶向拦截手术：揪出这两个瘫痪的 4K 线路
 # ====================================================================
 final_json_text = final_json_text.replace(
     '"key": "hajim-腾讯备"', 
@@ -183,12 +190,10 @@ final_json_text = final_json_text.replace('[\n,', '[')
 final_json_text = final_json_text.replace(',\n    ]', '\n    ]')
 final_json_text = final_json_text.replace(',\n  ]', '\n  ]')
 
-# 写入带有品牌特征的乱码文件存盘
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-# 在固定 txt 追踪器里登记最新名字
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【品牌乱码版同步成功】当前出库配置名: {output_path}")
+print(f"🎉 【大扫除版同步成功】当前最新出库配置名: {output_path}")
