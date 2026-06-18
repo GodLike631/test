@@ -13,51 +13,51 @@ lock_file_path = 'datas/控制开关.txt'
 tracker_path = 'datas/最新接口文件名.txt'
 
 # ====================================================================
-# 🚨 【老杨专属：全自动地毯式大扫除补丁】
-# 专门对付手机端无法手动删除文件的 Bug， Actions 一跑，历史垃圾全部灰飞烟灭！
-# ====================================================================
-garbage_files = [
-    'datas/local_config.json',
-    *glob.glob('datas/config_*.json')  # 揪出所有 config_ 开头的历史死线
-]
-for garbage in garbage_files:
-    if os.path.exists(garbage):
-        try:
-            os.remove(garbage)
-            print(f"🧹 【大扫除成功】已自动强擦历史残留文件: {garbage}")
-        except:
-            pass
-
-# ====================================================================
-# ⏰ 【方案 A 定时自动脱壳机制：老杨TV + 3位随机字符定制版】
+# ⏰ 【方案 A 定时自动脱壳机制：老杨TV + 严格 3 位随机字符定制版】
 # ====================================================================
 today = datetime.datetime.now()
 is_reset_day = (today.day == 1)
 
 current_token = ""
 
-if not is_reset_day and os.path.exists(lock_file_path):
+# 1. 优先读取现有的控制开关
+if os.path.exists(lock_file_path):
     with open(lock_file_path, 'r', encoding='utf-8') as f:
         current_token = f.read().strip()
 
-if not current_token:
+# 🌟【核心纠偏】：如果发现旧暗号长度不是严格的 3 位，说明是以前残留的 6 位锁，直接强行作废重抽！
+if len(current_token) != 3:
+    current_token = ""
+
+# 2. 如果今天是一号，或者暗号为空/不合规，立刻启动 3 位随机数抽签
+if is_reset_day or not current_token:
     current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
     with open(lock_file_path, 'w', encoding='utf-8') as f:
         f.write(current_token)
-    print(f"⏰ 【触发金蝉脱壳】已全自动更换 3 位新密锁: {current_token}")
+    print(f"⏰ 【密锁强制纠偏】已生成严格 3 位新密锁: {current_token}")
 
+# 👑 严格按照老杨的要求：老杨TV + 3位字符
 output_filename = f"老杨TV{current_token}.json"
 output_path = f"datas/{output_filename}"
 
-# 物理擦除不合规的过期老线
+# ====================================================================
+# 🛡️ 【斩草除根：旧线自动物理清除雷达】
+# 不管是 6 位的还是过期的，只要名字不是当前的最新配置，全部就地蒸发！
+# ====================================================================
 old_configs = glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
         try:
             os.remove(old_file)
-            print(f"🗑️ 【断流成功】已物理抹除历史过期老线: {old_file}")
+            print(f"🗑️ 【物理强擦】已成功抹除不合规的旧前缀线: {old_file}")
         except Exception as e:
             pass
+
+# 清理可能残余的 config_ 开头垃圾
+for garbage in glob.glob('datas/config_*.json'):
+    try: os.remove(garbage)
+    except: pass
+
 
 def read_file_text(path):
     if not os.path.exists(path):
@@ -106,7 +106,7 @@ if haitun_lives_text and '"lives": [' in final_json_text:
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
 
 # ====================================================================
-# 3. 靶向拦截手术：揪出这两个瘫痪的 4K 线路
+# 3. 靶向拦截手术
 # ====================================================================
 final_json_text = final_json_text.replace(
     '"key": "hajim-腾讯备"', 
@@ -118,7 +118,7 @@ final_json_text = final_json_text.replace(
 )
 
 # ====================================================================
-# 【全方位无死角路径清洗】：让 CNB 的其余线路走官方绝对 network 链接
+# 【全方位无死角路径清洗】
 # ====================================================================
 final_json_text = final_json_text.replace('./spider.jar', 'https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar')
 final_json_text = final_json_text.replace('./XBPQ/', 'https://cnb.cool/fish2018/xs/-/git/raw/main/XBPQ/')
@@ -196,4 +196,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【大扫除版同步成功】当前最新出库配置名: {output_path}")
+print(f"🎉 【严格3位定版成功】当前最新配置名: {output_path}")
