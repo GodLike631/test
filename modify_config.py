@@ -32,13 +32,14 @@ haitun_sites_text = get_array_inner_text(text_haitun, "sites")
 haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 
 # ====================================================================
-# 【海豚专属尾缀手术】在合并前，单独为海豚的线路名称末尾加上 |Tg：@huliys9
+# 【海豚专属尾缀手术】在合并前，单独为海豚的线路名称末尾加上 ｜Tg：@huliys9
 # ====================================================================
+# 🛠️ 1 & 2. 更改此处的分隔符为 ｜
 name_regex = r'"name"\s*:\s*"([^"]+)"'
 if haitun_sites_text:
-    haitun_sites_text = re.sub(name_regex, r'"name": "\1|Tg：@huliys9"', haitun_sites_text)
+    haitun_sites_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_sites_text)
 if haitun_lives_text:
-    haitun_lives_text = re.sub(name_regex, r'"name": "\1|Tg：@huliys9"', haitun_lives_text)
+    haitun_lives_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_lives_text)
 
 # ====================================================================
 # 2. 逆向注入：把海豚的内容，无缝贴进 CNB 对应的数组最前面
@@ -119,20 +120,20 @@ final_json_text = final_json_text.replace('交流群 TG：@hshsjk9', '')
 def clean_and_add_butterfly(match):
     name_val = match.group(1)
     
-    # 针对海豚线路的处理：提取可能已经带上的 |Tg：@huliys9 后缀
+    # 🛠️ 3. 更改脱敏函数内部的截取特征为 ｜
     tg_suffix = ""
-    if "|Tg：@huliys9" in name_val:
-        name_val = name_val.replace("|Tg：@huliys9", "")
-        tg_suffix = "|Tg：@huliys9"
+    if "｜Tg：@huliys9" in name_val:
+        name_val = name_val.replace("｜Tg：@huliys9", "")
+        tg_suffix = "｜Tg：@huliys9"
         
-    # 清洗核心线路名称两端的杂质字符
-    for char in ['｜', '丨', '┃', ' ']:
+    # 清洗核心线路名称两端的杂质字符 (注意：这里不要包含 ｜，否则会被误切)
+    for char in ['丨', '┃', ' ']:
         name_val = name_val.strip(char)
         
     # 修复名称中间的多余双空格
     name_val = re.sub(r'\s+', ' ', name_val)
     
-    # 重新组装：🦋 + 清洗后的名称 + [|Tg：@huliys9]
+    # 重新组装：🦋 + 清洗后的名称 + [｜Tg：@huliys9]
     return f'"name": "🦋{name_val}{tg_suffix}"'
 
 final_json_text = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, final_json_text)
@@ -149,4 +150,4 @@ final_json_text = final_json_text.replace(',\n  ]', '\n  ]')
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🎉 【完美分隔符版】已完美输出为 老杨TV.json！")
+print("🎉 【全角 ｜ 符号替换版】已更新成功！")
