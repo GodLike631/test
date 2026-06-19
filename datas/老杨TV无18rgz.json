@@ -1,25 +1,25 @@
 {
     "spider": "https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar",
-    "wallpaper": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg",
-    "notice": "⚠️ 警告：当前全量专线密锁已过期！老链接已断流！\n\n请立刻打开手机微信，扫描下方【老杨TV】单线里的二维码，进入铁粉群获取今日最新密码！",
-    "warningText": "⚠️ 当前密锁已过期，老链接已断流！请扫码进群拿新密码！",
+    "wallpaper": "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/IMG_6684.jpeg",
+    "notice": "⚠️ 警告：当前老杨TV专线密锁已过期断流！\n\n请用手机微信扫描下方【专属二维码】单线，或者直接点击进入，即可在屏幕中央全屏放大弹出最新的‘官方核心群二维码’！进群立刻获取今日最新 3 位通关密码！",
+    "warningText": "⚠️ 密锁已过期！老链接已断流！请点击下方单线扫码进群！",
     "sites": [
         {
-            "key": "老杨进群二维码",
-            "name": "🦋 专属二维码 ｜ 微信扫码进群拿新密码",
+            "key": "老杨安全二维码",
+            "name": "🦋 点击这里 ➡️ 屏幕中央强显进群二维码 ｜ 微信扫码拿新密码",
             "type": 3,
             "api": "csp_JuDou",
             "searchable": 0,
             "quickSearch": 0,
             "filterable": 0,
-            "ext": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg"
+            "ext": "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/IMG_6684.jpeg"
         }
     ],
     "lives": [
         {
-            "name": "⚠️ 密锁已过期 ➡️ 微信扫码进群拿新暗号",
+            "name": "⚠️ 密锁已过期 ➡️ 点击站点列表查看专属二维码",
             "type": 0,
-            "url": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg",
+            "url": "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/IMG_6684.jpeg",
             "playerType": 1
         }
     ]
