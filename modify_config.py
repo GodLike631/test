@@ -40,45 +40,49 @@ output_filename = f"老杨TV{current_token}.json"
 output_path = f"datas/{output_filename}"
 
 # ====================================================================
-# 🛡️ 【黑科技：全量版过期旧线一键调包为蜂蜜强显大公告弹窗（带加速二维码）】
+# 🛡️ 【黑科技：FongMi 直播源全屏二维码大绝杀】
 # ====================================================================
 old_configs = glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
         try:
-            # 👑 注入老杨专属的国内秒开 GitHub 加速二维码直链
+            # 👑 你的国内秒开 GitHub 加速二维码直链
             my_github_qr = "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/IMG_6684.jpeg"
             
             trap_json = {
-                "spider": "https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar", 
-                "wallpaper": my_github_qr,
-                "notice": "⚠️ 警告：当前老杨TV专线密锁已过期断流！\n\n请用手机微信扫描下方【专属二维码】单线，或者直接点击进入，即可在屏幕中央全屏放大弹出最新的‘官方核心群二维码’！进群立刻获取今日最新 3 位通关密码！",
-                "warningText": "⚠️ 密锁已过期！老链接已断流！请点击下方单线扫码进群！",
+                "spider": "", 
+                "notice": "⚠️ 警告：当前老杨TV专线密锁已过期断流！\n\n请看电视屏幕右侧！已为你自动加载【进群二维码频道】！\n请直接用手机微信扫描电视上的二维码图片，进入铁粉群获取今日最新 3 位通关密码！",
+                "warningText": "⚠️ 密锁已过期！老链接已断流！请看右侧电视画面扫码进群！",
                 "sites": [
                     {
-                        "key": "老杨安全二维码",
-                        "name": "🦋 点击这里 ➡️ 屏幕中央强显进群二维码 ｜ 微信扫码拿新密码",
+                        "key": "老杨安全提示",
+                        "name": "🦋 密锁已过期 ｜ 请看右侧直播频道二维码",
                         "type": 3,
                         "api": "csp_JuDou",
                         "searchable": 0,
                         "quickSearch": 0,
-                        "filterable": 0,
-                        "ext": my_github_qr
+                        "filterable": 0
                     }
                 ],
+                # 🎯 核心绝杀：直接利用直播流通道，强制 FongMi 渲染弹出全屏二维码大图！
                 "lives": [
                     {
-                        "name": "⚠️ 密锁已过期 ➡️ 点击站点列表查看专属二维码",
-                        "type": 0,
-                        "url": my_github_qr,
-                        "playerType": 1
+                        "group": "⚠️ 接口过期·扫码进群",
+                        "channels": [
+                            {
+                                "name": "👉 微信扫码进群拿新密码（请保持在此频道）",
+                                "urls": [
+                                    my_github_qr
+                                ]
+                            }
+                        ]
                     }
                 ]
             }
             import json
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
-            print(f"📡 【金蝉脱壳】已成功将过期旧线调包为带二维码的公告: {old_file}")
+            print(f"📡 【金蝉脱壳】已成功升级为直播源强制弹窗: {old_file}")
         except Exception as e:
             pass
 
@@ -144,7 +148,7 @@ final_json_text = final_json_text.replace('./py/', 'https://cnb.cool/fish2018/xs
 
 final_json_text = final_json_text.replace(
     '"logo": "http://127.0.0.1:9978/file/TVBox/logo.png"', 
-    '"logo": "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/IMG_6684.jpeg"'
+    "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/IMG_6684.jpeg"
 )
 
 if '"warningText":' not in final_json_text:
@@ -202,4 +206,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【全量版终极合流】同步成功！当前最新配置名: {output_path}")
+print(f"🎉 【全量版直播流绝杀】更新成功！配置名: {output_path}")
