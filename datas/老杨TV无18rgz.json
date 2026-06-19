@@ -1,17 +1,26 @@
 {
-    "spider": "",
+    "spider": "https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar",
     "wallpaper": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg",
-    "warningText": "⚠️ 警告：当前【老杨TV无18绿色纯净版】已洗牌变幻新密码！\n老订阅链接已全线物理断流！\n\n请立刻打开手机微信，扫描屏幕背景上的【二维码】，重新进入【老杨官方核心铁粉群】获取今日最新 3 位后缀通关密码！\n退群或失联将永久断流！\n\n\n\n\n",
+    "notice": "⚠️ 警告：当前全量专线密锁已过期！老链接已断流！\n\n请立刻打开手机微信，扫描下方【老杨TV】单线里的二维码，进入铁粉群获取今日最新密码！",
+    "warningText": "⚠️ 当前密锁已过期，老链接已断流！请扫码进群拿新密码！",
     "sites": [
         {
-            "key": "老杨提示",
-            "name": "🦋 请看电视背景墙二维码 ｜ 微信扫码进群拿新密码",
+            "key": "老杨进群二维码",
+            "name": "🦋 专属二维码 ｜ 微信扫码进群拿新密码",
             "type": 3,
-            "api": "csp_Push",
+            "api": "csp_JuDou",
             "searchable": 0,
             "quickSearch": 0,
             "filterable": 0,
             "ext": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg"
+        }
+    ],
+    "lives": [
+        {
+            "name": "⚠️ 密锁已过期 ➡️ 微信扫码进群拿新暗号",
+            "type": 0,
+            "url": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg",
+            "playerType": 1
         }
     ]
 }
