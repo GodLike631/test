@@ -157,6 +157,9 @@ final_json_text = final_json_text.replace(
     '"logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg"'
 )
 
+# ====================================================================
+# 🎯 强力拦截注入：在最新生成的正规订阅文件最前面强插 notice 字段
+# ====================================================================
 if '"warningText":' not in final_json_text:
     thanks_warning = (
         '👑 特别致谢与版权声明\\n'
@@ -170,9 +173,17 @@ if '"warningText":' not in final_json_text:
         '数据源直链地址: FGBLH/GHK/海豚.json\\n'
         'Telegram 官方群组: 👉 https://t.me/hshsjk9'
     )
+    
+    # 🌟 核心修改点：这里直接在正规订阅的最顶部注入专属开机公告大白框（带正确换行符）
+    welcome_notice = (
+        '👑 欢迎使用【老杨TV专属缝合专线】！\\n\\n'
+        '本线由老杨结合鱼佬与海豚佬的优质资源缝合而成，纯净无广告！\\n'
+        '🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道或微信群获取今日最新 3 位后缀密码续杯！'
+    )
+    
     final_json_text = final_json_text.replace(
         '{\n    "spider":',
-        f'{{\n    "warningText": "{thanks_warning}",\n    "spider":'
+        f'{{\n    "notice": "{welcome_notice}",\n    "warningText": "{thanks_warning}",\n    "spider":'
     )
 
 final_json_text = final_json_text.replace('🐬', '')
@@ -212,4 +223,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【全量纯文字大轰炸版】更新成功！配置名: {output_path}")
+print(f"🎉 【全量纯文字大轰炸+开机大白框公告版】更新成功！配置名: {output_path}")
