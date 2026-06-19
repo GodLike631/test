@@ -45,35 +45,34 @@ output_filename = f"老杨TV无18{current_token}.json"
 output_path = f"datas/{output_filename}"
 
 # ====================================================================
-# 🛡️ 【黑科技：绿色版过期导流弹窗重塑雷达】
-# 不再直接删除旧线，而是将旧线一键调包成绿色纯净版专用微信群二维码大公告！
+# 🛡️ 【黑科技：绿色版过期全屏背景大弹窗重塑雷达】
 # ====================================================================
 old_configs = glob.glob('datas/老杨TV无18*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
         try:
-            # 🌟【特制绿色纯净版二维码伪装 JSON 代码】
+            # 🌟【特制绿色纯净版二维码全屏强显 JSON 代码】
             trap_json = {
                 "spider": "",
                 "wallpaper": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg",
-                "warningText": "⚠️ 警告：当前【老杨TV无18绿色纯净版】已洗牌变幻新密码！\n老链接已全线物理断流！\n\n请立刻打开手机微信，扫描屏幕下方的二维码，重新进入【老杨官方核心铁粉群】获取今日最新 3 位后缀通关密码！\n退群或失联将永久无法观看！",
+                "warningText": "⚠️ 警告：当前【老杨TV无18绿色纯净版】已洗牌变幻新密码！\n老订阅链接已全线物理断流！\n\n请立刻打开手机微信，扫描屏幕背景上的【二维码】，重新进入【老杨官方核心铁粉群】获取今日最新 3 位后缀通关密码！\n退群或失联将永久断流！\n\n\n\n\n",
                 "sites": [
                     {
                         "key": "老杨提示",
-                        "name": "🦋 绿色版专属二维码 ｜ 微信扫码进群拿新密码",
+                        "name": "🦋 请看电视背景墙二维码 ｜ 微信扫码进群拿新密码",
                         "type": 3,
-                        "api": "csp_JuDou",
+                        "api": "csp_Push",
                         "searchable": 0,
                         "quickSearch": 0,
                         "filterable": 0,
-                        "ext": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg" # 填入你的群二维码
+                        "ext": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg"
                     }
                 ]
             }
             import json
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
-            print(f"📡 【金蝉脱壳】已成功将绿色版过期旧线调包为二维码拦截弹窗: {old_file}")
+            print(f"📡 【金蝉脱壳】已成功将绿色版过期旧线调包为背景强显弹窗: {old_file}")
         except Exception as e:
             pass
 
@@ -255,10 +254,11 @@ final_json_text = final_json_text.replace(',\n  ]', '\n  ]')
 final_json_text = re.sub(r'\[\s*,', '[', final_json_text)
 final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
 
-# 写入
+# 写入带有品牌特征的乱码绿色版文件
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
+# 登记在追踪器里
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
