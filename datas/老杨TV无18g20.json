@@ -1,26 +1,29 @@
 {
-    "spider": "https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar",
-    "wallpaper": "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/IMG_6684.jpeg",
-    "notice": "⚠️ 警告：当前老杨TV专线密锁已过期断流！\n\n请用手机微信扫描下方【专属二维码】单线，或者直接点击进入，即可在屏幕中央全屏放大弹出最新的‘官方核心群二维码’！进群立刻获取今日最新 3 位通关密码！",
-    "warningText": "⚠️ 密锁已过期！老链接已断流！请点击下方单线扫码进群！",
+    "spider": "",
+    "notice": "⚠️ 警告：当前老杨TV专线密锁已过期断流！\n\n请看电视屏幕右侧！已为你自动加载【进群二维码频道】！\n请直接用手机微信扫描电视上的二维码图片，进入铁粉群获取今日最新 3 位通关密码！",
+    "warningText": "⚠️ 密锁已过期！老链接已断流！请看右侧电视画面扫码进群！",
     "sites": [
         {
-            "key": "老杨安全二维码",
-            "name": "🦋 点击这里 ➡️ 屏幕中央强显进群二维码 ｜ 微信扫码拿新密码",
+            "key": "老杨安全提示",
+            "name": "🦋 密锁已过期 ｜ 请看右侧直播频道二维码",
             "type": 3,
             "api": "csp_JuDou",
             "searchable": 0,
             "quickSearch": 0,
-            "filterable": 0,
-            "ext": "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/IMG_6684.jpeg"
+            "filterable": 0
         }
     ],
     "lives": [
         {
-            "name": "⚠️ 密锁已过期 ➡️ 点击站点列表查看专属二维码",
-            "type": 0,
-            "url": "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/IMG_6684.jpeg",
-            "playerType": 1
+            "group": "⚠️ 接口过期·扫码进群",
+            "channels": [
+                {
+                    "name": "👉 微信扫码进群拿新密码（请保持在此频道）",
+                    "urls": [
+                        "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/IMG_6684.jpeg"
+                    ]
+                }
+            ]
         }
     ]
 }
