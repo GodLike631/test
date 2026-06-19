@@ -13,7 +13,7 @@ lock_file_path = 'datas/控制开关.txt'
 tracker_path = 'datas/最新接口文件名.txt'
 
 # ====================================================================
-# ⏰ 【安全阀门升级：全量版方案 A 确保 1 号早晚双跑只洗一次牌】
+# ⏰ 【安全阀门升级：绿色版方案 A 确保 1 号早晚双跑只洗一次牌】
 # ====================================================================
 today = datetime.datetime.now()
 is_reset_day = (today.day == 1)
@@ -34,29 +34,36 @@ else:
         current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
         with open(lock_file_path, 'w', encoding='utf-8') as f:
             f.write(current_token)
-        print(f"⏰ 【密锁强制纠偏/新月抽签】已生成全量版严格 3 位新密锁: {current_token}")
+        print(f"⏰ 【密锁自动生成】已生成绿色版严格 3 位新密锁: {current_token}")
 
-output_filename = f"老杨TV{current_token}.json"
+output_filename = f"老杨TV无18{current_token}.json"
 output_path = f"datas/{output_filename}"
 
 # ====================================================================
-# 🛡️ 【黑科技：FongMi 直播源全屏二维码大绝杀】
+# 🛡️ 【黑科技：绿色版过期旧线一键调包为纯文字滚动大轰炸】
 # ====================================================================
-old_configs = glob.glob('datas/老杨TV*.json')
+old_configs = glob.glob('datas/老杨TV无18*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
         try:
-            # 👑 你的国内秒开 GitHub 加速二维码直链
-            my_github_qr = "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/IMG_6684.jpeg"
-            
+            # 🌟 彻底抛弃图片链接，无18版群优专属纯文字高能预警盒子
             trap_json = {
                 "spider": "", 
-                "notice": "⚠️ 警告：当前老杨TV专线密锁已过期断流！\n\n请看电视屏幕右侧！已为你自动加载【进群二维码频道】！\n请直接用手机微信扫描电视上的二维码图片，进入铁粉群获取今日最新 3 位通关密码！",
-                "warningText": "⚠️ 密锁已过期！老链接已断流！请看右侧电视画面扫码进群！",
+                "notice": "⚠️ 警告：当前【老杨TV无18绿色纯净版】已洗牌变幻新密码！老链接已彻底断流作废！\n\n请立刻打开手机微信进入【老杨官方核心铁粉群】查看公告，获取今日最新 3 位通关密码！退群、失联将永久断流无法观看！",
+                "warningText": "👑 绿色版提示：当前线路已断流！请看下方线路名称提示！回微信群拿最新3位纯净密码！",
                 "sites": [
                     {
-                        "key": "老杨安全提示",
-                        "name": "🦋 密锁已过期 ｜ 请看右侧直播频道二维码",
+                        "key": "老杨绿色纯文字提示",
+                        "name": "🚨 绿色版已洗牌 ➡️ 进微信群获取今日最新 3 位密码",
+                        "type": 3,
+                        "api": "csp_JuDou",
+                        "searchable": 0,
+                        "quickSearch": 0,
+                        "filterable": 0
+                    },
+                    {
+                        "key": "老杨绿色纯文字提示2",
+                        "name": "🚨 绿色通道已换锁 ➡️ 别看这里了 ｜ 回微信群拿新密码续杯",
                         "type": 3,
                         "api": "csp_JuDou",
                         "searchable": 0,
@@ -64,15 +71,14 @@ for old_file in old_configs:
                         "filterable": 0
                     }
                 ],
-                # 🎯 核心绝杀：直接利用直播流通道，强制 FongMi 渲染弹出全屏二维码大图！
                 "lives": [
                     {
-                        "group": "⚠️ 接口过期·扫码进群",
+                        "group": "🚨 纯净版过期断流 ｜ 进群拿新密码",
                         "channels": [
                             {
-                                "name": "👉 微信扫码进群拿新密码（请保持在此频道）",
+                                "name": "👉 当前绿色版已过期 ➡️ 进微信群拿今日最新3位密码",
                                 "urls": [
-                                    my_github_qr
+                                    "http://127.0.0.1"
                                 ]
                             }
                         ]
@@ -82,11 +88,11 @@ for old_file in old_configs:
             import json
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
-            print(f"📡 【金蝉脱壳】已成功升级为直播源强制弹窗: {old_file}")
+            print(f"📡 【金蝉脱壳】已成功将绿色版过期旧线调包为纯文字大轰炸: {old_file}")
         except Exception as e:
             pass
 
-for garbage in glob.glob('datas/config_*.json'):
+for garbage in ['datas/local_config.json', *glob.glob('datas/config_*.json')]:
     try: os.remove(garbage)
     except: pass
 
@@ -104,12 +110,21 @@ def get_array_inner_text(content, key):
     split_key = f'"{key}": ['
     if split_key not in content:
         return ""
-    after_key = content.split(split_key, 1)[1]
-    if '],' in after_key:
-        inner_text = after_key.split('],', 1)[0]
-    else:
-        inner_text = after_key.split(']', 1)[0]
-    return inner_text.strip()
+    
+    start_idx = content.find(split_key) + len(split_key)
+    bracket_count = 1
+    end_idx = start_idx
+    
+    while end_idx < len(content):
+        if content[end_idx] == '[':
+            bracket_count += 1
+        elif content[end_idx] == ']':
+            bracket_count -= 1
+            if bracket_count == 0:
+                break
+        end_idx += 1
+        
+    return content[start_idx:end_idx].strip()
 
 haitun_sites_text = get_array_inner_text(text_haitun, "sites")
 haitun_lives_text = get_array_inner_text(text_haitun, "lives")
@@ -130,6 +145,28 @@ if haitun_lives_text and '"lives": [' in final_json_text:
     haitun_lives_text = haitun_lives_text.rstrip(',')
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
 
+raw_lines = final_json_text.splitlines()
+skip_indices = set()
+
+for i, line in enumerate(raw_lines):
+    if "🔞" in line or "18+" in line:
+        if "{" in line and "}" in line:
+            skip_indices.add(i)
+        else:
+            start = i
+            while start >= 0 and "{" not in raw_lines[start]:
+                start -= 1
+            end = i
+            while end < len(raw_lines) and "}" not in raw_lines[end]:
+                end += 1
+            
+            if start >= 0 and end < len(raw_lines):
+                for r in range(start, end + 1):
+                    skip_indices.add(r)
+
+clean_lines = [line for i, line in enumerate(raw_lines) if i not in skip_indices]
+final_json_text = '\n'.join(clean_lines)
+
 final_json_text = final_json_text.replace(
     '"key": "hajim-腾讯备"', 
     '"spider": "./tvbox.jar",\n           "key": "hajim-腾讯备"'
@@ -148,7 +185,7 @@ final_json_text = final_json_text.replace('./py/', 'https://cnb.cool/fish2018/xs
 
 final_json_text = final_json_text.replace(
     '"logo": "http://127.0.0.1:9978/file/TVBox/logo.png"', 
-    "https://ghproxy.19882008.xyz/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/IMG_6684.jpeg"
+    '"logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg"'
 )
 
 if '"warningText":' not in final_json_text:
@@ -192,13 +229,17 @@ final_json_text = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, fin
 
 final_json_text = final_json_text.replace(
     '"name": "🦋爱奇艺｜Tg：@huliys9"',
-    '"name": "🦋爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"'
+    '"name": "🦋爱奇艺｜此接口非原创，合并自海豚佬和鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"'
 )
+
+final_json_text = final_json_text.replace('有三级片', 'SP')
 
 final_json_text = final_json_text.replace('[\n    ,', '[')
 final_json_text = final_json_text.replace('[\n,', '[')
 final_json_text = final_json_text.replace(',\n    ]', '\n    ]')
 final_json_text = final_json_text.replace(',\n  ]', '\n  ]')
+final_json_text = re.sub(r'\[\s*,', '[', final_json_text)
+final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
 
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
@@ -206,4 +247,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【全量版直播流绝杀】更新成功！配置名: {output_path}")
+print(f"🎉 【绿色纯文字大轰炸版】同步成功！当前出库配置名: {output_path}")
