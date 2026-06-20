@@ -46,7 +46,6 @@ old_configs = glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
         try:
-            # 🌟 彻底抛弃图片链接，全量版专属纯文字高能预警盒子
             trap_json = {
                 "spider": "", 
                 "notice": "⚠️ 警告：当前“老杨TV”专线密码已过期断流！老链接已彻底作废！\n\n最新密码加QQ群“532637640”获取",
@@ -123,10 +122,8 @@ haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 name_regex = r'"name"\s*:\s*"([^"]+)"'
 if haitun_sites_text:
     haitun_sites_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_sites_text)
-
-# 🌟 流畅修复 1：海豚具体的频道名字前绝不追加 Tg 后缀，仅对直播的大分类组名追加，防止数千个频道加载卡顿
 if haitun_lives_text:
-    haitun_lives_text = re.sub(r'"group"\s*:\s*"([^"]+)"', r'"group": "\1｜Tg：@huliys9"', haitun_lives_text)
+    haitun_lives_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_lives_text)
 
 final_json_text = text_cnb
 
@@ -176,7 +173,6 @@ if '"warningText":' not in final_json_text:
         'Telegram 官方群组: 👉 https://t.me/hshsjk9'
     )
     
-    # 🌟 核心修改点：这里直接在正规订阅的最顶部注入专属开机公告大白框（带正确换行符）
     welcome_notice = (
         '👑 欢迎使用【老杨TV粉丝专属缝合专线】！'
         '本接口由老杨TV结合海 豚佬&鱼佬的优质资源缝合而成，纯净无广告！'
@@ -194,33 +190,7 @@ final_json_text = final_json_text.replace('海豚', '')
 final_json_text = final_json_text.replace('完全免费，如有收费的都是骗子', '')
 final_json_text = final_json_text.replace('交流群 TG：@hshsjk9', '')
 
-def clean_and_add_butterfly(match):
-    name_val = match.group(1)
-    tg_suffix = ""
-    if "｜Tg：@huliys9" in name_val:
-        name_val = name_val.replace("｜Tg：@huliys9", "")
-        tg_suffix = "｜Tg：@huliys9"
-        
-    for char in ['丨', '┃', ' ']:
-        name_val = name_val.strip(char)
-        
-    name_val = re.sub(r'\s+', ' ', name_val)
-    return f'"name": "🦋{name_val}{tg_suffix}"'
-
-# 🌟 流畅修复 2：分离提取。我们把大文件切碎，只对外层的 sites（线路）进行加蝴蝶手术，绝对不污染内部几千个电视频道名称。
-if '"sites": [' in final_json_text and '"lives": [' in final_json_text:
-    parts = final_json_text.split('"lives": [', 1)
-    # 只对前半段（包含所有sites站点按钮名）做蝴蝶手术
-    parts[0] = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, parts[0])
-    # 重新拼接还原。后半段（全量lives频道名）100%保持原汁原味，不加蝴蝶
-    final_json_text = '"lives": ['.join(parts)
-else:
-    final_json_text = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, final_json_text)
-
-final_json_text = final_json_text.replace(
-    '"name": "🦋爱奇艺｜Tg：@huliys9"',
-    '"name": "🦋爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"'
-)
+# 🚫 【无蝴蝶微调测试】彻底清除原本在此处的 clean_and_add_butterfly 递归逻辑
 
 final_json_text = final_json_text.replace('[\n    ,', '[')
 final_json_text = final_json_text.replace('[\n,', '[')
@@ -233,4 +203,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【全量纯文字大轰炸+开机大白框公告版】更新成功！配置名: {output_path}")
+print(f"🎉 【纯净无蝴蝶排除测试版】更新成功！配置名: {output_path}")
