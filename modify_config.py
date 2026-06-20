@@ -46,7 +46,6 @@ old_configs = glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
         try:
-            # 🌟 彻底抛弃图片链接，全量版专属纯文字高能预警盒子
             trap_json = {
                 "spider": "", 
                 "notice": "⚠️ 警告：当前“老杨TV”专线密码已过期断流！老链接已彻底作废！\n\n最新密码加QQ群“532637640”获取",
@@ -60,26 +59,15 @@ for old_file in old_configs:
                         "searchable": 0,
                         "quickSearch": 0,
                         "filterable": 0
-                    },
-                    {
-                        "key": "老杨纯文字提示2",
-                        "name": "🚨 不要看这里了 ➡️ 链接已断 ｜ 加QQ群“532637640”获取",
-                        "type": 3,
-                        "api": "csp_JuDou",
-                        "searchable": 0,
-                        "quickSearch": 0,
-                        "filterable": 0
                     }
                 ],
                 "lives": [
                     {
-                        "group": "🚨 接口过期断流 ｜ 加QQ群“532637640”获取最新密码",
+                        "group": "🚨 接口过期断流 ｜ 进群拿新密码",
                         "channels": [
                             {
                                 "name": "👉 当前线路已过期 ➡️ 加QQ群“532637640”获取最新密码",
-                                "urls": [
-                                    "http://127.0.0.1"
-                                ]
+                                "urls": ["http://127.0.0.1"]
                             }
                         ]
                     }
@@ -88,7 +76,6 @@ for old_file in old_configs:
             import json
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
-            print(f"📡 【金蝉脱壳】已成功将过期旧线调包为纯文字大轰炸: {old_file}")
         except Exception as e:
             pass
 
@@ -158,27 +145,21 @@ final_json_text = final_json_text.replace(
 )
 
 # ====================================================================
-# 🎯 强力拦截注入：在最新生成的正规订阅文件最前面强插 notice 字段
+# 🎯 强力性能优化：将超长文字全部收纳进开机大白框公告栏，释放 UI 压力
 # ====================================================================
 if '"warningText":' not in final_json_text:
     thanks_warning = (
         '👑 特别致谢与版权声明\\n'
-        '本接口的诞生离不开大后方两位业内顶流技术大佬的无私奉献，特此致谢：\\n'
-        '🐋 感谢鱼佬的付出\\n'
-        '源码基础与发布主页: fish2018/webhtv\\n'
-        '版本发布绝对地址: fish2018/webhtv/releases\\n'
-        'Telegram 官方群组: 👉 https://t.me/webhtv\\n'
-        '🐬 感谢海豚佬的付出\\n'
-        '核心仓库主页: FGBLH/GHK\\n'
-        '数据源直链地址: FGBLH/GHK/海豚.json\\n'
-        'Telegram 官方群组: 👉 https://t.me/hshsjk9'
+        '本接口合并自海豚佬 and 鱼佬接口，感谢两位大佬的无私付出！\\n'
+        '🐋 鱼佬主页: fish2018/webhtv\\n'
+        '🐬 海豚佬主页: FGBLH/GHK'
     )
     
-    # 🌟 核心修改点：这里直接在正规订阅的最顶部注入专属开机公告大白框（带正确换行符）
     welcome_notice = (
         '👑 欢迎使用【老杨TV专属缝合专线】！\\n\\n'
-        '本接口由老杨TV结合海 豚佬&鱼佬的优质资源缝合而成，纯净无广告！\\n'
-        '🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码！'
+        '本线由老杨结合鱼佬与HT大佬的优质资源缝合而成，纯净无广告！\\n'
+        '🚨 特别声明：此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9\\n\\n'
+        '📢 提示：接口密码不定期更换！失效请及时回频道或微信群获取今日最新密码续杯！'
     )
     
     final_json_text = final_json_text.replace(
@@ -207,9 +188,10 @@ def clean_and_add_butterfly(match):
 
 final_json_text = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, final_json_text)
 
+# 🌟 精简核心：将原本在按钮上的 80 个字免责声明切除，换成短小精悍的标签，UI 渲染瞬间丝滑！
 final_json_text = final_json_text.replace(
-    '"name": "🦋爱奇艺｜Tg：@huliys9"',
-    '"name": "🦋爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"'
+    '"name": "🦋爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"',
+    '"name": "🦋老杨自用专线 ｜ 安全纯净版"'
 )
 
 final_json_text = final_json_text.replace('[\n    ,', '[')
@@ -223,4 +205,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【全量纯文字大轰炸+开机大白框公告版】更新成功！配置名: {output_path}")
+print(f"🎉 【全量版超丝滑流畅定版】更新成功！配置名: {output_path}")
