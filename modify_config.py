@@ -4,6 +4,7 @@ import random
 import string
 import glob
 import datetime
+import json
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
@@ -73,7 +74,6 @@ for old_file in old_configs:
                     }
                 ]
             }
-            import json
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
         except Exception as e:
@@ -84,66 +84,51 @@ for garbage in glob.glob('datas/config_*.json'):
     except: pass
 
 
-def read_file_text(path):
-    if not os.path.exists(path):
-        return ""
-    with open(path, 'r', encoding='utf-8') as f:
-        return f.read()
+# ====================================================================
+# 🚀 核心：【标准内存对象深度解析缝合】直接秒杀一切格式与卡顿问题
+# ====================================================================
+try:
+    with open(cnb_path, 'r', encoding='utf-8') as f:
+        cnb_obj = json.load(f)
+except Exception as e:
+    print(f"❌ 读取 cnb.json 失败，请检查文件格式: {e}")
+    cnb_obj = {}
 
-text_cnb = read_file_text(cnb_path)
-text_haitun = read_file_text(haitun_path)
+try:
+    with open(haitun_path, 'r', encoding='utf-8') as f:
+        haitun_obj = json.load(f)
+except Exception as e:
+    print(f"❌ 读取 haitun.json 失败，请检查文件格式: {e}")
+    haitun_obj = {}
+
+# 1. 提取并安全处理海豚佬的 sites
+haitun_sites = haitun_obj.get("sites", [])
+for site in haitun_sites:
+    if "name" in site:
+        site["name"] = f"{site['name']}｜Tg：@huliys9"
+
+# 2. 提取并安全处理海豚佬的 lives
+haitun_lives = haitun_obj.get("lives", [])
+for live in haitun_lives:
+    if "group" in live:
+        live["group"] = f"{live['group']}｜Tg：@huliys9"
+    if "channels" in live:
+        for channel in live["channels"]:
+            if "name" in channel:
+                channel["name"] = f"{channel['name']}｜Tg：@huliys9"
+
+# 3. 缝合到 cnb 的基础框架上
+# 影视站：海豚在前，鱼佬在后
+cnb_obj["sites"] = haitun_sites + cnb_obj.get("sites", [])
+# 直播源：彻底抛弃鱼佬直播，100% 只保留海豚佬直播
+cnb_obj["lives"] = haitun_lives
+
+# 4. 把对象重新转换为标准高容错文本，让后续的正则和 replace 继续安全工作
+final_json_text = json.dumps(cnb_obj, ensure_ascii=False, indent=4)
+
 
 # ====================================================================
-# 🎯 靶向提取函数
-# ====================================================================
-def get_array_inner_text(content, key):
-    split_key = f'"{key}": ['
-    if split_key not in content:
-        return ""
-    
-    start_idx = content.find(split_key) + len(split_key)
-    bracket_count = 1
-    end_idx = start_idx
-    
-    while end_idx < len(content):
-        if content[end_idx] == '[':
-            bracket_count += 1
-        elif content[end_idx] == ']':
-            bracket_count -= 1
-            if bracket_count == 0:
-                break
-        end_idx += 1
-        
-    return content[start_idx:end_idx].strip()
-
-haitun_sites_text = get_array_inner_text(text_haitun, "sites")
-haitun_lives_text = get_array_inner_text(text_haitun, "lives")
-
-name_regex = r'"name"\s*:\s*"([^"]+)"'
-if haitun_sites_text:
-    haitun_sites_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_sites_text)
-if haitun_lives_text:
-    haitun_lives_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_lives_text)
-
-# ====================================================================
-# 🚀 极其安全的逆向无损合并（绝不再崩格式）
-# ====================================================================
-final_json_text = text_cnb
-
-# 1. 安全缝合影视站 sites
-if haitun_sites_text and '"sites": [' in final_json_text:
-    haitun_sites_text = haitun_sites_text.rstrip(',')
-    final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n    {haitun_sites_text},\n    ', 1)
-
-# 2. 安全覆盖直播源 lives：直接定位原有的 "lives": [...] 括号包裹区，整块靶向蒸发并换成海豚的！
-if haitun_lives_text and '"lives": [' in final_json_text:
-    cnb_lives_raw = get_array_inner_text(final_json_text, "lives")
-    if cnb_lives_raw:
-        # 用海豚的直播源直接替换掉大包里原有的直播内容
-        final_json_text = final_json_text.replace(cnb_lives_raw, haitun_lives_text)
-
-# ====================================================================
-# 补全绝对路径与核心拦截逻辑
+# 路径补全与 Jar 包强力拦截
 # ====================================================================
 final_json_text = final_json_text.replace(
     '"key": "hajim-腾讯备"', 
@@ -166,9 +151,7 @@ final_json_text = final_json_text.replace(
     '"logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg"'
 )
 
-# ====================================================================
-# 开机全屏居中大公告注入
-# ====================================================================
+# 开机公告注入
 if '"warningText":' not in final_json_text:
     thanks_warning = (
         '👑 特别致谢与版权声明\\n'
@@ -215,18 +198,10 @@ final_json_text = final_json_text.replace(
     '"name": "🦋老杨自用专线 ｜ 安全纯净版"'
 )
 
-# 兜底格式净化
-final_json_text = final_json_text.replace('[\n    ,', '[')
-final_json_text = final_json_text.replace('[\n,', '[')
-final_json_text = final_json_text.replace(',\n    ]', '\n    ]')
-final_json_text = final_json_text.replace(',\n  ]', '\n  ]')
-final_json_text = re.sub(r'\[\s*,', '[', final_json_text)
-final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
-
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【格式完美修复 · 纯海豚直播无损版】更新成功！配置名: {output_path}")
+print(f"🎉 【对象级高容错缝合 · 纯海豚直播终极版】更新成功！配置名: {output_path}")
