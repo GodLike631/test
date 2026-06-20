@@ -13,7 +13,7 @@ lock_file_path = 'datas/控制开关.txt'
 tracker_path = 'datas/最新接口文件名.txt'
 
 # ====================================================================
-# ⏰ 【安全阀门升级：全量版方案 A 确保 1 号早晚双跑只洗一次牌】
+# ⏰ 【安全阀门升级：全量版方案 A 】
 # ====================================================================
 today = datetime.datetime.now()
 is_reset_day = (today.day == 1)
@@ -28,19 +28,19 @@ if len(current_token) != 3:
     current_token = ""
 
 if is_reset_day and len(current_token) == 3:
-    print(f"🔒 【安全阀拦截】今日 1 号已在早晨完成大洗牌，晚上保持原暗号不再重复抽签: {current_token}")
+    print(f"🔒 【安全阀拦截】今日 1 号保持原暗号不再重复抽签: {current_token}")
 else:
     if is_reset_day or not current_token:
         current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
         with open(lock_file_path, 'w', encoding='utf-8') as f:
             f.write(current_token)
-        print(f"⏰ 【密锁强制纠偏/新月抽签】已生成全量版严格 3 位新密锁: {current_token}")
+        print(f"⏰ 【密锁自动生成】严格 3 位新密锁: {current_token}")
 
 output_filename = f"老杨TV{current_token}.json"
 output_path = f"datas/{output_filename}"
 
 # ====================================================================
-# 🛡️ 【黑科技：全量版过期旧线一键调包为纯文字滚动大轰炸】
+# 🛡️ 【黑科技：全量版过期旧线一键调包】
 # ====================================================================
 old_configs = glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
@@ -93,55 +93,57 @@ def read_file_text(path):
 text_cnb = read_file_text(cnb_path)
 text_haitun = read_file_text(haitun_path)
 
+# ====================================================================
+# 🎯 靶向提取函数
+# ====================================================================
 def get_array_inner_text(content, key):
     split_key = f'"{key}": ['
     if split_key not in content:
         return ""
-    after_key = content.split(split_key, 1)[1]
-    if '],' in after_key:
-        inner_text = after_key.split('],', 1)[0]
-    else:
-        inner_text = after_key.split(']', 1)[0]
-    return inner_text.strip()
+    
+    start_idx = content.find(split_key) + len(split_key)
+    bracket_count = 1
+    end_idx = start_idx
+    
+    while end_idx < len(content):
+        if content[end_idx] == '[':
+            bracket_count += 1
+        elif content[end_idx] == ']':
+            bracket_count -= 1
+            if bracket_count == 0:
+                break
+        end_idx += 1
+        
+    return content[start_idx:end_idx].strip()
 
-# 🎯 精准提取海豚佬的影视和直播源
 haitun_sites_text = get_array_inner_text(text_haitun, "sites")
 haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 
-# 统一追加 Tg 后缀
 name_regex = r'"name"\s*:\s*"([^"]+)"'
 if haitun_sites_text:
     haitun_sites_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_sites_text)
 if haitun_lives_text:
     haitun_lives_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_lives_text)
 
-# 🚀 开始处理 CNB 大底包
+# ====================================================================
+# 🚀 极其安全的逆向无损合并（绝不再崩格式）
+# ====================================================================
 final_json_text = text_cnb
 
-# 1. 彻底剔除、拔掉 CNB 本身的直播线路逻辑
-if '"lives": [' in final_json_text:
-    # 找到 "lives": [ 之后的内容，把 CNB 原有的直播文本直接清空，腾出干净位置
-    before_lives = final_json_text.split('"lives": [', 1)[0]
-    after_lives = final_json_text.split('"lives": [', 1)[1]
-    if '],' in after_lives:
-        remainder = after_lives.split('],', 1)[1]
-    else:
-        remainder = after_lives.split(']', 1)[1]
-    # 逆向重组：强制让原本的 lives 数组初始状态变空
-    final_json_text = before_lives + '"lives": [\n    ' + remainder
-
-# 2. 注入海豚佬的 sites 影视站（拼在 CNB 前面）
+# 1. 安全缝合影视站 sites
 if haitun_sites_text and '"sites": [' in final_json_text:
     haitun_sites_text = haitun_sites_text.rstrip(',')
     final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n    {haitun_sites_text},\n    ', 1)
 
-# 3. 100% 注入海豚佬的 lives 直播源（此时 CNB 自带的已被彻底替换清除）
+# 2. 安全覆盖直播源 lives：直接定位原有的 "lives": [...] 括号包裹区，整块靶向蒸发并换成海豚的！
 if haitun_lives_text and '"lives": [' in final_json_text:
-    haitun_lives_text = haitun_lives_text.rstrip(',')
-    final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text}\n', 1)
+    cnb_lives_raw = get_array_inner_text(final_json_text, "lives")
+    if cnb_lives_raw:
+        # 用海豚的直播源直接替换掉大包里原有的直播内容
+        final_json_text = final_json_text.replace(cnb_lives_raw, haitun_lives_text)
 
 # ====================================================================
-# 路径补全与 Jar 包强力拦截
+# 补全绝对路径与核心拦截逻辑
 # ====================================================================
 final_json_text = final_json_text.replace(
     '"key": "hajim-腾讯备"', 
@@ -164,7 +166,9 @@ final_json_text = final_json_text.replace(
     '"logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg"'
 )
 
-# 开机公告注入
+# ====================================================================
+# 开机全屏居中大公告注入
+# ====================================================================
 if '"warningText":' not in final_json_text:
     thanks_warning = (
         '👑 特别致谢与版权声明\\n'
@@ -211,11 +215,13 @@ final_json_text = final_json_text.replace(
     '"name": "🦋老杨自用专线 ｜ 安全纯净版"'
 )
 
-# 统一格式排异清洗，确保输出完美的 JSON 语法格式
+# 兜底格式净化
 final_json_text = final_json_text.replace('[\n    ,', '[')
 final_json_text = final_json_text.replace('[\n,', '[')
 final_json_text = final_json_text.replace(',\n    ]', '\n    ]')
 final_json_text = final_json_text.replace(',\n  ]', '\n  ]')
+final_json_text = re.sub(r'\[\s*,', '[', final_json_text)
+final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
 
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
@@ -223,4 +229,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【CNB直播彻底切除 · 纯海豚直播定版】更新成功！配置名: {output_path}")
+print(f"🎉 【格式完美修复 · 纯海豚直播无损版】更新成功！配置名: {output_path}")
