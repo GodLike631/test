@@ -104,25 +104,45 @@ def get_array_inner_text(content, key):
         inner_text = after_key.split(']', 1)[0]
     return inner_text.strip()
 
+# 🎯 精准提取海豚佬的影视和直播源
 haitun_sites_text = get_array_inner_text(text_haitun, "sites")
 haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 
+# 统一追加 Tg 后缀
 name_regex = r'"name"\s*:\s*"([^"]+)"'
 if haitun_sites_text:
     haitun_sites_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_sites_text)
 if haitun_lives_text:
     haitun_lives_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_lives_text)
 
+# 🚀 开始处理 CNB 大底包
 final_json_text = text_cnb
 
+# 1. 彻底剔除、拔掉 CNB 本身的直播线路逻辑
+if '"lives": [' in final_json_text:
+    # 找到 "lives": [ 之后的内容，把 CNB 原有的直播文本直接清空，腾出干净位置
+    before_lives = final_json_text.split('"lives": [', 1)[0]
+    after_lives = final_json_text.split('"lives": [', 1)[1]
+    if '],' in after_lives:
+        remainder = after_lives.split('],', 1)[1]
+    else:
+        remainder = after_lives.split(']', 1)[1]
+    # 逆向重组：强制让原本的 lives 数组初始状态变空
+    final_json_text = before_lives + '"lives": [\n    ' + remainder
+
+# 2. 注入海豚佬的 sites 影视站（拼在 CNB 前面）
 if haitun_sites_text and '"sites": [' in final_json_text:
     haitun_sites_text = haitun_sites_text.rstrip(',')
     final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n    {haitun_sites_text},\n    ', 1)
 
+# 3. 100% 注入海豚佬的 lives 直播源（此时 CNB 自带的已被彻底替换清除）
 if haitun_lives_text and '"lives": [' in final_json_text:
     haitun_lives_text = haitun_lives_text.rstrip(',')
-    final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
+    final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text}\n', 1)
 
+# ====================================================================
+# 路径补全与 Jar 包强力拦截
+# ====================================================================
 final_json_text = final_json_text.replace(
     '"key": "hajim-腾讯备"', 
     '"spider": "./tvbox.jar",\n           "key": "hajim-腾讯备"'
@@ -144,9 +164,7 @@ final_json_text = final_json_text.replace(
     '"logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg"'
 )
 
-# ====================================================================
-# 🎯 强力性能优化：将超长文字全部收纳进开机大白框公告栏，释放 UI 压力
-# ====================================================================
+# 开机公告注入
 if '"warningText":' not in final_json_text:
     thanks_warning = (
         '👑 特别致谢与版权声明\\n'
@@ -188,12 +206,12 @@ def clean_and_add_butterfly(match):
 
 final_json_text = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, final_json_text)
 
-# 🌟 精简核心：将原本在按钮上的 80 个字免责声明切除，换成短小精悍的标签，UI 渲染瞬间丝滑！
 final_json_text = final_json_text.replace(
     '"name": "🦋爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"',
     '"name": "🦋老杨自用专线 ｜ 安全纯净版"'
 )
 
+# 统一格式排异清洗，确保输出完美的 JSON 语法格式
 final_json_text = final_json_text.replace('[\n    ,', '[')
 final_json_text = final_json_text.replace('[\n,', '[')
 final_json_text = final_json_text.replace(',\n    ]', '\n    ]')
@@ -205,4 +223,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【全量版超丝滑流畅定版】更新成功！配置名: {output_path}")
+print(f"🎉 【CNB直播彻底切除 · 纯海豚直播定版】更新成功！配置名: {output_path}")
