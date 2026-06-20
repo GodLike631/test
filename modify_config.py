@@ -4,7 +4,6 @@ import random
 import string
 import glob
 import datetime
-import json
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
@@ -29,24 +28,25 @@ if len(current_token) != 3:
     current_token = ""
 
 if is_reset_day and len(current_token) == 3:
-    print(f"🔒 【安全阀拦截】今日 1 号保持原暗号不再重复抽签: {current_token}")
+    print(f"🔒 【安全阀拦截】今日 1 号已在早晨完成大洗牌，晚上保持原暗号不再重复抽签: {current_token}")
 else:
     if is_reset_day or not current_token:
         current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
         with open(lock_file_path, 'w', encoding='utf-8') as f:
             f.write(current_token)
-        print(f"⏰ 【密锁强制纠偏】已生成全量版严格 3 位新密锁: {current_token}")
+        print(f"⏰ 【密锁强制纠偏/新月抽签】已生成全量版严格 3 位新密锁: {current_token}")
 
 output_filename = f"老杨TV{current_token}.json"
 output_path = f"datas/{output_filename}"
 
 # ====================================================================
-# 🛡️ 【黑科技：过期旧线一键调包为纯文字滚动大轰炸】
+# 🛡️ 【黑科技：全量版过期旧线一键调包为纯文字滚动大轰炸】
 # ====================================================================
 old_configs = glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
         try:
+            # 🌟 彻底抛弃图片链接，全量版专属纯文字高能预警盒子
             trap_json = {
                 "spider": "", 
                 "notice": "⚠️ 警告：当前“老杨TV”专线密码已过期断流！老链接已彻底作废！\n\n最新密码加QQ群“532637640”获取",
@@ -60,22 +60,35 @@ for old_file in old_configs:
                         "searchable": 0,
                         "quickSearch": 0,
                         "filterable": 0
+                    },
+                    {
+                        "key": "老杨纯文字提示2",
+                        "name": "🚨 不要看这里了 ➡️ 链接已断 ｜ 加QQ群“532637640”获取",
+                        "type": 3,
+                        "api": "csp_JuDou",
+                        "searchable": 0,
+                        "quickSearch": 0,
+                        "filterable": 0
                     }
                 ],
                 "lives": [
                     {
-                        "group": "🚨 接口过期断流 ｜ 进群拿新密码",
+                        "group": "🚨 接口过期断流 ｜ 加QQ群“532637640”获取最新密码",
                         "channels": [
                             {
                                 "name": "👉 当前线路已过期 ➡️ 加QQ群“532637640”获取最新密码",
-                                "urls": ["http://127.0.0.1"]
+                                "urls": [
+                                    "http://127.0.0.1"
+                                ]
                             }
                         ]
                     }
                 ]
             }
+            import json
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
+            print(f"📡 【金蝉脱壳】已成功将过期旧线调包为纯文字大轰炸: {old_file}")
         except Exception as e:
             pass
 
@@ -84,76 +97,45 @@ for garbage in glob.glob('datas/config_*.json'):
     except: pass
 
 
-# ====================================================================
-# 🚀 【大核心】安全读取并采用标准字典对象深度重组缝合，消除不规范硬伤
-# ====================================================================
-try:
-    with open(cnb_path, 'r', encoding='utf-8') as f:
-        cnb_obj = json.load(f)
-except Exception as e:
-    print(f"❌ 读取 cnb.json 失败: {e}")
-    cnb_obj = {"sites": [], "lives": []}
+def read_file_text(path):
+    if not os.path.exists(path):
+        return ""
+    with open(path, 'r', encoding='utf-8') as f:
+        return f.read()
 
-try:
-    with open(haitun_path, 'r', encoding='utf-8') as f:
-        haitun_obj = json.load(f)
-except Exception as e:
-    print(f"❌ 读取 haitun.json 失败: {e}")
-    haitun_obj = {"sites": [], "lives": []}
+text_cnb = read_file_text(cnb_path)
+text_haitun = read_file_text(haitun_path)
 
-# 1. 提取并规范化处理海豚佬的 sites
-haitun_sites = haitun_obj.get("sites", [])
-for site in haitun_sites:
-    if isinstance(site, dict) and "name" in site:
-        site["name"] = f"{site['name']}｜Tg：@huliys9"
+def get_array_inner_text(content, key):
+    split_key = f'"{key}": ['
+    if split_key not in content:
+        return ""
+    after_key = content.split(split_key, 1)[1]
+    if '],' in after_key:
+        inner_text = after_key.split('],', 1)[0]
+    else:
+        inner_text = after_key.split(']', 1)[0]
+    return inner_text.strip()
 
-# 2. 🎯 直播源重组洗牌：完全按照鱼佬（CNB）的标准格式，将海豚佬的直播源解构重写
-raw_haitun_lives = haitun_obj.get("lives", [])
-standard_haitun_lives = []
+haitun_sites_text = get_array_inner_text(text_haitun, "sites")
+haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 
-for group in raw_haitun_lives:
-    if not isinstance(group, dict):
-        continue
-    
-    # 初始化符合 CNB 规范的标准大组字典
-    new_group = {
-        "group": f"{group.get('group', '未命名分类')}｜Tg：@huliys9",
-        "channels": []
-    }
-    
-    # 严格按照规矩提取内部频道
-    for channel in group.get("channels", []):
-        if not isinstance(channel, dict):
-            continue
-        
-        # 强制过滤掉那些不包含有效播放地址的空项目或坏探针，防止电视卡死
-        urls = [u for u in channel.get("urls", []) if u and str(u).startswith(('http', 'rtmp', 'p2p', 'mitv'))]
-        if not urls:
-            continue
-            
-        # 组装百分之百符合标准语法规范的标准频道字典
-        new_channel = {
-            "name": channel.get("name", "未命名频道"),
-            "urls": urls
-        }
-        new_group["channels"].append(new_channel)
-        
-    if new_group["channels"]:
-        standard_haitun_lives.append(new_group)
+name_regex = r'"name"\s*:\s*"([^"]+)"'
+if haitun_sites_text:
+    haitun_sites_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_sites_text)
+if haitun_lives_text:
+    haitun_lives_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_lives_text)
 
-# 3. 内存多轨缝合
-# 影视站：海豚在前，鱼佬在后
-cnb_obj["sites"] = haitun_sites + cnb_obj.get("sites", [])
-# 直播源：保留两家直播！海豚的规范直播在前，鱼佬的在后
-cnb_obj["lives"] = standard_haitun_lives + cnb_obj.get("lives", [])
+final_json_text = text_cnb
 
-# 4. 把经过标准格式化洗礼的数据转化为干净利落的文本，交给后续逻辑
-final_json_text = json.dumps(cnb_obj, ensure_ascii=False, indent=4)
+if haitun_sites_text and '"sites": [' in final_json_text:
+    haitun_sites_text = haitun_sites_text.rstrip(',')
+    final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n    {haitun_sites_text},\n    ', 1)
 
+if haitun_lives_text and '"lives": [' in final_json_text:
+    haitun_lives_text = haitun_lives_text.rstrip(',')
+    final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
 
-# ====================================================================
-# 【相对路径补全与 Jar 包拦截核心功能】（丝毫不动）
-# ====================================================================
 final_json_text = final_json_text.replace(
     '"key": "hajim-腾讯备"', 
     '"spider": "./tvbox.jar",\n           "key": "hajim-腾讯备"'
@@ -175,7 +157,9 @@ final_json_text = final_json_text.replace(
     '"logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg"'
 )
 
-# 开机提示语公告注入（丝毫不动）
+# ====================================================================
+# 🎯 强力拦截注入：在最新生成的正规订阅文件最前面强插 notice 字段
+# ====================================================================
 if '"warningText":' not in final_json_text:
     thanks_warning = (
         '👑 特别致谢与版权声明\\n'
@@ -190,6 +174,7 @@ if '"warningText":' not in final_json_text:
         'Telegram 官方群组: 👉 https://t.me/hshsjk9'
     )
     
+    # 🌟 核心修改点：这里直接在正规订阅的最顶部注入专属开机公告大白框（带正确换行符）
     welcome_notice = (
         '👑 欢迎使用【老杨TV粉丝专属缝合专线】！'
         '本接口由老杨TV结合海 豚佬&鱼佬的优质资源缝合而成，纯净无广告！'
@@ -220,13 +205,7 @@ def clean_and_add_butterfly(match):
     name_val = re.sub(r'\s+', ' ', name_val)
     return f'"name": "🦋{name_val}{tg_suffix}"'
 
-# 加蝴蝶逻辑，只对 sites 部分做手术，确保不污染直播源具体的上千个频道名字
-if '"sites": [' in final_json_text and '"lives": [' in final_json_text:
-    parts = final_json_text.split('"lives": [', 1)
-    parts[0] = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, parts[0])
-    final_json_text = '"lives": ['.join(parts)
-else:
-    final_json_text = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, final_json_text)
+final_json_text = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, final_json_text)
 
 final_json_text = final_json_text.replace(
     '"name": "🦋爱奇艺｜Tg：@huliys9"',
@@ -244,4 +223,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【海豚直播重新打乱按标准规范重组版】更新成功！配置名: {output_path}")
+print(f"🎉 【全量纯文字大轰炸+开机大白框公告版】更新成功！配置名: {output_path}")
