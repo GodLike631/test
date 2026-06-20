@@ -4,6 +4,7 @@ import random
 import string
 import glob
 import datetime
+import json
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
@@ -49,7 +50,7 @@ for old_file in old_configs:
             # 🌟 彻底抛弃图片链接，全量版专属纯文字高能预警盒子
             trap_json = {
                 "spider": "", 
-                "notice": "⚠️ 警告：当前“老杨TV”专线密码已过期断流！老链接已彻底作废！最新密码加QQ群“532637640”获取",
+                "notice": "⚠️ 警告：当前“老杨TV”专线密码已过期断流！老链接已彻底作废！\n\n最新密码加QQ群“532637640”获取",
                 "warningText": "👑 特别提示：加QQ群“532637640”获取",
                 "sites": [
                     {
@@ -85,7 +86,6 @@ for old_file in old_configs:
                     }
                 ]
             }
-            import json
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
             print(f"📡 【金蝉脱壳】已成功将过期旧线调包为纯文字大轰炸: {old_file}")
@@ -174,11 +174,10 @@ if '"warningText":' not in final_json_text:
         'Telegram 官方群组: 👉 https://t.me/hshsjk9'
     )
     
-    # 🌟 核心修改点：这里直接在正规订阅的最顶部注入专属开机公告大白框（带正确换行符）
     welcome_notice = (
         '👑 欢迎使用【老杨TV粉丝专属缝合专线】！'
         '本接口由老杨TV结合海 豚佬&鱼佬的优质资源缝合而成，纯净无广告！'
-        '🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码！'
+        '🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效 or 断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码！'
     )
     
     final_json_text = final_json_text.replace(
@@ -212,6 +211,19 @@ final_json_text = final_json_text.replace(
     '"name": "🦋爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"'
 )
 
+# ====================================================================
+# 🛡️ 【网盘登录保护盾】强行靶向复原配置中心，彻底秒杀扫码网盘登录失败！
+# ====================================================================
+# 1. 强行抹去前面的蝴蝶和尾巴，恢复原版纯净名称，确保原生组件强校验通过
+final_json_text = final_json_text.replace('"name": "🦋配置｜中心｜Tg：@huliys9"', '"name": "配置｜中心"')
+final_json_text = final_json_text.replace('"name": "🦋配置｜中心"', '"name": "配置｜中心"')
+final_json_text = final_json_text.replace('"name": "配置｜中心｜Tg：@huliys9"', '"name": "配置｜中心"')
+
+# 2. 兜底恢复控制参数（必须为 0 确保其不可变更性，锁定本地代理）
+final_json_text = final_json_text.replace('"key": "配置中心",\n            "name": "配置｜中心",\n            "type": 3,\n            "api": "csp_Config",\n            "searchable": 0,\n            "changeable": 1', '"key": "配置中心",\n            "name": "配置｜中心",\n            "type": 3,\n            "api": "csp_Config",\n            "searchable": 0,\n            "changeable": 0')
+
+# ====================================================================
+
 final_json_text = final_json_text.replace('[\n    ,', '[')
 final_json_text = final_json_text.replace('[\n,', '[')
 final_json_text = final_json_text.replace(',\n    ]', '\n    ]')
@@ -223,4 +235,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【全量纯文字大轰炸+开机大白框公告版】更新成功！配置名: {output_path}")
+print(f"🎉 【网盘保护修复+开机大公告全量版】部署成功！配置名: {output_path}")
