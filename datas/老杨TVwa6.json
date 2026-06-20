@@ -1,13 +1,13 @@
 {
-    "notice": "👑 欢迎使用【老杨TV专属缝合专线】！\n\n本接口由老杨TV结合海 豚佬&鱼佬的优质资源缝合而成，纯净无广告！\n🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道（huliys9）或微信群获取当前最新密码！",
-    "warningText": "👑 特别致谢与版权声明\n本接口的诞生离不开大后方两位业内顶流技术大佬的无私奉献，特此致谢：\n🐋 感谢鱼佬的付出\n源码基础与发布主页: fish2018/webhtv\n版本发布绝对地址: fish2018/webhtv/releases\nTelegram 官方群组: 👉 https://t.me/webhtv\n 感谢佬的付出\n核心仓库主页: FGBLH/GHK\n数据源直链地址: FGBLH/GHK/.json\nTelegram 官方群组: 👉 https://t.me/hshsjk9",
+    "notice": "👑 欢迎使用【老杨TV专属缝合专线】！\n\n本线由老杨结合鱼佬与HT大佬的优质资源缝合而成，纯净无广告！\n🚨 特别声明：此接口非原创，合并自佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9\n\n📢 提示：接口密码不定期更换！失效请及时回频道或微信群获取今日最新密码续杯！",
+    "warningText": "👑 特别致谢与版权声明\n本接口合并自佬 and 鱼佬接口，感谢两位大佬的无私付出！\n🐋 鱼佬主页: fish2018/webhtv\n 佬主页: FGBLH/GHK",
     "spider": "https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar",
     "wallpaper": "http://127.0.0.1:9978/proxy?do=wallpaper",
     "logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg",
     "sites": [
     {
          "key":"AQY",
-        "name": "🦋爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9",
+        "name": "🦋爱奇艺｜Tg：@huliys9",
         "type":3,
         "api":"https://file.icve.com.cn/file_doc/249/899/3E7E0C8A023B624CEC6BDCC200F06F02.js",
         "ext":"https://cdn.waimaimingtang.com/file/images/bwc/20251023002031-6064033c16.js"

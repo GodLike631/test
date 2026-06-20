@@ -11,20 +11,11 @@
             "searchable": 0,
             "quickSearch": 0,
             "filterable": 0
-        },
-        {
-            "key": "老杨纯文字提示2",
-            "name": "🚨 不要看这里了 ➡️ 链接已断 ｜ 加QQ群“532637640”获取",
-            "type": 3,
-            "api": "csp_JuDou",
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 0
         }
     ],
     "lives": [
         {
-            "group": "🚨 接口过期断流 ｜ 加QQ群“532637640”获取最新密码",
+            "group": "🚨 接口过期断流 ｜ 进群拿新密码",
             "channels": [
                 {
                     "name": "👉 当前线路已过期 ➡️ 加QQ群“532637640”获取最新密码",
