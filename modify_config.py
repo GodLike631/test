@@ -36,7 +36,8 @@ else:
             f.write(current_token)
         print(f"⏰ 【密锁强制纠偏/新月抽签】已生成全量版严格 3 位新密锁: {current_token}")
 
-output_filename = f"老杨TV{current_token}.json"
+# 🎯 已经帮你把最终输出的文件名修改为了：老杨TV全功能版 + 随机暗号
+output_filename = f"老杨TV全功能版{current_token}.json"
 output_path = f"datas/{output_filename}"
 
 # ====================================================================
@@ -204,8 +205,8 @@ def clean_and_add_butterfly(match):
     name_val = re.sub(r'\s+', ' ', name_val)
     return f'"name": "🦋{name_val}{tg_suffix}"'
 
-# 🚀 【核心性能调优：靶向隔离】
-# 只将前半段的 sites 按钮名称送进正则加蝴蝶，绝不让正则污染后半段全量 lives 里的上千个频道名字。
+# 🚀 【核心卡顿修复：靶向隔离】
+# 只对前半段包含 sites（影视按钮）的区域加蝴蝶，后半段包含上千个直播频道的 lives 保持纯文本不加蝴蝶，电视完美丝滑加载
 if '"sites": [' in final_json_text and '"lives": [' in final_json_text:
     parts = final_json_text.split('"lives": [', 1)
     parts[0] = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, parts[0])
@@ -229,4 +230,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【全量纯文字大轰炸+开机大白框公告版】更新成功！配置名: {output_path}")
+print(f"🎉 【老杨TV全功能版】更新成功！配置名: {output_path}")
