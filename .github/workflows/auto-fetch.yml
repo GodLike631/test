@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
@@ -26,7 +26,7 @@ jobs:
         curl -L "https://cnb.cool/fish2018/xs/-/git/raw/main/api.json" -o datas/cnb.json
         curl -L "https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/海豚666.json" -o datas/haitun.json
 
-    # 2. 强行文本拼接合并（保持原执行文件名，防止找不到脚本报错）
+    # 2. 强行文本拼接合并（执行统一命名的 modify_config.py）
     - name: Text Merge JSON
       run: |
         python modify_config.py
@@ -37,14 +37,12 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         
-        # 🌟 核心修改 1：使用 -A 强行记录所有变化（包括新月抽签随机生成的 老杨TVxxx.json 文件和旧线轰炸包）
+        # 🌟 强行记录所有变化（包括新生成的 老杨TV全功能版.json 和洗牌产生的随机旧线大轰炸文件）
         git add -A
         
-        # 🌟 核心修改 2：更灵敏的改动探测，确保 1 号换名或者手动拉闸时 100% 成功推送
         if git diff-index --quiet HEAD; then
           echo "文件没有变化，无需更新。"
         else
-          # 🌟 核心修改 3：日志注释精准对应全功能版名称
-          git commit -m "双源文本级硬核合并 (老杨TV全功能版.json): $(date +'%Y-%m-%d %H:%M:%S')"
+          git commit -m "双源文本级硬核合并 (老杨TV全功能版): $(date +'%Y-%m-%d %H:%M:%S')"
           git push
         fi
