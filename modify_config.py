@@ -1,9 +1,101 @@
 import os
 import re
+import random
+import string
+import glob
+import datetime
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
-output_path = 'datas/local_config.json'
+
+# 控制开关和追踪器的文件路径
+lock_file_path = 'datas/控制开关.txt'
+tracker_path = 'datas/最新接口文件名.txt'
+
+# ====================================================================
+# ⏰ 【安全阀门升级：全量版方案 A 确保 1 号早晚双跑只洗一次牌】
+# ====================================================================
+today = datetime.datetime.now()
+is_reset_day = (today.day == 1)
+
+current_token = ""
+
+if os.path.exists(lock_file_path):
+    with open(lock_file_path, 'r', encoding='utf-8') as f:
+        current_token = f.read().strip()
+
+if len(current_token) != 3:
+    current_token = ""
+
+if is_reset_day and len(current_token) == 3:
+    print(f"🔒 【安全阀拦截】今日 1 号已在早晨完成大洗牌，晚上保持原暗号不再重复抽签: {current_token}")
+else:
+    if is_reset_day or not current_token:
+        current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
+        with open(lock_file_path, 'w', encoding='utf-8') as f:
+            f.write(current_token)
+        print(f"⏰ 【密锁强制纠偏/新月抽签】已生成全量版严格 3 位新密锁: {current_token}")
+
+output_filename = f"老杨TV{current_token}.json"
+output_path = f"datas/{output_filename}"
+
+# ====================================================================
+# 🛡️ 【黑科技：全量版过期旧线一键调包为纯文字滚动大轰炸】
+# ====================================================================
+old_configs = glob.glob('datas/老杨TV*.json')
+for old_file in old_configs:
+    if os.path.basename(old_file) != output_filename:
+        try:
+            # 🌟 彻底抛弃图片链接，全量版专属纯文字高能预警盒子
+            trap_json = {
+                "spider": "", 
+                "notice": "⚠️ 警告：当前“老杨TV”专线密码已过期断流！老链接已彻底作废！\n\n最新密码加QQ群“532637640”获取",
+                "warningText": "👑 特别提示：加QQ群“532637640”获取",
+                "sites": [
+                    {
+                        "key": "老杨纯文字提示",
+                        "name": "🚨 加QQ群“532637640”获取最新密码",
+                        "type": 3,
+                        "api": "csp_JuDou",
+                        "searchable": 0,
+                        "quickSearch": 0,
+                        "filterable": 0
+                    },
+                    {
+                        "key": "老杨纯文字提示2",
+                        "name": "🚨 不要看这里了 ➡️ 链接已断 ｜ 加QQ群“532637640”获取",
+                        "type": 3,
+                        "api": "csp_JuDou",
+                        "searchable": 0,
+                        "quickSearch": 0,
+                        "filterable": 0
+                    }
+                ],
+                "lives": [
+                    {
+                        "group": "🚨 接口过期断流 ｜ 加QQ群“532637640”获取最新密码",
+                        "channels": [
+                            {
+                                "name": "👉 当前线路已过期 ➡️ 加QQ群“532637640”获取最新密码",
+                                "urls": [
+                                    "http://127.0.0.1"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+            import json
+            with open(old_file, 'w', encoding='utf-8') as f:
+                json.dump(trap_json, f, ensure_ascii=False, indent=4)
+            print(f"📡 【金蝉脱壳】已成功将过期旧线调包为纯文字大轰炸: {old_file}")
+        except Exception as e:
+            pass
+
+for garbage in glob.glob('datas/config_*.json'):
+    try: os.remove(garbage)
+    except: pass
+
 
 def read_file_text(path):
     if not os.path.exists(path):
@@ -14,9 +106,6 @@ def read_file_text(path):
 text_cnb = read_file_text(cnb_path)
 text_haitun = read_file_text(haitun_path)
 
-# ====================================================================
-# 1. 物理提取海豚源里的 sites（视频站）和 lives（直播源）内部的纯文本
-# ====================================================================
 def get_array_inner_text(content, key):
     split_key = f'"{key}": ['
     if split_key not in content:
@@ -31,49 +120,113 @@ def get_array_inner_text(content, key):
 haitun_sites_text = get_array_inner_text(text_haitun, "sites")
 haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 
-# ====================================================================
-# 2. 逆向注入：把海豚的内容，无缝贴进 CNB 对应的数组最前面
-# ====================================================================
+name_regex = r'"name"\s*:\s*"([^"]+)"'
+if haitun_sites_text:
+    haitun_sites_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_sites_text)
+if haitun_lives_text:
+    haitun_lives_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_lives_text)
+
 final_json_text = text_cnb
 
-# 注入视频站点
 if haitun_sites_text and '"sites": [' in final_json_text:
     haitun_sites_text = haitun_sites_text.rstrip(',')
     final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n    {haitun_sites_text},\n    ', 1)
 
-# 注入直播源
 if haitun_lives_text and '"lives": [' in final_json_text:
     haitun_lives_text = haitun_lives_text.rstrip(',')
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
 
-# ====================================================================
-# 【全方位无死角路径清洗手术】：
-# 必须彻底斩断所有相对路径的隐患，不管是带有 "./" 的、还是漏掉的，
-# 全部死死地锁定到 CNB 的官方网络绝对路径上！
-# ====================================================================
-# 1. 核心蜘蛛包无脑物理替换
-final_json_text = final_json_text.replace('"./spider.jar"', '"https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar"')
-final_json_text = final_json_text.replace('"/spider.jar"', '"https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar"')
-final_json_text = final_json_text.replace(' "spider.jar"', '"https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar"')
+final_json_text = final_json_text.replace(
+    '"key": "hajim-腾讯备"', 
+    '"spider": "./tvbox.jar",\n           "key": "hajim-腾讯备"'
+)
+final_json_text = final_json_text.replace(
+    '"key": "茫茫"', 
+    '"spider": "./tvbox.jar",\n        "key": "茫茫"'
+)
 
-# 2. 各种相对路径子文件夹，批量地毯式轰炸替换
+final_json_text = final_json_text.replace('./spider.jar', 'https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar')
 final_json_text = final_json_text.replace('./XBPQ/', 'https://cnb.cool/fish2018/xs/-/git/raw/main/XBPQ/')
 final_json_text = final_json_text.replace('./XYQHiker/', 'https://cnb.cool/fish2018/xs/-/git/raw/main/XYQHiker/')
 final_json_text = final_json_text.replace('./js/', 'https://cnb.cool/fish2018/xs/-/git/raw/main/js/')
 final_json_text = final_json_text.replace('./json/', 'https://cnb.cool/fish2018/xs/-/git/raw/main/json/')
 final_json_text = final_json_text.replace('./py/', 'https://cnb.cool/fish2018/xs/-/git/raw/main/py/')
 
-# ====================================================================
-# 3. 定制老杨自用全量缝合专线品牌头部
-# ====================================================================
-final_json_text = final_json_text.replace('"warningText": "欢迎使用鱼儿自用缝合专线，完全免费！"', '"warningText": "欢迎使用老杨自用全量缝合专线，本接口完全免费！"')
+final_json_text = final_json_text.replace(
+    '"logo": "http://127.0.0.1:9978/file/TVBox/logo.png"', 
+    '"logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg"'
+)
 
-# 强力消除尾部符号瑕疵
-final_json_text = re.sub(r'\[\s*,', '[', final_json_text)
-final_json_text = re.sub(r',\s*\]', '\n  ]', final_json_text)
+# ====================================================================
+# 🎯 强力拦截注入：在最新生成的正规订阅文件最前面强插 notice 字段
+# ====================================================================
+if '"warningText":' not in final_json_text:
+    thanks_warning = (
+        '👑 特别致谢与版权声明\\n'
+        '本接口的诞生离不开大后方两位业内顶流技术大佬的无私奉献，特此致谢：\\n'
+        '🐋 感谢鱼佬的付出\\n'
+        '源码基础与发布主页: fish2018/webhtv\\n'
+        '版本发布绝对地址: fish2018/webhtv/releases\\n'
+        'Telegram 官方群组: 👉 https://t.me/webhtv\\n'
+        '🐬 感谢海豚佬的付出\\n'
+        '核心仓库主页: FGBLH/GHK\\n'
+        '数据源直链地址: FGBLH/GHK/海豚.json\\n'
+        'Telegram 官方群组: 👉 https://t.me/hshsjk9'
+    )
+    
+    welcome_notice = (
+        '👑 欢迎使用【老杨TV粉丝专属缝合专线】！'
+        '本接口由老杨TV结合海 豚佬&鱼佬的优质资源缝合而成，纯净无广告！'
+        '🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码！'
+    )
+    
+    final_json_text = final_json_text.replace(
+        '{\n    "spider":',
+        f'{{\n    "notice": "{welcome_notice}",\n    "warningText": "{thanks_warning}",\n    "spider":'
+    )
 
-# 写入本地文件存盘
+final_json_text = final_json_text.replace('🐬', '')
+final_json_text = final_json_text.replace('海豚影视', '')
+final_json_text = final_json_text.replace('海豚', '')
+final_json_text = final_json_text.replace('完全免费，如有收费的都是骗子', '')
+final_json_text = final_json_text.replace('交流群 TG：@hshsjk9', '')
+
+def clean_and_add_butterfly(match):
+    name_val = match.group(1)
+    tg_suffix = ""
+    if "｜Tg：@huliys9" in name_val:
+        name_val = name_val.replace("｜Tg：@huliys9", "")
+        tg_suffix = "｜Tg：@huliys9"
+        
+    for char in ['丨', '┃', ' ']:
+        name_val = name_val.strip(char)
+        
+    name_val = re.sub(r'\s+', ' ', name_val)
+    return f'"name": "🦋{name_val}{tg_suffix}"'
+
+# 🚀 【核心性能调优：靶向隔离】
+# 只将前半段的 sites 按钮名称送进正则加蝴蝶，绝不让正则污染后半段全量 lives 里的上千个频道名字。
+if '"sites": [' in final_json_text and '"lives": [' in final_json_text:
+    parts = final_json_text.split('"lives": [', 1)
+    parts[0] = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, parts[0])
+    final_json_text = '"lives": ['.join(parts)
+else:
+    final_json_text = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, final_json_text)
+
+final_json_text = final_json_text.replace(
+    '"name": "🦋爱奇艺｜Tg：@huliys9"',
+    '"name": "🦋爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"'
+)
+
+final_json_text = final_json_text.replace('[\n    ,', '[')
+final_json_text = final_json_text.replace('[\n,', '[')
+final_json_text = final_json_text.replace(',\n    ]', '\n    ]')
+final_json_text = final_json_text.replace(',\n  ]', '\n  ]')
+
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(final_json_text)
 
-print("🚀 【全覆盖无死角清洗版】合流成功，相对路径隐患已全部扫除！")
+with open(tracker_path, 'w', encoding='utf-8') as f:
+    f.write(output_filename)
+
+print(f"🎉 【全量纯文字大轰炸+开机大白框公告版】更新成功！配置名: {output_path}")
