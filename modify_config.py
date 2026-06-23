@@ -133,17 +133,19 @@ if lz_sites_text:
         for item in wrapped_lz_json:
             # 🎯 靶向狙击：只留下包含 🔞 标志的极品福利站
             if "🔞" in item.get("name", ""):
-                item["name"] = f"{item['name']}｜Lz"  # 挂上标签防止冲突
+                # 🛠️ 【定制改名手术】：将原始名字中的 "🔞Hanime(py)" 剥离干净
+                raw_name = item["name"].replace("🔞", "").strip()
+                # ✨ 重新组装为老杨指定的完美格式："🦋 线路名｜🔞" (这里预留后缀，后面会统一加上蝴蝶)
+                item["name"] = f"{raw_name}｜🔞"
                 
-                # 🛠️ 【核心危机修复修复】：在这里对老张的独立 api 路径进行绝对绝对联网化手术！
-                # 彻底解决电视上因读取 "./py/" 或 "./js/" 本地相对链接造成的无法播放瘫痪
+                # 🛠️ 【国内免翻墙靶向净化】：直接使用 gh-proxy 极品中转网关注入 api
                 if "api" in item and isinstance(item["api"], str):
                     if item["api"].startswith("./py/"):
-                        item["api"] = item["api"].replace("./py/", "https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/")
+                        item["api"] = item["api"].replace("./py/", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/")
                     elif item["api"].startswith("./js/"):
-                        item["api"] = item["api"].replace("./js/", "https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/js/")
+                        item["api"] = item["api"].replace("./js/", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/js/")
                     elif item["api"].startswith("./"):
-                        item["api"] = item["api"].replace("./", "https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/")
+                        item["api"] = item["api"].replace("./", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/")
                 
                 lz_nsfw_list.append(json.dumps(item, ensure_ascii=False, indent=4))
     except Exception as e:
@@ -151,9 +153,14 @@ if lz_sites_text:
         blocks = re.findall(r'\{[^{}]*\}', lz_sites_text)
         for block in blocks:
             if "🔞" in block:
-                block_cleaned = re.sub(r'"name"\s*:\s*"([^"]+)"', r'"name": "\1｜Lz"', block)
-                block_cleaned = block_cleaned.replace("./py/", "https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/")
-                block_cleaned = block_cleaned.replace("./js/", "https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/js/")
+                raw_name_match = re.search(r'"name"\s*:\s*"([^"]+)"', block)
+                if raw_name_match:
+                    cleaned_name = raw_name_match.group(1).replace("🔞", "").strip()
+                    block_cleaned = re.sub(r'"name"\s*:\s*"([^"]+)"', f'"name": "{cleaned_name}｜\u200b🔞"', block)
+                else:
+                    block_cleaned = block
+                block_cleaned = block_cleaned.replace("./py/", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/")
+                block_cleaned = block_cleaned.replace("./js/", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/js/")
                 lz_nsfw_list.append(block_cleaned)
 
 # 把过滤且完美绝对化之后的老张 🔞 片段组装起来
@@ -226,7 +233,7 @@ if '"warningText":' not in final_json_text:
     
     welcome_notice = (
         '👑 欢迎使用【老杨TV粉丝专属缝合专线】！'
-        '本接口由老杨TV结合海豚佬&鱼佬的优质核心资源缝合而成，纯净无广告！'
+        '本接口由老杨TV结合海豚佬&老张特调&鱼佬的优质核心资源缝合而成，纯净无广告！'
         '🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码！'
     )
     
@@ -244,18 +251,22 @@ final_json_text = final_json_text.replace('交流群 TG：@hshsjk9', '')
 def clean_and_add_butterfly(match):
     name_val = match.group(1)
     tg_suffix = ""
+    
+    # 提取已有的尾部标识
     if "｜Tg：@huliys9" in name_val:
         name_val = name_val.replace("｜Tg：@huliys9", "")
         tg_suffix = "｜Tg：@huliys9"
-    elif "｜Lz" in name_val:
-        name_val = name_val.replace("｜Lz", "")
-        tg_suffix = "｜Lz"
+    elif "｜🔞" in name_val:
+        name_val = name_val.replace("｜🔞", "")
+        tg_suffix = "｜🔞"
         
     for char in ['丨', '┃', ' ']:
         name_val = name_val.strip(char)
         
     name_val = re.sub(r'\s+', ' ', name_val)
-    return f'"name": "🦋{name_val}{tg_suffix}"'
+    
+    # 🎯 规范化命名：注入蝴蝶 + 空格 + 纯正名称 + 尾部后缀 (达到 🦋 lav(py)｜🔞 效果)
+    return f'"name": "🦋 {name_val}{tg_suffix}"'
 
 # 🚀 【核心性能调优：靶向隔离】
 if '"sites": [' in final_json_text and '"lives": [' in final_json_text:
@@ -266,8 +277,8 @@ else:
     final_json_text = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, final_json_text)
 
 final_json_text = final_json_text.replace(
-    '"name": "🦋爱奇艺｜Tg：@huliys9"',
-    '"name": "🦋爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"'
+    '"name": "🦋 爱奇艺｜Tg：@huliys9"',
+    '"name": "🦋 爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"'
 )
 
 final_json_text = final_json_text.replace('[\n    ,', '[')
@@ -281,4 +292,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【老张路径修复版】部署成功！配置名: {output_path}")
+print(f"🎉 【视觉完美改名版】更新成功！配置名: {output_path}")
