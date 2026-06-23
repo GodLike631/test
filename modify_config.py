@@ -86,6 +86,7 @@ for old_file in old_configs:
                     }
                 ]
             }
+            import json
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
             print(f"📡 【金蝉脱壳】已成功将过期旧线调包为纯文字大轰炸: {old_file}")
@@ -122,28 +123,40 @@ def get_array_inner_text(content, key):
 haitun_sites_text = get_array_inner_text(text_haitun, "sites")
 haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 
-# 2. 物理提取老张源里的 sites，并用高级正则精准切割过滤
+# 2. 物理提取老张源里的 sites，并用高级逻辑过滤
 lz_sites_text = get_array_inner_text(text_lz, "sites")
 lz_nsfw_list = []
 
 if lz_sites_text:
-    # 巧妙利用内置标准 json 临时包装，精确定位带 🔞 的独立大字典段落
     try:
         wrapped_lz_json = json.loads(f"[{lz_sites_text}]")
         for item in wrapped_lz_json:
-            # 🎯 靶向狙击：老张常规线路一概不要，只留下包含 🔞 标志的极品福利站
+            # 🎯 靶向狙击：只留下包含 🔞 标志的极品福利站
             if "🔞" in item.get("name", ""):
                 item["name"] = f"{item['name']}｜Lz"  # 挂上标签防止冲突
+                
+                # 🛠️ 【核心危机修复修复】：在这里对老张的独立 api 路径进行绝对绝对联网化手术！
+                # 彻底解决电视上因读取 "./py/" 或 "./js/" 本地相对链接造成的无法播放瘫痪
+                if "api" in item and isinstance(item["api"], str):
+                    if item["api"].startswith("./py/"):
+                        item["api"] = item["api"].replace("./py/", "https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/")
+                    elif item["api"].startswith("./js/"):
+                        item["api"] = item["api"].replace("./js/", "https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/js/")
+                    elif item["api"].startswith("./"):
+                        item["api"] = item["api"].replace("./", "https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/")
+                
                 lz_nsfw_list.append(json.dumps(item, ensure_ascii=False, indent=4))
     except Exception as e:
-        # 降级备用正则过滤，防止 JSON 解析踩坑
+        # 降级备用正则过滤与绝对化补位
         blocks = re.findall(r'\{[^{}]*\}', lz_sites_text)
         for block in blocks:
             if "🔞" in block:
                 block_cleaned = re.sub(r'"name"\s*:\s*"([^"]+)"', r'"name": "\1｜Lz"', block)
+                block_cleaned = block_cleaned.replace("./py/", "https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/")
+                block_cleaned = block_cleaned.replace("./js/", "https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/js/")
                 lz_nsfw_list.append(block_cleaned)
 
-# 把筛选出来的老张 🔞 点播小分队完美拼接成明文片段
+# 把过滤且完美绝对化之后的老张 🔞 片段组装起来
 lz_nsfw_final_text = ",\n    ".join(lz_nsfw_list)
 
 # 3. 给海豚自带的站点打上原始标签
@@ -158,7 +171,6 @@ final_json_text = text_cnb
 # ====================================================================
 # 🚀 逆向注入：海豚站点大军开路，后面死死粘着老张的 🔞 突击队，直播 100% 还原
 # ====================================================================
-# 强行无缝合并注入点播 sites
 if '"sites": [' in final_json_text:
     combined_sites = ""
     if haitun_sites_text:
@@ -167,7 +179,6 @@ if '"sites": [' in final_json_text:
         combined_sites += lz_nsfw_final_text.rstrip(',') + ',\n    '
     final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n    {combined_sites}', 1)
 
-# 强行无缝合并注入直播 lives (老张的直播 100% 丢弃，完全保持原来的海豚直播逻辑)
 if haitun_lives_text and '"lives": [' in final_json_text:
     haitun_lives_text = haitun_lives_text.rstrip(',')
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
@@ -215,7 +226,7 @@ if '"warningText":' not in final_json_text:
     
     welcome_notice = (
         '👑 欢迎使用【老杨TV粉丝专属缝合专线】！'
-        '本接口由老杨TV结合海豚佬&老张特调&鱼佬的优质核心资源缝合而成，纯净无广告！'
+        '本接口由老杨TV结合海豚佬&鱼佬的优质核心资源缝合而成，纯净无广告！'
         '🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码！'
     )
     
@@ -247,7 +258,6 @@ def clean_and_add_butterfly(match):
     return f'"name": "🦋{name_val}{tg_suffix}"'
 
 # 🚀 【核心性能调优：靶向隔离】
-# 只对前半段包含 sites（影视大按钮）的区域加蝴蝶，后半段上千个电视频道绝不污染，彻底消灭选择线路时的死卡
 if '"sites": [' in final_json_text and '"lives": [' in final_json_text:
     parts = final_json_text.split('"lives": [', 1)
     parts[0] = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, parts[0])
@@ -271,4 +281,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【精简三源合并老杨TV全功能版】更新成功！配置名: {output_path}")
+print(f"🎉 【老张路径修复版】部署成功！配置名: {output_path}")
