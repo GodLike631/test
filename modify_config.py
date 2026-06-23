@@ -4,11 +4,13 @@ import random
 import string
 import glob
 import datetime
+import json
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
+lz_path = 'datas/lz.json'
 
-# 控制开关和追踪器的文件路径
+# 控制开关和追踪器文件路径
 lock_file_path = 'datas/控制开关.txt'
 tracker_path = 'datas/最新接口文件名.txt'
 
@@ -36,7 +38,6 @@ else:
             f.write(current_token)
         print(f"⏰ 【密锁强制纠偏/新月抽签】已生成全量版严格 3 位新密锁: {current_token}")
 
-# 🎯 已经帮你把最终输出的文件名修改为了：老杨TV全功能版 + 随机暗号
 output_filename = f"老杨TV全功能版{current_token}.json"
 output_path = f"datas/{output_filename}"
 
@@ -47,7 +48,6 @@ old_configs = glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
         try:
-            # 🌟 彻底抛弃图片链接，全量版专属纯文字高能预警盒子
             trap_json = {
                 "spider": "", 
                 "notice": "⚠️ 警告：当前“老杨TV”专线密码已过期断流！老链接已彻底作废！\n\n最新密码加QQ群“532637640”获取",
@@ -86,7 +86,6 @@ for old_file in old_configs:
                     }
                 ]
             }
-            import json
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
             print(f"📡 【金蝉脱壳】已成功将过期旧线调包为纯文字大轰炸: {old_file}")
@@ -106,6 +105,7 @@ def read_file_text(path):
 
 text_cnb = read_file_text(cnb_path)
 text_haitun = read_file_text(haitun_path)
+text_lz = read_file_text(lz_path)
 
 def get_array_inner_text(content, key):
     split_key = f'"{key}": ['
@@ -118,9 +118,35 @@ def get_array_inner_text(content, key):
         inner_text = after_key.split(']', 1)[0]
     return inner_text.strip()
 
+# 1. 物理提取海豚源的全部内容
 haitun_sites_text = get_array_inner_text(text_haitun, "sites")
 haitun_lives_text = get_array_inner_text(text_haitun, "lives")
 
+# 2. 物理提取老张源里的 sites，并用高级正则精准切割过滤
+lz_sites_text = get_array_inner_text(text_lz, "sites")
+lz_nsfw_list = []
+
+if lz_sites_text:
+    # 巧妙利用内置标准 json 临时包装，精确定位带 🔞 的独立大字典段落
+    try:
+        wrapped_lz_json = json.loads(f"[{lz_sites_text}]")
+        for item in wrapped_lz_json:
+            # 🎯 靶向狙击：老张常规线路一概不要，只留下包含 🔞 标志的极品福利站
+            if "🔞" in item.get("name", ""):
+                item["name"] = f"{item['name']}｜Lz"  # 挂上标签防止冲突
+                lz_nsfw_list.append(json.dumps(item, ensure_ascii=False, indent=4))
+    except Exception as e:
+        # 降级备用正则过滤，防止 JSON 解析踩坑
+        blocks = re.findall(r'\{[^{}]*\}', lz_sites_text)
+        for block in blocks:
+            if "🔞" in block:
+                block_cleaned = re.sub(r'"name"\s*:\s*"([^"]+)"', r'"name": "\1｜Lz"', block)
+                lz_nsfw_list.append(block_cleaned)
+
+# 把筛选出来的老张 🔞 点播小分队完美拼接成明文片段
+lz_nsfw_final_text = ",\n    ".join(lz_nsfw_list)
+
+# 3. 给海豚自带的站点打上原始标签
 name_regex = r'"name"\s*:\s*"([^"]+)"'
 if haitun_sites_text:
     haitun_sites_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_sites_text)
@@ -129,14 +155,26 @@ if haitun_lives_text:
 
 final_json_text = text_cnb
 
-if haitun_sites_text and '"sites": [' in final_json_text:
-    haitun_sites_text = haitun_sites_text.rstrip(',')
-    final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n    {haitun_sites_text},\n    ', 1)
+# ====================================================================
+# 🚀 逆向注入：海豚站点大军开路，后面死死粘着老张的 🔞 突击队，直播 100% 还原
+# ====================================================================
+# 强行无缝合并注入点播 sites
+if '"sites": [' in final_json_text:
+    combined_sites = ""
+    if haitun_sites_text:
+        combined_sites += haitun_sites_text.rstrip(',') + ',\n    '
+    if lz_nsfw_final_text:
+        combined_sites += lz_nsfw_final_text.rstrip(',') + ',\n    '
+    final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n    {combined_sites}', 1)
 
+# 强行无缝合并注入直播 lives (老张的直播 100% 丢弃，完全保持原来的海豚直播逻辑)
 if haitun_lives_text and '"lives": [' in final_json_text:
     haitun_lives_text = haitun_lives_text.rstrip(',')
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
 
+# ====================================================================
+# 路径固定清洗与核心拦截
+# ====================================================================
 final_json_text = final_json_text.replace(
     '"key": "hajim-腾讯备"', 
     '"spider": "./tvbox.jar",\n           "key": "hajim-腾讯备"'
@@ -159,12 +197,12 @@ final_json_text = final_json_text.replace(
 )
 
 # ====================================================================
-# 🎯 强力拦截注入：在最新生成的正规订阅文件最前面强插 notice 字段
+# 🎯 强力拦截注入开机大公告栏提示
 # ====================================================================
 if '"warningText":' not in final_json_text:
     thanks_warning = (
         '👑 特别致谢与版权声明\\n'
-        '本接口的诞生离不开大后方两位业内顶流技术大佬的无私奉献，特此致谢：\\n'
+        '本接口的诞生离不开大后方几位业内顶流技术大佬的无私奉献，特此致谢：\\n'
         '🐋 感谢鱼佬的付出\\n'
         '源码基础与发布主页: fish2018/webhtv\\n'
         '版本发布绝对地址: fish2018/webhtv/releases\\n'
@@ -177,7 +215,7 @@ if '"warningText":' not in final_json_text:
     
     welcome_notice = (
         '👑 欢迎使用【老杨TV粉丝专属缝合专线】！'
-        '本接口由老杨TV结合海 豚佬&鱼佬的优质资源缝合而成，纯净无广告！'
+        '本接口由老杨TV结合海豚佬&老张特调&鱼佬的优质核心资源缝合而成，纯净无广告！'
         '🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码！'
     )
     
@@ -198,6 +236,9 @@ def clean_and_add_butterfly(match):
     if "｜Tg：@huliys9" in name_val:
         name_val = name_val.replace("｜Tg：@huliys9", "")
         tg_suffix = "｜Tg：@huliys9"
+    elif "｜Lz" in name_val:
+        name_val = name_val.replace("｜Lz", "")
+        tg_suffix = "｜Lz"
         
     for char in ['丨', '┃', ' ']:
         name_val = name_val.strip(char)
@@ -205,8 +246,8 @@ def clean_and_add_butterfly(match):
     name_val = re.sub(r'\s+', ' ', name_val)
     return f'"name": "🦋{name_val}{tg_suffix}"'
 
-# 🚀 【核心卡顿修复：靶向隔离】
-# 只对前半段包含 sites（影视按钮）的区域加蝴蝶，后半段包含上千个直播频道的 lives 保持纯文本不加蝴蝶，电视完美丝滑加载
+# 🚀 【核心性能调优：靶向隔离】
+# 只对前半段包含 sites（影视大按钮）的区域加蝴蝶，后半段上千个电视频道绝不污染，彻底消灭选择线路时的死卡
 if '"sites": [' in final_json_text and '"lives": [' in final_json_text:
     parts = final_json_text.split('"lives": [', 1)
     parts[0] = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, parts[0])
@@ -230,4 +271,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【老杨TV全功能版】更新成功！配置名: {output_path}")
+print(f"🎉 【精简三源合并老杨TV全功能版】更新成功！配置名: {output_path}")
