@@ -38,7 +38,7 @@ else:
             f.write(current_token)
         print(f"⏰ 【密锁强制纠偏/新月抽签】已生成全量版严格 3 位新密锁: {current_token}")
 
-# 🎯 严格保真：输出为 老杨TV + 随机密锁
+# 🎯 严格保真当前仓库脚本对应的文件命名格式：输出为 老杨TV + 随机密锁
 output_filename = f"老杨TV{current_token}.json"
 output_path = f"datas/{output_filename}"
 
@@ -155,7 +155,7 @@ if haitun_sites_text:
 if haitun_lives_text:
     haitun_lives_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_lives_text)
 
-# 🚀 4. 【精准定位：构建乡村电视标准字典数据段】
+# 🚀 4. 【构建乡村电视标准字典数据段】
 country_live_dict = {
     "name": "乡村电视 ｜Tg：@huliys9",
     "type": 0,
@@ -164,20 +164,15 @@ country_live_dict = {
     "url": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E4%B9%A1%E6%9D%91%E7%94%B5%E8%A7%86.txt"
 }
 
-# 🔬 【高级对象级精准插队手术：死死焊接在 lives 数组的第 6 位】
+# 🔬 【高级对象级精准插队手术：死死焊接在新仓库 lives 数组的第 6 位】
 final_lives_text = ""
 if haitun_lives_text:
     try:
-        # 将全量保留的海豚直播源解析为真正的 Python 数组对象
         haitun_lives_json = json.loads(f"[{haitun_lives_text}]")
-        
-        # 🎯 精准插入：在 Python 数组中索引为 5 的位置插入，出库时绝对就是第 6 位线路大组！
+        # 🎯 精准插入：在索引 5 的位置切入，在电视上完美呈现为第 6 位线路！
         haitun_lives_json.insert(5, country_live_dict)
-        
-        # 格式化重新转回高质量明文文本
         final_lives_text = ",\n    ".join([json.dumps(item, ensure_ascii=False, indent=4) for item in haitun_lives_json])
     except Exception as e:
-        # 降级防御防死卡
         final_lives_text = haitun_lives_text
 
 final_json_text = text_cnb
@@ -279,7 +274,7 @@ def clean_and_add_butterfly(match):
     return f'"name": "🦋 {name_val}{tg_suffix}"'
 
 # 🚀 【核心性能调优：直播间安全隔离壁垒】
-# 只对前半段 sites（视频大按钮组）加蝴蝶。后半段 lives（包含精准排在第 6 位的乡村电视大组）内部的上千个具体的电视节目单
+# 只对前半段 sites（视频大按钮组）加蝴蝶。后半段 lives 内部的上千个具体的电视节目单
 # 100% 保持纯净明文状态，绝不塞任何蝴蝶符号，彻底消灭线路加载死卡和电视渲染卡帧！
 if '"sites": [' in final_json_text and '"lives": [' in final_json_text:
     parts = final_json_text.split('"lives": [', 1)
@@ -304,4 +299,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【第 6 位精准焊接稳定版】更新成功！配置名: {output_path}")
+print(f"🎉 【新仓库第 6 位排队稳定版】更新成功！配置名: {output_path}")
