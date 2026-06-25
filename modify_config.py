@@ -155,8 +155,7 @@ if haitun_sites_text:
 if haitun_lives_text:
     haitun_lives_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_lives_text)
 
-# 🚀 4. 【乡村电视及直播源全量去重机制】
-# 构建乡村电视大组明文
+# 🚀 4. 【精准定位：构建乡村电视标准字典数据段】
 country_live_dict = {
     "name": "乡村电视 ｜Tg：@huliys9",
     "type": 0,
@@ -164,28 +163,22 @@ country_live_dict = {
     "ua": "okhttp",
     "url": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E4%B9%A1%E6%9D%91%E7%94%B5%E8%A7%86.txt"
 }
-country_live_text = json.dumps(country_live_dict, ensure_ascii=False, indent=4)
 
-# 🔬 【CNB直播源对比海豚去重保留机制】
-cnb_lives_text = get_array_inner_text(text_cnb, "lives")
-cnb_unique_lives_list = []
-
-if cnb_lives_text and haitun_lives_text:
+# 🔬 【高级对象级精准插队手术：死死焊接在 lives 数组的第 6 位】
+final_lives_text = ""
+if haitun_lives_text:
     try:
-        # 获取海豚现有的所有直播大组名称集合，作为去重雷达
+        # 将全量保留的海豚直播源解析为真正的 Python 数组对象
         haitun_lives_json = json.loads(f"[{haitun_lives_text}]")
-        haitun_groups = {item.get("name", "").replace("｜Tg：@huliys9", "").strip() for item in haitun_lives_json}
         
-        # 解析CNB的直播大组，对比去重
-        cnb_lives_json = json.loads(f"[{cnb_lives_text}]")
-        for item in cnb_lives_json:
-            cnb_group_name = item.get("name", "").strip()
-            # 如果海豚直播里没有这个大组，则判定为CNB独家好源，予以全量保留
-            if cnb_group_name and cnb_group_name not in haitun_groups:
-                cnb_unique_lives_list.append(json.dumps(item, ensure_ascii=False, indent=4))
-    except:
-        pass
-cnb_unique_lives_final_text = ",\n    ".join(cnb_unique_lives_list)
+        # 🎯 精准插入：在 Python 数组中索引为 5 的位置插入，出库时绝对就是第 6 位线路大组！
+        haitun_lives_json.insert(5, country_live_dict)
+        
+        # 格式化重新转回高质量明文文本
+        final_lives_text = ",\n    ".join([json.dumps(item, ensure_ascii=False, indent=4) for item in haitun_lives_json])
+    except Exception as e:
+        # 降级防御防死卡
+        final_lives_text = haitun_lives_text
 
 final_json_text = text_cnb
 
@@ -201,33 +194,11 @@ if '"sites": [' in final_json_text:
     final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n    {combined_sites}', 1)
 
 # ====================================================================
-# 🚀 直播源核心组装：海豚全量保留 + 乡村电视精准插队 + CNB独家去重源兜底
+# 🚀 直播源核心组装：注入包含了第 6 位精准排队乡村电视的海豚直播底座
 # ====================================================================
-if '"lives": [' in final_json_text:
-    # 🌟 A. 实现乡村电视精准插队到“海燕直播”的前面
-    if haitun_lives_text and '"name": "海燕' in haitun_lives_text:
-        # 精准定位海燕大字典的起始左大括号
-        haitun_lives_text = haitun_lives_text.replace(
-            '{\n        "name": "海燕', 
-            f'{country_live_text},\n    {{\n        "name": "海燕'
-        )
-        haitun_lives_text = haitun_lives_text.replace(
-            '{\n    "name": "海燕', 
-            f'{country_live_text},\n    {{\n    "name": "海燕'
-        )
-    else:
-        # 如果没抓到海燕，作为降级安全防线，直接加在海豚的最前头
-        if haitun_lives_text:
-            haitun_lives_text = f"{country_live_text},\n    {haitun_lives_text}"
-
-    # 🌟 B. 拼装大合集：海豚全量(含插队的乡村电视) + CNB独家去重保留源
-    combined_lives = ""
-    if haitun_lives_text:
-        combined_lives += haitun_lives_text.rstrip(',') + ',\n    '
-    if cnb_unique_lives_final_text:
-        combined_lives += cnb_unique_lives_final_text.rstrip(',') + ',\n    '
-        
-    final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {combined_lives}', 1)
+if final_lives_text and '"lives": [' in final_json_text:
+    final_lives_text = final_lives_text.rstrip(',')
+    final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {final_lives_text},\n    ', 1)
 
 # ====================================================================
 # 路径固定清洗与核心拦截
@@ -304,12 +275,12 @@ def clean_and_add_butterfly(match):
         
     name_val = re.sub(r'\s+', ' ', name_val)
     
-    # 🎯 规范化大组改名：蝴蝶 + 空格 + 纯正名称 + 专属尾缀
+    # 🎯 规范化大组改名：空气动力学完美排版
     return f'"name": "🦋 {name_val}{tg_suffix}"'
 
 # 🚀 【核心性能调优：直播间安全隔离壁垒】
-# 只对前半段包含 sites（影视点播大组）的区域加蝴蝶。后半段 lives 里不论是插队的乡村电视、海豚还是CNB独家去重源，
-# 其内部上千个具体的电视节目单 100% 保持纯净明文状态，绝不塞任何蝴蝶符号，彻底消灭线路加载死卡
+# 只对前半段 sites（视频大按钮组）加蝴蝶。后半段 lives（包含精准排在第 6 位的乡村电视大组）内部的上千个具体的电视节目单
+# 100% 保持纯净明文状态，绝不塞任何蝴蝶符号，彻底消灭线路加载死卡和电视渲染卡帧！
 if '"sites": [' in final_json_text and '"lives": [' in final_json_text:
     parts = final_json_text.split('"lives": [', 1)
     parts[0] = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, parts[0])
@@ -333,4 +304,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【完美插队与全量去重集成版】部署成功！配置名: {output_path}")
+print(f"🎉 【第 6 位精准焊接稳定版】更新成功！配置名: {output_path}")
