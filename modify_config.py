@@ -49,7 +49,6 @@ old_configs = glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
         try:
-            # 🌟 彻底抛弃图片链接，全量版专属纯文字高能预警盒子
             trap_json = {
                 "spider": "", 
                 "notice": "⚠️ 警告：当前“老杨TV”专线密码已过期断流！老链接已彻底作废！\n\n最新密码加QQ群“532637640”获取",
@@ -132,14 +131,9 @@ if lz_sites_text:
     try:
         wrapped_lz_json = json.loads(f"[{lz_sites_text}]")
         for item in wrapped_lz_json:
-            # 🎯 靶向狙击：只留下包含 🔞 标志的极品福利站
             if "🔞" in item.get("name", ""):
-                # 🛠️ 【视觉完美净化】：剥离原本乱乱的 🔞，提取纯正名称
                 raw_name = item["name"].replace("🔞", "").strip()
-                # 重新挂上规范后缀，方便后面统一加上蝴蝶
                 item["name"] = f"{raw_name}｜🔞"
-                
-                # 🛠️ 【国内免翻墙靶向净化】：直接使用 gh-proxy 极品中转网关注入 api
                 if "api" in item and isinstance(item["api"], str):
                     if item["api"].startswith("./py/"):
                         item["api"] = item["api"].replace("./py/", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/")
@@ -147,33 +141,22 @@ if lz_sites_text:
                         item["api"] = item["api"].replace("./js/", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/js/")
                     elif item["api"].startswith("./"):
                         item["api"] = item["api"].replace("./", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/")
-                
                 lz_nsfw_list.append(json.dumps(item, ensure_ascii=False, indent=4))
     except Exception as e:
-        blocks = re.findall(r'\{[^{}]*\}', lz_sites_text)
-        for block in blocks:
-            if "🔞" in block:
-                raw_name_match = re.search(r'"name"\s*:\s*"([^"]+)"', block)
-                if raw_name_match:
-                    cleaned_name = raw_name_match.group(1).replace("🔞", "").strip()
-                    block_cleaned = re.sub(r'"name"\s*:\s*"([^"]+)"', f'"name": "{cleaned_name}｜\u200b🔞"', block)
-                else:
-                    block_cleaned = block
-                block_cleaned = block_cleaned.replace("./py/", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/")
-                block_cleaned = block_cleaned.replace("./js/", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/js/")
-                lz_nsfw_list.append(block_cleaned)
+        pass
 
 # 把过滤且完美绝对化之后的老张 🔞 片段组装起来
 lz_nsfw_final_text = ",\n    ".join(lz_nsfw_list)
 
-# 3. 给海豚自带的站点打上原始标签
+# 3. 给海豚自带的站点和直播打上原始标签
 name_regex = r'"name"\s*:\s*"([^"]+)"'
 if haitun_sites_text:
     haitun_sites_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_sites_text)
 if haitun_lives_text:
     haitun_lives_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_lives_text)
 
-# 🚀 【乡村电视核心直链接入】：构建老哥专属的完美明文大组字典段落
+# 🚀 4. 【乡村电视及直播源全量去重机制】
+# 构建乡村电视大组明文
 country_live_dict = {
     "name": "乡村电视 ｜Tg：@huliys9",
     "type": 0,
@@ -183,10 +166,31 @@ country_live_dict = {
 }
 country_live_text = json.dumps(country_live_dict, ensure_ascii=False, indent=4)
 
+# 🔬 【CNB直播源对比海豚去重保留机制】
+cnb_lives_text = get_array_inner_text(text_cnb, "lives")
+cnb_unique_lives_list = []
+
+if cnb_lives_text and haitun_lives_text:
+    try:
+        # 获取海豚现有的所有直播大组名称集合，作为去重雷达
+        haitun_lives_json = json.loads(f"[{haitun_lives_text}]")
+        haitun_groups = {item.get("name", "").replace("｜Tg：@huliys9", "").strip() for item in haitun_lives_json}
+        
+        # 解析CNB的直播大组，对比去重
+        cnb_lives_json = json.loads(f"[{cnb_lives_text}]")
+        for item in cnb_lives_json:
+            cnb_group_name = item.get("name", "").strip()
+            # 如果海豚直播里没有这个大组，则判定为CNB独家好源，予以全量保留
+            if cnb_group_name and cnb_group_name not in haitun_groups:
+                cnb_unique_lives_list.append(json.dumps(item, ensure_ascii=False, indent=4))
+    except:
+        pass
+cnb_unique_lives_final_text = ",\n    ".join(cnb_unique_lives_list)
+
 final_json_text = text_cnb
 
 # ====================================================================
-# 🚀 逆向注入：海豚站点大军开路，后面死死粘着老张的 🔞 突击队，直播 100% 还原
+# 🚀 逆向注入：海豚站点大军开路，后面死死粘着老张的 🔞 突击队
 # ====================================================================
 if '"sites": [' in final_json_text:
     combined_sites = ""
@@ -196,13 +200,33 @@ if '"sites": [' in final_json_text:
         combined_sites += lz_nsfw_final_text.rstrip(',') + ',\n    '
     final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n    {combined_sites}', 1)
 
-# 🚀 注入直播源：在海豚直播的大屁股后面，追加焊死乡村电视特调大组
+# ====================================================================
+# 🚀 直播源核心组装：海豚全量保留 + 乡村电视精准插队 + CNB独家去重源兜底
+# ====================================================================
 if '"lives": [' in final_json_text:
+    # 🌟 A. 实现乡村电视精准插队到“海燕直播”的前面
+    if haitun_lives_text and '"name": "海燕' in haitun_lives_text:
+        # 精准定位海燕大字典的起始左大括号
+        haitun_lives_text = haitun_lives_text.replace(
+            '{\n        "name": "海燕', 
+            f'{country_live_text},\n    {{\n        "name": "海燕'
+        )
+        haitun_lives_text = haitun_lives_text.replace(
+            '{\n    "name": "海燕', 
+            f'{country_live_text},\n    {{\n    "name": "海燕'
+        )
+    else:
+        # 如果没抓到海燕，作为降级安全防线，直接加在海豚的最前头
+        if haitun_lives_text:
+            haitun_lives_text = f"{country_live_text},\n    {haitun_lives_text}"
+
+    # 🌟 B. 拼装大合集：海豚全量(含插队的乡村电视) + CNB独家去重保留源
     combined_lives = ""
     if haitun_lives_text:
         combined_lives += haitun_lives_text.rstrip(',') + ',\n    '
-    if country_live_text:
-        combined_lives += country_live_text.strip() + ',\n    '
+    if cnb_unique_lives_final_text:
+        combined_lives += cnb_unique_lives_final_text.rstrip(',') + ',\n    '
+        
     final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {combined_lives}', 1)
 
 # ====================================================================
@@ -267,7 +291,7 @@ def clean_and_add_butterfly(match):
     name_val = match.group(1)
     tg_suffix = ""
     
-    # 提取已有的尾部标识
+    # 提取并纯净化已有的尾部标识
     if "｜Tg：@huliys9" in name_val:
         name_val = name_val.replace("｜Tg：@huliys9", "")
         tg_suffix = "｜Tg：@huliys9"
@@ -280,11 +304,12 @@ def clean_and_add_butterfly(match):
         
     name_val = re.sub(r'\s+', ' ', name_val)
     
-    # 🎯 规范化命名：空气动力学排版，蝴蝶 + 空格 + 名字 + 标识 (实现 🦋 lav(py)｜🔞 与 🦋 乡村电视 ｜Tg：@huliys9 完美包装)
+    # 🎯 规范化大组改名：蝴蝶 + 空格 + 纯正名称 + 专属尾缀
     return f'"name": "🦋 {name_val}{tg_suffix}"'
 
 # 🚀 【核心性能调优：直播间安全隔离壁垒】
-# 只对前半段包含 sites（影视点播大组）的区域加蝴蝶。后半段 lives 里不论是海豚还是乡村电视内部的几千个电视节目清单，100% 保持纯文本状态，绝不塞蝴蝶，彻底消灭线路加载卡死
+# 只对前半段包含 sites（影视点播大组）的区域加蝴蝶。后半段 lives 里不论是插队的乡村电视、海豚还是CNB独家去重源，
+# 其内部上千个具体的电视节目单 100% 保持纯净明文状态，绝不塞任何蝴蝶符号，彻底消灭线路加载死卡
 if '"sites": [' in final_json_text and '"lives": [' in final_json_text:
     parts = final_json_text.split('"lives": [', 1)
     parts[0] = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, parts[0])
@@ -308,4 +333,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【乡村电视引流直链集成版】部署成功！配置名: {output_path}")
+print(f"🎉 【完美插队与全量去重集成版】部署成功！配置名: {output_path}")
