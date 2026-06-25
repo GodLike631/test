@@ -38,7 +38,8 @@ else:
             f.write(current_token)
         print(f"⏰ 【密锁强制纠偏/新月抽签】已生成全量版严格 3 位新密锁: {current_token}")
 
-output_filename = f"老杨TV全功能版{current_token}.json"
+# 🎯 严格保真：输出为 老杨TV + 随机密锁
+output_filename = f"老杨TV{current_token}.json"
 output_path = f"datas/{output_filename}"
 
 # ====================================================================
@@ -48,6 +49,7 @@ old_configs = glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
         try:
+            # 🌟 彻底抛弃图片链接，全量版专属纯文字高能预警盒子
             trap_json = {
                 "spider": "", 
                 "notice": "⚠️ 警告：当前“老杨TV”专线密码已过期断流！老链接已彻底作废！\n\n最新密码加QQ群“532637640”获取",
@@ -86,7 +88,6 @@ for old_file in old_configs:
                     }
                 ]
             }
-            import json
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
             print(f"📡 【金蝉脱壳】已成功将过期旧线调包为纯文字大轰炸: {old_file}")
@@ -133,9 +134,9 @@ if lz_sites_text:
         for item in wrapped_lz_json:
             # 🎯 靶向狙击：只留下包含 🔞 标志的极品福利站
             if "🔞" in item.get("name", ""):
-                # 🛠️ 【定制改名手术】：将原始名字中的 "🔞Hanime(py)" 剥离干净
+                # 🛠️ 【视觉完美净化】：剥离原本乱乱的 🔞，提取纯正名称
                 raw_name = item["name"].replace("🔞", "").strip()
-                # ✨ 重新组装为老杨指定的完美格式："🦋 线路名｜🔞" (这里预留后缀，后面会统一加上蝴蝶)
+                # 重新挂上规范后缀，方便后面统一加上蝴蝶
                 item["name"] = f"{raw_name}｜🔞"
                 
                 # 🛠️ 【国内免翻墙靶向净化】：直接使用 gh-proxy 极品中转网关注入 api
@@ -149,7 +150,6 @@ if lz_sites_text:
                 
                 lz_nsfw_list.append(json.dumps(item, ensure_ascii=False, indent=4))
     except Exception as e:
-        # 降级备用正则过滤与绝对化补位
         blocks = re.findall(r'\{[^{}]*\}', lz_sites_text)
         for block in blocks:
             if "🔞" in block:
@@ -173,6 +173,16 @@ if haitun_sites_text:
 if haitun_lives_text:
     haitun_lives_text = re.sub(name_regex, r'"name": "\1｜Tg：@huliys9"', haitun_lives_text)
 
+# 🚀 【乡村电视核心直链接入】：构建老哥专属的完美明文大组字典段落
+country_live_dict = {
+    "name": "乡村电视 ｜Tg：@huliys9",
+    "type": 0,
+    "playerType": 2,
+    "ua": "okhttp",
+    "url": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E4%B9%A1%E6%9D%91%E7%94%B5%E8%A7%86.txt"
+}
+country_live_text = json.dumps(country_live_dict, ensure_ascii=False, indent=4)
+
 final_json_text = text_cnb
 
 # ====================================================================
@@ -186,9 +196,14 @@ if '"sites": [' in final_json_text:
         combined_sites += lz_nsfw_final_text.rstrip(',') + ',\n    '
     final_json_text = final_json_text.replace('"sites": [', f'"sites": [\n    {combined_sites}', 1)
 
-if haitun_lives_text and '"lives": [' in final_json_text:
-    haitun_lives_text = haitun_lives_text.rstrip(',')
-    final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {haitun_lives_text},\n    ', 1)
+# 🚀 注入直播源：在海豚直播的大屁股后面，追加焊死乡村电视特调大组
+if '"lives": [' in final_json_text:
+    combined_lives = ""
+    if haitun_lives_text:
+        combined_lives += haitun_lives_text.rstrip(',') + ',\n    '
+    if country_live_text:
+        combined_lives += country_live_text.strip() + ',\n    '
+    final_json_text = final_json_text.replace('"lives": [', f'"lives": [\n    {combined_lives}', 1)
 
 # ====================================================================
 # 路径固定清洗与核心拦截
@@ -265,10 +280,11 @@ def clean_and_add_butterfly(match):
         
     name_val = re.sub(r'\s+', ' ', name_val)
     
-    # 🎯 规范化命名：注入蝴蝶 + 空格 + 纯正名称 + 尾部后缀 (达到 🦋 lav(py)｜🔞 效果)
+    # 🎯 规范化命名：空气动力学排版，蝴蝶 + 空格 + 名字 + 标识 (实现 🦋 lav(py)｜🔞 与 🦋 乡村电视 ｜Tg：@huliys9 完美包装)
     return f'"name": "🦋 {name_val}{tg_suffix}"'
 
-# 🚀 【核心性能调优：靶向隔离】
+# 🚀 【核心性能调优：直播间安全隔离壁垒】
+# 只对前半段包含 sites（影视点播大组）的区域加蝴蝶。后半段 lives 里不论是海豚还是乡村电视内部的几千个电视节目清单，100% 保持纯文本状态，绝不塞蝴蝶，彻底消灭线路加载卡死
 if '"sites": [' in final_json_text and '"lives": [' in final_json_text:
     parts = final_json_text.split('"lives": [', 1)
     parts[0] = re.sub(r'"name"\s*:\s*"([^"]+)"', clean_and_add_butterfly, parts[0])
@@ -292,4 +308,4 @@ with open(output_path, 'w', encoding='utf-8') as f:
 with open(tracker_path, 'w', encoding='utf-8') as f:
     f.write(output_filename)
 
-print(f"🎉 【视觉完美改名版】更新成功！配置名: {output_path}")
+print(f"🎉 【乡村电视引流直链集成版】部署成功！配置名: {output_path}")
