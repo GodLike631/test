@@ -1,46 +1,39 @@
 import os
 import re
-import random
-import string
 import glob
-import datetime
 import json
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
 lz_path = 'datas/lz.json'
 
+# 控制开关和追踪器文件路径
 lock_file_path = 'datas/控制开关.txt'
 tracker_path = 'datas/最新接口文件名.txt'
 
 # ====================================================================
-# ⏰ 【安全阀门升级：全量版方案 A】
+# 🎛️ 【控制开关动态读取与文件名拼接逻辑】
 # ====================================================================
-today = datetime.datetime.now()
-is_reset_day = (today.day == 1)
-current_token = ""
+# 默认配置
+current_token = "全量版" 
 
 if os.path.exists(lock_file_path):
     with open(lock_file_path, 'r', encoding='utf-8') as f:
-        current_token = f.read().strip()
+        config_content = f.read().strip()
+        if config_content:
+            current_token = config_content
 
-if len(current_token) != 3:
-    current_token = ""
-
-if is_reset_day and len(current_token) == 3:
-    print(f"🔒 【安全阀拦截】今日 1 号已大洗牌，保持原暗号: {current_token}")
+# 🎯 根据控制开关里的内容，决定输出的文件名（固定带上“全量版”）
+if current_token == "全量版":
+    output_filename = "老杨TV全量版.json"
 else:
-    if is_reset_day or not current_token:
-        current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
-        with open(lock_file_path, 'w', encoding='utf-8') as f:
-            f.write(current_token)
-        print(f"⏰ 已生成新密锁: {current_token}")
+    output_filename = f"老杨TV全量版{current_token}.json"
 
-output_filename = f"老杨TV{current_token}.json"
 output_path = f"datas/{output_filename}"
+print(f"🎯 当前控制开关模式为：[{current_token}] -> 目标输出：{output_filename}")
 
 # ====================================================================
-# 🛡️ 【黑科技：过期旧线调包】
+# 🛡️ 【金蝉脱壳：全量/暗号版本过期旧线一键调包大轰炸】
 # ====================================================================
 old_configs = glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
@@ -48,18 +41,19 @@ for old_file in old_configs:
         try:
             trap_json = {
                 "spider": "", 
-                "notice": "⚠️ 警告：当前“老杨TV”专线密码已过期断流！老链接已彻底作废！\n\n最新密码加QQ群“532637640”获取",
-                "warningText": "👑 特别提示：加QQ群“532637640”获取",
+                "notice": f"⚠️ 警告：当前线路已过期断流！老链接已彻底作废！\n\n最新全量版链接或密码请加QQ群“532637640”获取",
+                "warningText": "👑 特别提示：加QQ群“532637640”获取最新接口",
                 "sites": [
-                    {"key": "老杨纯文字提示", "name": "🚨 加QQ群“532637640”获取最新密码", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0},
-                    {"key": "老杨纯文字提示2", "name": "🚨 不要看这里了 ➡️ 链接已断 ｜ 加QQ群“532637640”获取", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0}
+                    {"key": "老杨纯文字提示", "name": "🚨 当前专线密码已过期断流！", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0},
+                    {"key": "老杨纯文字提示2", "name": "🚨 请前往QQ群“532637640”获取最新全量版链接", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0}
                 ],
                 "lives": [
-                    {"group": "🚨 接口过期断流 ｜ 加QQ群“532637640”获取最新密码", "channels": [{"name": "👉 当前线路已过期 ➡️ 加QQ群“532637640”获取最新密码", "urls": ["http://127.0.0.1"]}]}
+                    {"group": "🚨 接口过期断流 ｜ 提示", "channels": [{"name": "👉 线路已过期 ➡️ 加QQ群“532637640”获取最新全量版密码", "urls": ["http://127.0.0.1"]}]}
                 ]
             }
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
+            print(f"📡 【金蝉脱壳】已成功将过期旧线调包为纯文字大轰炸: {old_file}")
         except:
             pass
 
@@ -95,11 +89,9 @@ lz_sites = json_lz.get("sites", [])
 lz_nsfw_list = []
 for item in lz_sites:
     if "🔞" in item.get("name", ""):
-        # 净化并重新打标
         raw_name = item["name"].replace("🔞", "").strip()
         item["name"] = f"{raw_name}｜🔞"
         
-        # 路径绝对化
         if "api" in item and isinstance(item["api"], str):
             if item["api"].startswith("./py/"):
                 item["api"] = item["api"].replace("./py/", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/")
@@ -133,20 +125,15 @@ else:
 # ====================================================================
 # 🚀 数组大合并
 # ====================================================================
-# 合并后的 sites = 海豚 sites + 老张 🔞 sites
-final_sites = haitun_sites + lz_nsfw_list
-final_lives = haitun_lives
-
-# 将合并后的数据放入 cnb 容器中
-json_cnb["sites"] = final_sites
-json_cnb["lives"] = final_lives
+json_cnb["sites"] = haitun_sites + lz_nsfw_list
+json_cnb["lives"] = haitun_lives
 
 # ====================================================================
 # 📝 转换为文本后进行清洗与特调
 # ====================================================================
 final_json_text = json.dumps(json_cnb, ensure_ascii=False, indent=4)
 
-# 针对特定 key 补充 jar 包依赖（原先的强行替换保留）
+# 针对特定 key 补充 jar 包依赖
 final_json_text = final_json_text.replace('"key": "hajim-腾讯备"', '"spider": "./tvbox.jar",\n            "key": "hajim-腾讯备"')
 final_json_text = final_json_text.replace('"key": "茫茫"', '"spider": "./tvbox.jar",\n            "key": "茫茫"')
 
@@ -173,32 +160,26 @@ for src, dst in path_replacements.items():
 thanks_warning = "👑 特别致谢与版权声明\n本接口的诞生离不开大后方几位业内顶流技术大佬的无私奉献，特此致谢：\n🐋 感谢鱼佬的付出\n源码基础与发布主页: fish2018/webhtv\n版本发布绝对地址: fish2018/webhtv/releases\nTelegram 官方群组: 👉 https://t.me/webhtv\n 感谢佬的付出\n核心仓库主页: FGBLH/GHK\n数据源直链地址: FGBLH/GHK/.json\nTelegram 官方群组: 👉 https://t.me/hshsjk9"
 welcome_notice = "👑 欢迎使用【老杨TV粉丝专属缝合专线】！本接口由老杨TV结合佬&老张特调&鱼佬的优质核心资源缝合而成，纯净无广告！🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码！"
 
-# 解析回字典添加全局 notice
 try:
     final_obj = json.loads(final_json_text)
     final_obj["notice"] = welcome_notice
     final_obj["warningText"] = thanks_warning
     
-    # 调整顶级键值顺序，让 notice 更好看
     ordered_obj = {}
     if "notice" in final_obj: ordered_obj["notice"] = final_obj.pop("notice")
     if "warningText" in final_obj: ordered_obj["warningText"] = final_obj.pop("warningText")
     ordered_obj.update(final_obj)
     
-    # ================================================================
-    # 🦋 【高级加蝴蝶逻辑】：只加在 sites 里面，彻底放过 lives
-    # ================================================================
+    # 🦋 【高级加蝴蝶逻辑】：只加在 sites 里面
     for site in ordered_obj.get("sites", []):
         if "name" in site:
             name_val = site["name"]
-            # 净化原有的多余修饰符
             for char in ['丨', '┃', ' ']:
                 name_val = name_val.strip(char)
             name_val = re.sub(r'\s+', ' ', name_val)
             if not name_val.startswith("🦋"):
                 site["name"] = f"🦋 {name_val}"
 
-    # 特殊接口改名特调
     for site in ordered_obj.get("sites", []):
         if "key" in site and site["key"] == "AQY":
             site["name"] = "🦋 爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"
@@ -207,10 +188,11 @@ try:
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(ordered_obj, f, ensure_ascii=False, indent=4)
         
+    # 把当前最新文件名写入追踪器文件
     with open(tracker_path, 'w', encoding='utf-8') as f:
         f.write(output_filename)
         
-    print(f"🎉 【第 6 位精准焊接安全版】更新成功！配置名: {output_path}")
+    print(f"🎉 更新成功！配置已写出至: {output_path}")
 
 except Exception as e:
     print(f"❌ 严重错误：最后的本地渲染失败，原因: {e}")
