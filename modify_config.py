@@ -5,6 +5,7 @@ import string
 import glob
 import datetime
 import json
+import base64
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
@@ -14,7 +15,7 @@ lock_file_path = 'datas/控制开关.txt'
 tracker_path = 'datas/最新接口文件名.txt'
 
 # ====================================================================
-# ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑 - 引入月份判定版】
+# ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑】
 # ====================================================================
 today = datetime.datetime.now()
 current_month = str(today.month) 
@@ -23,7 +24,6 @@ is_reset_day = (today.day == 1)
 saved_month = ""
 saved_code = ""
 
-# 1. 尝试读取现有的开关状态 (格式为 "月份-3位密码"，例如 "7-k9x")
 if os.path.exists(lock_file_path):
     with open(lock_file_path, 'r', encoding='utf-8') as f:
         content = f.read().strip()
@@ -32,19 +32,14 @@ if os.path.exists(lock_file_path):
         else:
             saved_code = content
 
-# 🎯 判定：如果是 1 号，且记录的月份不是当前月份（跨月了）
 if is_reset_day and saved_month != current_month:
     current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
     with open(lock_file_path, 'w', encoding='utf-8') as f:
         f.write(f"{current_month}-{current_token}")
-    print(f"⏰ 【每月1号全新硬核洗牌】检测到进入新月份 {current_month} 月！已全自动抽签生成本月新密锁: {current_token}")
-
-# 🎯 判定：如果是 1 号的第二次及后续运行
+    print(f"⏰ 【每月1号全新硬核洗牌】检测到进入新月份 {current_month} 月！已生成新密锁: {current_token}")
 elif is_reset_day and saved_month == current_month:
     current_token = saved_code
     print(f"🔒 【安全阀拦截】今日 1 号已经是当月第二次运行，保持原暗号: {current_token}")
-
-# 🎯 平常日子
 else:
     if not saved_code or len(saved_code) != 3 or "-" not in (content if os.path.exists(lock_file_path) else ""):
         current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
@@ -54,7 +49,6 @@ else:
         current_token = saved_code
     print(f"📡 正常沿用本月密锁: {current_token}")
 
-# 3. 🎯 严格判定最终输出的文件名（原汁原味：老杨TV纯净版）
 if current_token in ["全量版", "纯净版"]:
     output_filename = "老杨TV纯净版.json"
 else:
@@ -198,22 +192,47 @@ try:
         print(f"⚠️ 提示：美化蝴蝶图标时跳过，原因: {inner_e}")
 
     # ====================================================================
-    # 🌟 终极修正：【无换行、纯小写 Hex 混淆加密输出】
+    # 🌟 核心高阶玩法一：【type: 4 + Base64 局部数据隐形法】[span_1](start_span)[span_1](end_span)
     # ====================================================================
-    # 1. 生成紧凑的明文 JSON，去掉多余的空格换行缩进，确保数据一体化
-    standard_json_text = json.dumps(ordered_obj, ensure_ascii=False, separators=(',', ':'))
+    for site in ordered_obj.get("sites", []):
+        if site.get("type") == 1 and "ext" in site:
+            ext_val = site["ext"]
+            if isinstance(ext_val, (dict, list)):
+                ext_str = json.dumps(ext_val, ensure_ascii=False, separators=(',', ':'))
+            else:
+                ext_str = str(ext_val)
+            
+            # 将敏感 ext 数据转化为 Base64 天书
+            encoded_ext = base64.b64encode(ext_str.encode('utf-8')).decode('utf-8')
+            
+            # 严格按照官方文档将 type 设定为 4[span_2](start_span)[span_2](end_span)
+            site["ext"] = encoded_ext
+            site["type"] = 4[span_3](start_span)[span_3](end_span)
 
-    # 2. 转换为纯小写、无换行的十六进制字符串
-    hex_encrypted_text = standard_json_text.encode('utf-8').hex().lower().strip()
+    # ====================================================================
+    # 🌟 核心高阶玩法二：【pass 字段动态空城计】[span_4](start_span)[span_4](end_span)
+    # ====================================================================
+    for live in ordered_obj.get("lives", []):
+        # 粉丝的主配置里注入免密特权
+        live["pass"] = True[span_5](start_span)[span_5](end_span)
+        
+        if "groups" in live:
+            for group in live["groups"]:
+                # 直播流分组强行加上安全密码锁[span_6](start_span)[span_6](end_span)
+                group["pass"] = "ly2026[span_7](start_span)"[span_7](end_span)
 
-    # 3. 写出到接口文件中
+    # ====================================================================
+    # 🚀 正常输出正统明文 JSON 外壳，确保原版蜂蜜 100% 顺畅秒读
+    # ====================================================================
+    standard_json_text = json.dumps(ordered_obj, ensure_ascii=False, indent=4)
+
     with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(hex_encrypted_text)
+        f.write(standard_json_text)
         
     with open(tracker_path, 'w', encoding='utf-8') as f:
         f.write(output_filename)
         
-    print(f"🎉 【标准小写 Hex 版】更新成功！配置名: {output_path}")
+    print(f"🎉 【官方规范-标准正常生成版】更新成功！配置名: {output_path}")
 
 except Exception as e:
     print(f"❌ 严重错误：最后的本地过滤渲染失败，reason: {e}")
