@@ -5,8 +5,6 @@ import string
 import glob
 import datetime
 import json
-import zlib
-import base64
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
@@ -68,7 +66,7 @@ print(f"🎯 最终结算 -> 目标输出：{output_filename}")
 # ====================================================================
 # 🛡️ 【金蝉脱壳：绿色版过期旧线一键调包为纯文字滚动大轰炸】
 # ====================================================================
-# 🌟 注意：旧文件调包我们依然保持明文，只有当天最新生效的那个文件才做 Zlib+Base64 加密
+# 🌟 注意：旧文件调包我们依然保持明文，只有当天最新生效的那个文件才做 Hex 加密
 old_configs = glob.glob('datas/老杨TV纯净版*.json') + glob.glob('datas/老杨TV无18*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
@@ -201,23 +199,22 @@ try:
         print(f"⚠️ 提示：美化蝴蝶图标时跳过，原因: {inner_e}")
 
     # ====================================================================
-    # 🌟 核心修改：【Zlib 压缩 + Base64 混淆加密输出】
+    # 🌟 核心修改：【十六进制 Hex 混淆加密输出 - 蜂蜜影视完美盲解】
     # ====================================================================
     # 1. 正常生成标准的明文文本
     standard_json_text = json.dumps(ordered_obj, ensure_ascii=False, indent=4)
 
-    # 2. 对明文进行二进制压缩并使用 Base64 混淆编码成天书乱码
-    compressed_data = zlib.compress(standard_json_text.encode('utf-8'))
-    encrypted_text = base64.b64encode(compressed_data).decode('utf-8')
+    # 2. 将明文文本转换为纯十六进制乱码字符串
+    hex_encrypted_text = standard_json_text.encode('utf-8').hex()
 
-    # 3. 将乱码写出到接口 JSON 文件中
+    # 3. 将十六进制乱码写出到接口 JSON 文件中
     with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(encrypted_text)
+        f.write(hex_encrypted_text)
         
     with open(tracker_path, 'w', encoding='utf-8') as f:
         f.write(output_filename)
         
-    print(f"🎉 【加密精简防白嫖纯净版】更新成功！文件已成功进行 Zlib+Base64 混淆。配置名: {output_path}")
+    print(f"🎉 【Hex加密精简版】更新成功！文件已成功进行十六进制混淆。配置名: {output_path}")
 
 except Exception as e:
     print(f"❌ 严重错误：最后的本地过滤渲染失败，reason: {e}")
