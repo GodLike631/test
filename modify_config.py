@@ -66,7 +66,6 @@ print(f"🎯 最终结算 -> 目标输出：{output_filename}")
 # ====================================================================
 # 🛡️ 【金蝉脱壳：绿色版过期旧线一键调包为纯文字滚动大轰炸】
 # ====================================================================
-# 🌟 注意：旧文件调包我们依然保持明文，只有当天最新生效的那个文件才做 Hex 加密
 old_configs = glob.glob('datas/老杨TV纯净版*.json') + glob.glob('datas/老杨TV无18*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
@@ -199,22 +198,22 @@ try:
         print(f"⚠️ 提示：美化蝴蝶图标时跳过，原因: {inner_e}")
 
     # ====================================================================
-    # 🌟 核心修改：【十六进制 Hex 混淆加密输出 - 蜂蜜影视完美盲解】
+    # 🌟 终极修正：【无换行、纯小写 Hex 混淆加密输出】
     # ====================================================================
-    # 1. 正常生成标准的明文文本
-    standard_json_text = json.dumps(ordered_obj, ensure_ascii=False, indent=4)
+    # 1. 生成紧凑的明文 JSON，去掉多余的空格换行缩进，确保数据一体化
+    standard_json_text = json.dumps(ordered_obj, ensure_ascii=False, separators=(',', ':'))
 
-    # 2. 将明文文本转换为纯十六进制乱码字符串
-    hex_encrypted_text = standard_json_text.encode('utf-8').hex()
+    # 2. 转换为纯小写、无换行的十六进制字符串
+    hex_encrypted_text = standard_json_text.encode('utf-8').hex().lower().strip()
 
-    # 3. 将十六进制乱码写出到接口 JSON 文件中
+    # 3. 写出到接口文件中
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(hex_encrypted_text)
         
     with open(tracker_path, 'w', encoding='utf-8') as f:
         f.write(output_filename)
         
-    print(f"🎉 【Hex加密精简版】更新成功！文件已成功进行十六进制混淆。配置名: {output_path}")
+    print(f"🎉 【标准小写 Hex 版】更新成功！配置名: {output_path}")
 
 except Exception as e:
     print(f"❌ 严重错误：最后的本地过滤渲染失败，reason: {e}")
