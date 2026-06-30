@@ -5,6 +5,8 @@ import string
 import glob
 import datetime
 import json
+import zlib
+import base64
 
 cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
@@ -14,7 +16,7 @@ lock_file_path = 'datas/控制开关.txt'
 tracker_path = 'datas/最新接口文件名.txt'
 
 # ====================================================================
-# ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑】
+# ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑 - 引入月份判定版】
 # ====================================================================
 today = datetime.datetime.now()
 current_month = str(today.month) 
@@ -30,14 +32,11 @@ if os.path.exists(lock_file_path):
         if "-" in content:
             saved_month, saved_code = content.split("-", 1)
         else:
-            # 如果里面是老脚本留下的纯文本或旧固定密码
             saved_code = content
 
-# 🎯 判定：如果是 1 号，且记录的月份不是当前月份（说明是当月第一次跑，跨月了）
+# 🎯 判定：如果是 1 号，且记录的月份不是当前月份（跨月了）
 if is_reset_day and saved_month != current_month:
-    # 随机生成 3 位新密码
     current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
-    # 写入当前月份和新密码，例如 "7-k9x"
     with open(lock_file_path, 'w', encoding='utf-8') as f:
         f.write(f"{current_month}-{current_token}")
     print(f"⏰ 【每月1号全新硬核洗牌】检测到进入新月份 {current_month} 月！已全自动抽签生成本月新密锁: {current_token}")
@@ -49,7 +48,6 @@ elif is_reset_day and saved_month == current_month:
 
 # 🎯 平常日子
 else:
-    # 如果平时发现开关空了，或者里面还是旧的不带月份的密码，立刻初始化
     if not saved_code or len(saved_code) != 3 or "-" not in (content if os.path.exists(lock_file_path) else ""):
         current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
         with open(lock_file_path, 'w', encoding='utf-8') as f:
@@ -58,11 +56,11 @@ else:
         current_token = saved_code
     print(f"📡 正常沿用本月密锁: {current_token}")
 
-# 3. 严格判定最终输出的文件名
+# 3. 🎯 严格判定最终输出的文件名（原汁原味：老杨TV纯净版）
 if current_token in ["全量版", "纯净版"]:
-    output_filename = "蝴蝶影视纯净版.json"
+    output_filename = "老杨TV纯净版.json"
 else:
-    output_filename = f"蝴蝶影视纯净版{current_token}.json"
+    output_filename = f"老杨TV纯净版{current_token}.json"
 
 output_path = f"datas/{output_filename}"
 print(f"🎯 最终结算 -> 目标输出：{output_filename}")
@@ -70,20 +68,21 @@ print(f"🎯 最终结算 -> 目标输出：{output_filename}")
 # ====================================================================
 # 🛡️ 【金蝉脱壳：绿色版过期旧线一键调包为纯文字滚动大轰炸】
 # ====================================================================
-old_configs = glob.glob('datas/蝴蝶影视纯净版*.json') + glob.glob('datas/老杨TV纯净版*.json') + glob.glob('datas/老杨TV无18*.json')
+# 🌟 注意：旧文件调包我们依然保持明文，只有当天最新生效的那个文件才做 Zlib+Base64 加密
+old_configs = glob.glob('datas/老杨TV纯净版*.json') + glob.glob('datas/老杨TV无18*.json')
 for old_file in old_configs:
     if os.path.basename(old_file) != output_filename:
         try:
             trap_json = {
                 "spider": "", 
-                "notice": "⚠️ 警告：当前“蝴蝶影视”绿色专线密码已过期断流！老链接已彻底作废！\n\n最新密码前往Tg频道（@huliys9）获取！",
-                "warningText": "👑 特别提示：前往Tg频道（@huliys9）获取最新密码！",
+                "notice": "⚠️ 警告：当前“老杨TV”绿色专线密码已过期断流！老链接已彻底作废！\n\n最新密码或纯净版链接加QQ群“532637640”获取",
+                "warningText": "👑 特别提示：加QQ群“532637640”获取",
                 "sites": [
-                    {"key": "蝴蝶影视绿色纯文字提示", "name": "➡️ 请前往Tg频道（@huliys9）获取最新密码🚨 ➡️ 请前往Tg频道（@huliys9）获取最新密码", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0},
-                    {"key": "蝴蝶影视绿色纯文字提示2", "name": "🚨 不要看这里了 ➡️ 请前往Tg频道（@huliys9）获取最新密码", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0}
+                    {"key": "老杨绿色纯文字提示", "name": "➡️ 请前往QQ群“532637640”获取最新密码🚨 ➡️ 请前往QQ群“532637640”获取最新密码", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0},
+                    {"key": "老杨绿色纯文字提示2", "name": "🚨 不要看这里了 ➡️ 请前往QQ群“532637640”获取最新密码", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0}
                 ],
                 "lives": [
-                    {"group": "🚨 接口过期断流 ｜ 提示", "channels": [{"name": "👉 当前线路已过期 ➡️  请前往Tg频道（@huliys9）获取最新密码", "urls": ["http://127.0.0.1"]}]}
+                    {"group": "🚨 接口过期断流 ｜ 提示", "channels": [{"name": "👉 当前线路已过期 ➡️  请前往QQ群“532637640”获取最新密码", "urls": ["http://127.0.0.1"]}]}
                 ]
             }
             with open(old_file, 'w', encoding='utf-8') as f:
@@ -116,15 +115,11 @@ json_haitun = load_json_safe(haitun_path)
 haitun_sites = json_haitun.get("sites", [])
 haitun_lives = json_haitun.get("lives", [])
 
-# 给海豚源打上后缀标签
 for item in haitun_sites:
-    if "name" in item:
-        item["name"] = f"{item['name']}｜Tg：@huliys9"
+    if "name" in item: item["name"] = f"{item['name']}｜Tg：@huliys9"
 for item in haitun_lives:
-    if "name" in item:
-        item["name"] = f"{item['name']}｜Tg：@huliys9"
+    if "name" in item: item["name"] = f"{item['name']}｜Tg：@huliys9"
 
-# 精准插入“乡村电视占位符”到直播数组索引 5（第 6 位）
 country_live_dict = {
     "name": "乡村电视安全防屏蔽占位符",
     "type": 0,
@@ -137,27 +132,17 @@ if len(haitun_lives) >= 5:
 else:
     haitun_lives.append(country_live_dict)
 
-# ====================================================================
-# 🚀 数组大合并：【完美调整顺序】海豚排上面 ➡️ 最后接 cnb
-# ====================================================================
 cnb_sites = json_cnb.get("sites", [])
 cnb_lives = json_cnb.get("lives", [])
-
 json_cnb["sites"] = haitun_sites + cnb_sites
 json_cnb["lives"] = haitun_lives + cnb_lives
 
-# 转换为文本进行清洗与特调
 final_json_text = json.dumps(json_cnb, ensure_ascii=False, indent=4)
-
-# 补全关键 jar 依赖
 final_json_text = final_json_text.replace('"key": "hajim-腾讯备"', '"spider": "./tvbox.jar",\n            "key": "hajim-腾讯备"')
 final_json_text = final_json_text.replace('"key": "茫茫"', '"spider": "./tvbox.jar",\n            "key": "茫茫"')
-
-# 净化海豚残留词
 final_json_text = final_json_text.replace('🐬', '').replace('海豚影视', '').replace('海豚', '')
 final_json_text = final_json_text.replace('完全免费，如有收费的都是骗子', '').replace('交流群 TG：@hshsjk9', '')
 
-# 替换本地路径为绝对网络路径
 path_replacements = {
     './spider.jar': 'https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar',
     './XBPQ/': 'https://cnb.cool/fish2018/xs/-/git/raw/main/XBPQ/',
@@ -170,9 +155,8 @@ path_replacements = {
 for src, dst in path_replacements.items():
     final_json_text = final_json_text.replace(src, dst)
 
-# 绿色版开机公告注入
 thanks_warning = "👑 特别致谢与版权声明\n本接口的诞生离不开大后方几位业内顶流技术大佬的无私奉献，特此致谢：\n🐋 感谢鱼佬的付出\n源码基础与发布主页: fish2018/webhtv\n版本发布绝对地址: fish2018/webhtv/releases\nTelegram 官方群组: 👉 https://t.me/webhtv\n 感谢佬的付出\n核心仓库主页: FGBLH/GHK\n数据源直链地址: FGBLH/GHK/.json\nTelegram 官方群组: 👉 https://t.me/hshsjk9"
-welcome_notice = "👑 欢迎使用【蝴蝶影视粉丝专属绿色纯净线】！本接口由蝴蝶影视结合海豚大佬＆鱼佬的优质 resource 缝合而成，纯净无广告！🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道（@huliys9）获取当前最新密码！"
+welcome_notice = "👑 欢迎使用【老杨TV粉丝专属绿色纯净线】！本接口由老杨TV结合海豚大佬＆鱼佬的优质资源缝合而成，纯净无广告！🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码！"
 
 try:
     final_obj = json.loads(final_json_text)
@@ -180,12 +164,10 @@ try:
     final_obj["warningText"] = thanks_warning
     
     ordered_obj = {}
-    if "notice" in final_obj: 
-        ordered_obj["notice"] = final_obj.pop("notice")
+    if "notice" in final_obj: ordered_obj["notice"] = final_obj.pop("notice")
     if "warningText" in final_obj: ordered_obj["warningText"] = final_obj.pop("warningText")
     ordered_obj.update(final_obj)
     
-    # 🛡️ 绿色版专属核心：全自动全盘对象级物理擦除 18 禁不健康元素（新增“有三级片”过滤逻辑）
     clean_sites = []
     for site in ordered_obj.get("sites", []):
         site_str = json.dumps(site, ensure_ascii=False)
@@ -201,44 +183,45 @@ try:
     ordered_obj["sites"] = clean_sites
     ordered_obj["lives"] = clean_lives
 
-    # 🎯 【靶向解密还原】：净化做完后，把乡村电视的名字完美恢复
     for live in ordered_obj.get("lives", []):
         if live.get("name") == "乡村电视安全防屏蔽占位符":
             live["name"] = "乡村电视 ｜Tg：@huliys9"
 
-    # 🦋 加蝴蝶逻辑
     try:
         for site in ordered_obj.get("sites", []):
             if "name" in site:
                 name_val = site["name"]
-                for char in ['丨', '┃', ' ']:
-                    name_val = name_val.strip(char)
+                for char in ['丨', '┃', ' ']: name_val = name_val.strip(char)
                 name_val = re.sub(r'\s+', ' ', name_val)
-                if not name_val.startswith("🦋"):
-                    site["name"] = f"🦋 {name_val}"
-
+                if not name_val.startswith("🦋"): site["name"] = f"🦋 {name_val}"
         for site in ordered_obj.get("sites", []):
             if "key" in site and site["key"] == "AQY":
                 site["name"] = "🦋 爱奇艺｜此接口非原创，合并自海豚佬和鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"
     except Exception as inner_e:
         print(f"⚠️ 提示：美化蝴蝶图标时跳过，原因: {inner_e}")
 
-    # 写出最终文件文本并做最后微调
-    output_json_text = json.dumps(ordered_obj, ensure_ascii=False, indent=4)
+    # ====================================================================
+    # 🌟 核心修改：【Zlib 压缩 + Base64 混淆加密输出】
+    # ====================================================================
+    # 1. 正常生成标准的明文文本
+    standard_json_text = json.dumps(ordered_obj, ensure_ascii=False, indent=4)
 
-    # 🌟 强行写出文件
+    # 2. 对明文进行二进制压缩并使用 Base64 混淆编码成天书乱码
+    compressed_data = zlib.compress(standard_json_text.encode('utf-8'))
+    encrypted_text = base64.b64encode(compressed_data).decode('utf-8')
+
+    # 3. 将乱码写出到接口 JSON 文件中
     with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(output_json_text)
+        f.write(encrypted_text)
         
     with open(tracker_path, 'w', encoding='utf-8') as f:
         f.write(output_filename)
         
-    print(f"🎉 【绿色精简防屏蔽纯净版】更新成功！配置名: {output_path}")
+    print(f"🎉 【加密精简防白嫖纯净版】更新成功！文件已成功进行 Zlib+Base64 混淆。配置名: {output_path}")
 
 except Exception as e:
     print(f"❌ 严重错误：最后的本地过滤渲染失败，reason: {e}")
 
-# 🌟 双重保险：无论如何，最终确保开关文件是以标准月份格式持久保存在本地磁盘上
 if not os.path.exists(lock_file_path) or "-" not in (open(lock_file_path, 'r', encoding='utf-8').read() if os.path.exists(lock_file_path) else ""):
     with open(lock_file_path, 'w', encoding='utf-8') as f:
         f.write(f"{current_month}-{current_token}")
