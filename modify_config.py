@@ -147,7 +147,7 @@ for src, dst in path_replacements.items():
     final_json_text = final_json_text.replace(src, dst)
 
 thanks_warning = "👑 特别致谢与版权声明\n本接口的诞生离不开大后方几位业内顶流技术大佬的无私奉献，特此致谢：\n🐋 感谢鱼佬的付出\n源码基础与发布主页: fish2018/webhtv\n版本发布绝对地址: fish2018/webhtv/releases\nTelegram 官方群组: 👉 https://t.me/webhtv\n 感谢佬的付出\n核心仓库主页: FGBLH/GHK\n数据源直链地址: FGBLH/GHK/.json\nTelegram 官方群组: 👉 https://t.me/hshsjk9"
-welcome_notice = "👑 欢迎使用【老杨TV粉丝专属绿色纯净线】！本接口由老杨TV结合海豚大佬＆鱼佬的优质资源缝合而成，纯净无广告！🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码！"
+welcome_notice = "👑 欢迎使用【老杨TV粉丝专属绿色纯净线】！本接口由老杨TV结合海豚大佬＆鱼佬的优质 resource 缝合而成，纯净无广告！🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效或断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码！"
 
 try:
     final_obj = json.loads(final_json_text)
@@ -192,34 +192,36 @@ try:
         print(f"⚠️ 提示：美化蝴蝶图标时跳过，原因: {inner_e}")
 
     # ====================================================================
-    # 🌟 核心高阶玩法一：【type: 4 + Base64 局部数据隐形法】[span_1](start_span)[span_1](end_span)
+    # 🌟 核心高阶玩法一：【type: 4 + Base64 局部数据隐形法 - 安全隔离版】
     # ====================================================================
     for site in ordered_obj.get("sites", []):
-        if site.get("type") == 1 and "ext" in site:
-            ext_val = site["ext"]
-            if isinstance(ext_val, (dict, list)):
-                ext_str = json.dumps(ext_val, ensure_ascii=False, separators=(',', ':'))
-            else:
-                ext_str = str(ext_val)
-            
-            # 将敏感 ext 数据转化为 Base64 天书
-            encoded_ext = base64.b64encode(ext_str.encode('utf-8')).decode('utf-8')
-            
-            # 严格按照官方文档将 type 设定为 4[span_2](start_span)[span_2](end_span)
-            site["ext"] = encoded_ext
-            site["type"] = 4[span_3](start_span)[span_3](end_span)
+        try:
+            if site.get("type") == 1 and "ext" in site:
+                ext_val = site["ext"]
+                if isinstance(ext_val, (dict, list)):
+                    ext_str = json.dumps(ext_val, ensure_ascii=False, separators=(',', ':'))
+                else:
+                    ext_str = str(ext_val)
+                
+                # 过滤掉已经是外部URL直链的情况，只针对内部规则加密
+                if not ext_str.startswith("http"):
+                    encoded_ext = base64.b64encode(ext_str.encode('utf-8')).decode('utf-8')
+                    site["ext"] = encoded_ext
+                    site["type"] = 4
+        except Exception as site_e:
+            print(f"⚠️ 【安全跳过】个别特殊站点转换type:4时出错，已执行智能豁免保护: {site_e}")
 
     # ====================================================================
-    # 🌟 核心高阶玩法二：【pass 字段动态空城计】[span_4](start_span)[span_4](end_span)
+    # 🌟 核心高阶玩法二：【pass 字段动态空城计 - 安全隔离版】
     # ====================================================================
     for live in ordered_obj.get("lives", []):
-        # 粉丝的主配置里注入免密特权
-        live["pass"] = True[span_5](start_span)[span_5](end_span)
-        
-        if "groups" in live:
-            for group in live["groups"]:
-                # 直播流分组强行加上安全密码锁[span_6](start_span)[span_6](end_span)
-                group["pass"] = "ly2026[span_7](start_span)"[span_7](end_span)
+        try:
+            live["pass"] = True
+            if "groups" in live:
+                for group in live["groups"]:
+                    group["pass"] = "ly2026"
+        except Exception as live_e:
+            print(f"⚠️ 【安全跳过】直播源注入密码时出错，已执行智能豁免保护: {live_e}")
 
     # ====================================================================
     # 🚀 正常输出正统明文 JSON 外壳，确保原版蜂蜜 100% 顺畅秒读
@@ -232,7 +234,7 @@ try:
     with open(tracker_path, 'w', encoding='utf-8') as f:
         f.write(output_filename)
         
-    print(f"🎉 【官方规范-标准正常生成版】更新成功！配置名: {output_path}")
+    print(f"🎉 【官方规范-绝不报错高强容错版】更新成功！配置名: {output_path}")
 
 except Exception as e:
     print(f"❌ 严重错误：最后的本地过滤渲染失败，reason: {e}")
