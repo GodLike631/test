@@ -1,4 +1,41 @@
-# 3. 核心修正：大写 name 补全、强制精准添加控制开关
+name: 自动双源无损强行合并-备用线
+
+on:
+  schedule:
+    # 🎯 彻底避开整点塞车！换算北京时间为早上 8:43 和晚上 20:43 准时全自动合流
+    - cron: '43 0,12 * * *'
+  workflow_dispatch: 
+
+# 🌟 显式强制赋予工作流最高写权限，彻底杜绝 128 报错
+permissions: write-all
+
+jobs:
+  fetch-and-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout own repo
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    # 1. 下载三个源（标准接口底座）
+    - name: Fetch target files
+      run: |
+        mkdir -p datas
+        curl -L "https://cnb.cool/fish2018/xs/-/git/raw/main/api.json" -o datas/cnb.json
+        curl -L "https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/海豚666.json" -o datas/haitun.json
+        curl -L "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py.json" -o datas/lz.json
+
+    # 2. 执行自适应对象级合流与全自动加锁脚本
+    - name: Text Merge JSON
+      run: |
+        python modify_config.py
+
+    # 3. 核心修正：大写 name 补全、精准推送固定全量版與密鑰開關
     - name: Commit and Push changes
       run: |
         git config --global user.name "github-actions[bot]"
