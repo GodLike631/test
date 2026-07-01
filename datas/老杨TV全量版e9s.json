@@ -1,13 +1,13 @@
 {
-    "notice": "👑 欢迎使用【老杨TV粉丝专属缝合专线】！🚨 核心秒播優化版已啟用：網絡棧已實裝 DoH 加密防污染與超級並行解析專線，已成功融合 JavBus 旗艦專線與 MissAV 女優人氣榜專線！",
-    "warningText": "👑 特别致谢与版权声明\n🐋 感谢鱼佬与海豚佬的付出！",
+    "notice": "👑 欢迎使用【老杨TV粉丝专属缝合专线】！🚨 核心秒播優化版已啟用：網絡棧已實裝 DoH 加密防污染與超級並行解析專線，已成功無縫融合 JavBus 旗艦與 MissAV 女优榜兩大私房專線！",
+    "warningText": "👑 特别致谢与版权声明\n🐋 感谢鱼佬与佬的付出！",
     "spider": "https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar",
     "wallpaper": "http://127.0.0.1:9978/proxy?do=wallpaper",
     "logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg",
     "sites": [
         {
             "key": "AQY",
-            "name": "🦋 爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9",
+            "name": "🦋 爱奇艺｜此接口非原创，合并自佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9",
             "type": 3,
             "api": "https://file.icve.com.cn/file_doc/249/899/3E7E0C8A023B624CEC6BDCC200F06F02.js",
             "ext": "https://cdn.waimaimingtang.com/file/images/bwc/20251023002031-6064033c16.js"
@@ -27,14 +27,14 @@
             "ext": "https://cdn.waimaimingtang.com/file/images/bwc/20251023002144-0e40887294.js"
         },
         {
-            "spider": "./tvbox.jar",
             "key": "hajim-腾讯备",
             "name": "🦋 腾讯4K｜Tg：@huliys9",
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/IY-CPU/IY/main/lib/drpy2.min.js",
             "searchable": 1,
             "changeable": 1,
-            "ext": "https://fastlink.cokey.xyz/f/1MOEc5/%E8%85%BE%E8%85%BE.js"
+            "ext": "https://fastlink.cokey.xyz/f/1MOEc5/%E8%85%BE%E8%85%BE.js",
+            "spider": "./tvbox.jar"
         },
         {
             "key": "MG",
