@@ -10,7 +10,7 @@ cnb_path = 'datas/cnb.json'
 haitun_path = 'datas/haitun.json'
 lz_path = 'datas/lz.json'
 
-# 控制開關和追蹤器檔案路徑
+# 控制开关和追踪器文件路径
 lock_file_path = 'datas/控制开关.txt'
 tracker_path = 'datas/最新接口文件名.txt'
 
@@ -24,49 +24,45 @@ is_reset_day = (today.day == 1)
 saved_month = ""
 saved_code = ""
 
-# 1. 嘗試讀取現有的開關狀態 (格式為 \"月份-3位密碼\"，例如 \"7-k9x\")
+# 1. 尝试读取现有的开关状态 (格式为 "月份-3位密码"，例如 "7-k9x")
 if os.path.exists(lock_file_path):
     with open(lock_file_path, 'r', encoding='utf-8') as f:
         content = f.read().strip()
         if "-" in content:
             saved_month, saved_code = content.split("-", 1)
         else:
-            # 如果裡面是老腳本留下的純文本或舊密碼
             saved_code = content
 
-# 🎯 判定：如果是 1 號，且記錄的月份不是當前月份（說明是當月第一次跑，跨月了）
+# 🎯 判定：如果是 1 号，且记录的月份不是当前月份（说明是当月第一次跑，跨月了）
 if is_reset_day and saved_month != current_month:
-    # 隨機生成 3 位新隨機後綴
     current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
-    # 寫入當前月份和新密碼，例如 \"7-k9x\"
     with open(lock_file_path, 'w', encoding='utf-8') as f:
         f.write(f"{current_month}-{current_token}")
     print(f"⏰ 【每月1號全新硬核洗牌】檢測到進入新月份 {current_month} 月！已全自動抽籤生成本月新後綴: {current_token}")
 
-# 🎯 判定：如果是 1 號的第二次及後續運行
+# 🎯 判定：如果是 1 号的第二次及后续运行
 elif is_reset_day and saved_month == current_month:
     current_token = saved_code
-    print(f"🔒 【安全閥攔截】今日 1 號已經是當月第二次運行，保持原暗號: {current_token}")
+    print(f"🔒 【安全阀拦截】今日 1 号已经是当月第二次运行，保持原暗号: {current_token}")
 
 # 🎯 平常日子
 else:
-    # 如果平時發現開關空了，或者裡面還是舊的不帶月份的密碼，立刻初始化
     if not saved_code or len(saved_code) != 3 or "-" not in (content if os.path.exists(lock_file_path) else ""):
         current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
         with open(lock_file_path, 'w', encoding='utf-8') as f:
             f.write(f"{current_month}-{current_token}")
     else:
         current_token = saved_code
-    print(f"📡 正常沿用本月密鎖後綴: {current_token}")
+    print(f"📡 正常沿用本月密锁后缀: {current_token}")
 
-# 3. 🎯 嚴格判定最終輸出之檔名
+# 3. 🎯 严格判定最终输出之文件名
 if current_token in ["全量版", "纯净版"]:
     output_filename = "老杨TV全量版.json"
 else:
     output_filename = f"老杨TV全量版{current_token}.json"
 
 output_path = f"datas/{output_filename}"
-print(f"🎯 最終結算 -> 目標輸出檔名：{output_filename}")
+print(f"🎯 最终结算 -> 目标输出文件名：{output_filename}")
 
 
 # ====================================================================
@@ -78,19 +74,19 @@ for old_file in old_configs:
         try:
             trap_json = {
                 "spider": "", 
-                "notice": f"⚠️ 警告：當前專線已過期斷流！老連結已徹底作廢！\n\n最新全量版連結或當前密碼請加QQ群“532637640”獲取",
-                "warningText": "👑 特別提示：加QQ群“532637640”獲取最新接口",
+                "notice": f"⚠️ 警告：当前专线已过期断流！老链接已彻底作废！\n\n最新全量版链接请加QQ群“532637640”获取",
+                "warningText": "👑 特别提示：加QQ群“532637640”获取最新接口",
                 "sites": [
-                    {"key": "老杨纯文字提示", "name": "🚨 請前往QQ群“532637640”獲取最新密碼🚨 當前專線密碼已過期斷流！", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0},
-                    {"key": "老杨纯文字提示2", "name": "🚨 請前往QQ群“532637640”獲取最新全量版連結", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0}
+                    {"key": "老杨纯文字提示", "name": "🚨 请前往QQ群“532637640”获取最新链接🚨 当前专线已过期断流！", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0},
+                    {"key": "老杨纯文字提示2", "name": "🚨 请前往QQ群“532637640”获取最新全量版链接", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0}
                 ],
                 "lives": [
-                    {"group": "🚨 接口過期斷流 ｜ 提示", "channels": [{"name": "👉 線路已過期 ➡️ 加QQ群“532637640”獲取最新全量版密碼", "urls": ["http://127.0.0.1"]}]}
+                    {"group": "🚨 接口过期断流 ｜ 提示", "channels": [{"name": "👉 线路已过期 ➡️ 加QQ群“532637640”获取最新全量版链接", "urls": ["http://127.0.0.1"]}]}
                 ]
             }
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
-            print(f"📡 【金蟬脫殼】已成功將過期舊線調包為純文字大轟炸: {old_file}")
+            print(f"📡 【金蝉脱壳】已成功将过期旧线调包为纯文字大轰炸: {old_file}")
         except:
             pass
 
@@ -107,7 +103,7 @@ def load_json_safe(path):
     with open(path, 'r', encoding='utf-8') as f:
         try: return json.load(f)
         except Exception as e:
-            print(f"❌ 錯誤：{path} JSON 格式不正確！無法解析。")
+            print(f"❌ 错误：{path} JSON 格式不正确！无法解析。")
             return {}
 
 json_cnb = load_json_safe(cnb_path)
@@ -118,7 +114,7 @@ haitun_sites = json_haitun.get("sites", [])
 haitun_lives = json_haitun.get("lives", [])
 lz_sites = json_lz.get("sites", [])
 
-# 過濾老張源裡的 🔞 站點並轉換為絕對路徑
+# 过滤老张源里的 🔞 站点并转换为绝对路径
 lz_nsfw_list = []
 for item in lz_sites:
     if "🔞" in item.get("name", ""):
@@ -134,13 +130,13 @@ for item in lz_sites:
                 item["api"] = item["api"].replace("./", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/")
         lz_nsfw_list.append(item)
 
-# 給海豚源打上後綴標籤
+# 给海豚源打上后缀标签
 for item in haitun_sites:
     if "name" in item: item["name"] = f"{item['name']}｜Tg：@huliys9"
 for item in haitun_lives:
     if "name" in item: item["name"] = f"{item['name']}｜Tg：@huliys9"
 
-# 精準插入“鄉村電視”到直播陣列索引 5（第 6 位）
+# 精准插入“乡村电视”到直播数组索引 5（第 6 位）
 country_live_dict = {
     "name": "乡村电视 ｜Tg：@huliys9",
     "type": 0,
@@ -154,15 +150,26 @@ else:
     haitun_lives.append(country_live_dict)
 
 # ====================================================================
-# 🚀 数组大合并：海豚排上面 ➡️ 中间接老张 ➡️ 最后接 cnb
+# 🎯 注入你的 JavBus 點播爬蟲線路 (依照官方 type: 3 規範整合)
 # ====================================================================
+javbus_site_dict = {
+    "key": "JavBus_Private",
+    "name": "🦋 老楊私房 • JavBus專線",
+    "type": 3,
+    "api": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/py_JavBus.py",
+    "searchable": 1,
+    "quickSearch": 1,
+    "filterable": 0
+}
+
+# 🚀 数组大合并：海豚排上面 ➡️ 插入 JavBus ➡️ 中间接老张 ➡️ 最后接 cnb
 cnb_sites = json_cnb.get("sites", [])
 cnb_lives = json_cnb.get("lives", [])
 
-json_cnb["sites"] = haitun_sites + lz_nsfw_list + cnb_sites
+json_cnb["sites"] = haitun_sites + [javbus_site_dict] + lz_nsfw_list + cnb_sites
 json_cnb["lives"] = haitun_lives + cnb_lives
 
-# 轉換為文本後進行清洗與特調
+# 转换为文本后进行清洗与特调
 final_json_text = json.dumps(json_cnb, ensure_ascii=False, indent=4)
 
 final_json_text = final_json_text.replace('"key": "hajim-腾讯备"', '"spider": "./tvbox.jar",\n            "key": "hajim-腾讯备"')
@@ -183,18 +190,18 @@ path_replacements = {
 for src, dst in path_replacements.items():
     final_json_text = final_json_text.replace(src, dst)
 
-# 開機公告注入 (原汁原味保留老楊TV公告)
-thanks_warning = "👑 特别致谢与版权声明\n本接口的诞生离不开大后方几位业内顶流技术大佬的无私奉献，特此致谢：\n🐋 感谢鱼佬的付出\n源码基础与发布主页: fish2018/webhtv\n版本发布绝对地址: fish2018/webhtv/releases\nTelegram 官方群组: 👉 https://t.me/webhtv\n 感谢佬的付出\n核心仓库主页: FGBLH/GHK\n数据源直链地址: FGBLH/GHK/.json\nTelegram 官方群组: 👉 https://t.me/hshsjk9"
-welcome_notice = "👑 欢迎使用【老杨TV粉丝专属缝合专线】！本接口由老杨TV结合佬&鱼佬的优质核心资源缝合而成，纯净无广告！🚨 核心秒播優化版已啟用：網絡棧已實裝 DoH 加密防污染與超級並行解析，遇到線路卡頓請及時回 Telegram 頻道（@huliys9）或微信群獲取當前最新動態！"
+# 开机公告注入 (原汁原味保留老杨TV公告，去除密码提示)
+thanks_warning = "👑 特别致谢与版权声明\n本接口的诞生离不开大后方几位业内顶流技术大佬 of 无私奉献，特此致谢：\n🐋 感谢鱼佬的付出\n源码基础与发布主页: fish2018/webhtv\n版本发布绝对地址: fish2018/webhtv/releases\nTelegram 官方群组: 👉 https://t.me/webhtv\n 感谢佬的付出\n核心仓库主页: FGBLH/GHK\n数据源直链地址: FGBLH/GHK/.json\nTelegram 官方群组: 👉 https://t.me/hshsjk9"
+welcome_notice = "👑 欢迎使用【老杨TV粉丝专属缝合专线】！🚨 核心秒播優化版已啟用：網絡棧已實裝 DoH 加密防污染與超級並行解析專線，已無縫縫合 JavBus 私房點播站點。遇到線路卡頓請及時回 Telegram 頻道（@huliys9）或微信群獲取當前最新動態！"
 
 try:
     final_obj = json.loads(final_json_text)
     
     # ====================================================================
-    # ⚡ 【硬核特調注入：實裝高階秒播骨架與規範優化】
+    # ⚡ 【硬核特调注入：实装高阶秒播骨架与规范优化】
     # ====================================================================
     
-    # 1. 升級 DoH 加密 DNS 網絡棧（精準注入 Bootstrap IPs，阻斷查詢污染死循環）
+    # 1. 升级 DoH 加密 DNS 网络栈（精准注入 Bootstrap IPs，阻断查询污染死循环）
     final_obj["doh"] = [
         {
             "name": "Google-DoH",
@@ -213,7 +220,7 @@ try:
         }
     ]
     
-    # 2. 升級 parses：強行在解析規則最前端注入「超級並行秒播專線」（type: 4）
+    # 2. 升级 parses：强行在解析规则最前端注入「超级并行秒播专线」（type: 4）
     parallel_parse = {
         "name": "🚀 老楊專屬 • 聚合秒播專線 (超級並行)",
         "type": 4,
@@ -221,15 +228,15 @@ try:
     }
     final_obj["parses"] = [parallel_parse] + final_obj.get("parses", [])
     
-    # 3. 修正 sites 內的語法欄位（修正 彈幕 spider 欄位、清理 type=1 的過濾多餘屬性）
+    # 3. 修正 sites 内的语法栏位
     for site in final_obj.get("sites", []):
         if site.get("key") == "leo_danmaku":
-            site["indexs"] = 1 # 修正鍵名規範
+            site["indexs"] = 1 
             if "index" in site: site.pop("index")
         if site.get("type") == 1 and "filterable" in site:
-            site.pop("filterable") # 依官方高階架構精簡非原生屬性
+            site.pop("filterable") 
 
-    # 4. 擴充 lives 高階屬性：動態精準為主要直播頻道群注入動態 EPG 節目單與時區表
+    # 4. 扩充 lives 高阶属性：动态精准为主要直播频道群注入动态 EPG 节目单与时区表
     for live in final_obj.get("lives", []):
         lname = live.get("name", "")
         if "綜合直播" in lname or "地方直播" in lname or "各大源合集" in lname:
@@ -239,11 +246,11 @@ try:
             live["epg"] = "https://epg.pw/xmltv/assets/taiwan.xml.gz"
             live["timeZone"] = "Asia/Taipei"
 
-    # 5. 修正 IJK 播放器內核參數：將緩存過長導致黑屏斷流的過期快取縮短為健康的 60 秒
+    # 5. 修正 IJK 播放器内核参数：将缓存过长导致黑屏断流的过期快取缩短为健康的 60 秒
     for player in final_obj.get("ijk", []):
         for option in player.get("options", []):
             if option.get("name") == "dns_cache_timeout":
-                option["value"] = "60000000" # 由 6億 修正為 6千萬（60秒）
+                option["value"] = "60000000" 
 
     # ====================================================================
 
@@ -270,21 +277,21 @@ try:
             if "key" in site and site["key"] == "AQY":
                 site["name"] = "🦋 爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"
     except Exception as inner_e:
-        print(f"⚠️ 提示：美化蝴蝶圖案時跳過，原因: {inner_e}")
+        print(f"⚠️ 提示：美化蝴蝶图标时跳过，原因: {inner_e}")
 
-    # 🌟【前置寫入】強制安全落盤
+    # 🌟【前置写入】强制安全落盘
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(ordered_obj, f, ensure_ascii=False, indent=4)
         
     with open(tracker_path, 'w', encoding='utf-8') as f:
         f.write(output_filename)
         
-    print(f"🎉 全量版秒播優化配置更新成功！檔案已寫出至: {output_path}")
+    print(f"🎉 全量版秒播优化配置更新成功！档案已写出至: {output_path}")
 
 except Exception as e:
-    print(f"❌ 嚴重錯誤：最後的本地渲染失敗，原因: {e}")
+    print(f"❌ 严重错误：最后的本地渲染失败，原因: {e}")
 
-# 🌟 雙重保險
+# 🌟 双重保险
 if not os.path.exists(lock_file_path) or "-" not in (open(lock_file_path, 'r', encoding='utf-8').read() if os.path.exists(lock_file_path) else ""):
     with open(lock_file_path, 'w', encoding='utf-8') as f:
         f.write(f"{current_month}-{current_token}")
