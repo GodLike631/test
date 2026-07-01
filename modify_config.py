@@ -153,15 +153,16 @@ missav_site_dict = {
     "filterable": 0
 }
 
-# 陣列大合併
-json_cnb["sites"] = haitun_sites + [javbus_site_dict, missav_site_dict] + lz_nsfw_list + json_cnb.get("sites", [])
-json_cnb["lives"] = haitun_lives + json_cnb.get("lives", [])
+# 💡 安全防禦：確保大基座即使為空，也不會發生字典賦值崩潰
+final_obj = {}
+final_obj.update(json_cnb)
 
-# 1. 在純粹的 Object 物件狀態下進行底層欄位安全優化，不損害 JSON 語法
+# 陣列安全大合併
+final_obj["sites"] = haitun_sites + [javbus_site_dict, missav_site_dict] + lz_nsfw_list + final_obj.get("sites", [])
+final_obj["lives"] = haitun_lives + final_obj.get("lives", [])
+
 try:
-    final_obj = json_cnb
-    
-    # 💡 核心修正：直接在物件層面為特定站點精準注入專屬 jar 包，替代高風險的文字 replace
+    # 直接在對象層面為特定站點精準注入專屬 jar 包
     for site in final_obj.get("sites", []):
         if site.get("key") in ["hajim-腾讯备", "茫茫"]:
             site["spider"] = "./tvbox.jar"
@@ -221,7 +222,7 @@ try:
                 site["name"] = "🦋 爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"
     except: pass
 
-    # 2. 轉換為文本後進行常規公共路徑宏清洗
+    # 轉換為文本後進行常規公共路徑清洗
     final_json_text = json.dumps(ordered_obj, ensure_ascii=False, indent=4)
     final_json_text = final_json_text.replace('🐬', '').replace('海豚影视', '').replace('海豚', '')
     final_json_text = final_json_text.replace('完全免费，如有收费的都是骗子', '').replace('交流群 TG：@hshsjk9', '')
@@ -238,7 +239,6 @@ try:
     for src, dst in path_replacements.items():
         final_json_text = final_json_text.replace(src, dst)
 
-    # 🌟 最終安全落盤
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(final_json_text)
         
