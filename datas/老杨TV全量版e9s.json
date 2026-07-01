@@ -1,6 +1,6 @@
 {
-    "notice": "👑 欢迎使用【老杨TV粉丝专属缝合专线】！🚨 核心秒播優化版已啟用：網絡棧已實裝 DoH 加密防污染與超級並行解析專線，已無縫縫合 JavBus 私房點播站點。遇到線路卡頓請及時回 Telegram 頻道（@huliys9）或微信群獲取當前最新動態！",
-    "warningText": "👑 特别致谢与版权声明\n本接口的诞生离不开大后方几位业内顶流技术大佬 of 无私奉献，特此致谢：\n🐋 感谢鱼佬的付出\n源码基础与发布主页: fish2018/webhtv\n版本发布绝对地址: fish2018/webhtv/releases\nTelegram 官方群组: 👉 https://t.me/webhtv\n 感谢佬的付出\n核心仓库主页: FGBLH/GHK\n数据源直链地址: FGBLH/GHK/.json\nTelegram 官方群组: 👉 https://t.me/hshsjk9",
+    "notice": "👑 欢迎使用【老杨TV粉丝专属缝合专线】！🚨 核心秒播優化版已啟用：網絡棧已實裝 DoH 加密防污染與超級並行解析專線，已成功無縫融合全新重構之 JavBus 私房旗艦專線！",
+    "warningText": "👑 特别致谢与版权声明\n🐋 感谢鱼佬与海豚佬的付出！",
     "spider": "https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar",
     "wallpaper": "http://127.0.0.1:9978/proxy?do=wallpaper",
     "logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg",
@@ -831,7 +831,7 @@
         },
         {
             "key": "JavBus_Private",
-            "name": "🦋 老楊私房 • JavBus專線",
+            "name": "🦋 老楊私房 • JavBus旗艦專線",
             "type": 3,
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/py_JavBus.py",
             "searchable": 1,
