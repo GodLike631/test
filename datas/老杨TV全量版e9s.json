@@ -1,5 +1,5 @@
 {
-    "notice": "👑 欢迎使用【老杨TV粉丝专属缝合专线】！🚨 核心秒播優化版已啟用：網絡棧已實裝 DoH 加密防污染與超級並行解析專線，已成功無縫融合全新重構之 JavBus 私房旗艦專線！",
+    "notice": "👑 欢迎使用【老杨TV粉丝专属缝合专线】！🚨 核心秒播優化版已啟用：網絡棧已實裝 DoH 加密防污染與超級並行解析專線，已成功融合 JavBus 旗艦專線與 MissAV 女優人氣榜專線！",
     "warningText": "👑 特别致谢与版权声明\n🐋 感谢鱼佬与海豚佬的付出！",
     "spider": "https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar",
     "wallpaper": "http://127.0.0.1:9978/proxy?do=wallpaper",
@@ -834,6 +834,15 @@
             "name": "🦋 老楊私房 • JavBus旗艦專線",
             "type": 3,
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/py_JavBus.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 0
+        },
+        {
+            "key": "MissAV_Ranking",
+            "name": "🦋 老楊私房 • MissAV女優榜",
+            "type": 3,
+            "api": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/py_MissAV.py",
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 0
