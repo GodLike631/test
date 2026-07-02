@@ -2994,31 +2994,124 @@
     ],
     "parses": [
         {
-            "name": "⚡️ 老杨TV·超級並發多線解析",
-            "type": 4,
-            "url": "Parallel://",
-            "ext": [
-                "https://www.playm3u8.cn/jiexi.php?url=",
-                "https://jiexi.789jiexi.net:4433/?url=",
-                "https://jx.xmflv.com/?url=",
-                "https://jx.yparse.com/index.php?url=",
-                "https://huayong.net/999/?v=",
-                "https://jx.m3u8.tv/jiexi/?url=",
-                "https://t2.qlplayer.cyou/player/analysis.php?v=",
-                "https://www.ckplayer.vip/jiexi/?url=",
-                "https://nm.xxxc137.top/static/player/artplayer.html?url=",
-                "https://www.yemu.xyz/?url=",
-                "https://bd.jx.cn/?url=",
-                "https://jx.zhanlangbu.com/?url=",
-                "https://jx.jsonplayer.com/player/?url=",
-                "https://www.kkvip2022.com/vip/jiexi1/?url=",
-                "https://jx.quankan.app/?url=",
-                "https://www.huaqi.live/?url=",
-                "https://yparse.ik9.cc/index.php?url=",
-                "https://jx.xymp4.cc/?url=",
-                "https://jx.77flv.cc/?url=",
-                "https://yemu.xyz/?url="
-            ]
+            "name": "盘古",
+            "type": 0,
+            "url": "https://www.playm3u8.cn/jiexi.php?url=",
+            "ext": {
+                "header": {
+                    "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
+                }
+            }
+        },
+        {
+            "name": "极速",
+            "type": 0,
+            "url": "https://jiexi.789jiexi.net:4433/?url="
+        },
+        {
+            "name": "虾米解析",
+            "type": 0,
+            "url": "https://jx.xmflv.com/?url="
+        },
+        {
+            "name": "淘片解析",
+            "type": 0,
+            "url": "https://jx.yparse.com/index.php?url="
+        },
+        {
+            "name": "解析1",
+            "type": 0,
+            "url": "https://huayong.net/999/?v="
+        },
+        {
+            "name": "解析2",
+            "type": 0,
+            "url": "https://jx.m3u8.tv/jiexi/?url="
+        },
+        {
+            "name": "解析3",
+            "type": 0,
+            "url": "https://t2.qlplayer.cyou/player/analysis.php?v="
+        },
+        {
+            "name": "解析4",
+            "type": 0,
+            "url": "https://www.ckplayer.vip/jiexi/?url="
+        },
+        {
+            "name": "解析5",
+            "type": 0,
+            "url": "https://nm.xxxc137.top/static/player/artplayer.html?url="
+        },
+        {
+            "name": "解析6",
+            "type": 0,
+            "url": "https://www.yemu.xyz/?url="
+        },
+        {
+            "name": "冰豆",
+            "type": 0,
+            "url": "https://bd.jx.cn/?url="
+        },
+        {
+            "name": "爱酷",
+            "type": 0,
+            "url": "https://jx.zhanlangbu.com/?url="
+        },
+        {
+            "name": "云解析",
+            "type": 0,
+            "url": "https://jx.yparse.com/index.php?url=",
+            "ext": {
+                "header": {
+                    "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
+                }
+            }
+        },
+        {
+            "name": "777",
+            "type": 0,
+            "url": "https://jx.jsonplayer.com/player/?url=",
+            "ext": {
+                "header": {
+                    "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
+                }
+            }
+        },
+        {
+            "name": "-剖云-",
+            "type": 0,
+            "url": "https://www.kkvip2022.com/vip/jiexi1/?url=",
+            "ext": {
+                "header": {
+                    "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
+                }
+            }
+        },
+        {
+            "name": "-全看-",
+            "type": 0,
+            "url": "https://jx.quankan.app/?url=",
+            "ext": {
+                "header": {
+                    "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
+                }
+            }
+        },
+        {
+            "name": "解析聚合",
+            "type": 3,
+            "url": "Web"
+        },
+        {
+            "name": "jsonplayer",
+            "type": 0,
+            "url": "https://jx.jsonplayer.com/player/?url="
+        },
+        {
+            "name": "xmflv",
+            "type": 0,
+            "url": "https://jx.xmflv.com/?url="
         },
         {
             "name": "聚合",
@@ -3066,29 +3159,9 @@
             }
         },
         {
-            "name": "冰豆",
-            "type": 0,
-            "url": "https://bd.jx.cn/?url=",
-            "ext": {
-                "header": {
-                    "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
-                }
-            }
-        },
-        {
             "name": "七七",
             "type": 0,
             "url": "https://jx.77flv.cc/?url=",
-            "ext": {
-                "header": {
-                    "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
-                }
-            }
-        },
-        {
-            "name": "盘古",
-            "type": 0,
-            "url": "https://www.playm3u8.cn/jiexi.php?url=",
             "ext": {
                 "header": {
                     "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
@@ -3126,13 +3199,10 @@
             "script": [
                 "console.log('老楊TV高級WebView攔截器啟動');",
                 "window.addEventListener('DOMContentLoaded', function() {",
-                "   // 1. 強制靜音播放可能存在的網頁前置貼片廣告",
                 "   document.querySelectorAll('video').forEach(v => { v.muted = true; v.play().catch(e=>{}); });",
-                "   // 2. 徹底封殺和摧毀無限 debugger 卡死漏洞",
                 "   Function.prototype.__constructor__ = Function.prototype.constructor;",
                 "   Function.prototype.constructor = function() { if (arguments && typeof arguments[0] === 'string' && arguments[0].includes('debugger')) { return function(){}; } return Function.prototype.__constructor__.apply(this, arguments); };",
                 "});",
-                "// 3. 高頻定時器：精準爆破常見影視網頁和採集站的彈窗、側邊欄、Canvas 廣告元素",
                 "setInterval(() => {",
                 "   let selectors = ['.adv-class', '.pop-banner', '#notice-modal', '[id*=\"partner\"]', '[class*=\"baidu\"]', 'iframe[src*=\"game\"]', 'iframe[src*=\"bet\"]', '#pop-ad', '.sidebar-ads', 'a[href*=\"999\"]'];",
                 "   selectors.forEach(sel => { document.querySelectorAll(sel).forEach(el => el.remove()); });",
