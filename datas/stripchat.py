@@ -18,7 +18,6 @@ class Spider(Spider):
     def init(self, extend="{}"):
         origin = 'https://zh.pikpedcams.com'
         self.host = origin
-        # 建立全局高级浏览器标头伪装
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
             'Accept': '*/*',
@@ -206,19 +205,21 @@ class Spider(Spider):
 
     def localProxy(self, param):
         url = unquote(param['url'])
-        # 强行对本地中转服务的请求标头实施完整的浏览器特征覆盖
         data = self.session.get(url, headers=self.headers, timeout=10)
         if data.status_code != 200:
             return [404, "text/plain", ""]
         data = data.text
-        if "#EXT-X-MOUFLON:FILE" in data:
+        
+        # 🛠️ 核心修复：同时兼容新版 EXT-REF 和旧版 FILE 的防盗链特征匹配
+        if "#EXT-X-MOUFLON:EXT-REF" in data or "#EXT-X-MOUFLON:FILE" in data:
             data = self.process_m3u8_content_v2(data)
         return [200, "application/vnd.apple.mpegur", data]
 
     def process_m3u8_content_v2(self, m3u8_content):
         lines = m3u8_content.strip().split('\n')
         for i, line in enumerate(lines):
-            if (line.startswith('#EXT-X-MOUFLON:FILE:') and 'media.mp4' in lines[i + 1]):
+            # 🛠️ 核心修复：适配最新版以 media.mp4 为基础的混淆行定位
+            if (line.startswith('#EXT-X-MOUFLON:EXT-REF:') or line.startswith('#EXT-X-MOUFLON:FILE:')) and 'media.mp4' in lines[i + 1]:
                 encrypted_data = line.split(':', 2)[2].strip()
                 try:
                     decrypted_data = self.decrypt(encrypted_data, self.stripchat_key)
