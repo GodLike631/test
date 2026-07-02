@@ -201,7 +201,7 @@ try:
     ordered_obj.update(final_obj)
     
     # ====================================================================
-    # 🌟【全新深度体验优化区】（在原代码蝴蝶逻辑处平滑扩展）
+    # 🌟【全新深度体验优化区】（在原代码处平滑扩展）
     # ====================================================================
     try:
         # --- 1. 注入国内高防 AliDNS 到 doh 的最前面 ---
@@ -211,45 +211,42 @@ try:
                 "url": "https://dns.alidns.com/dns-query",
                 "ips": ["223.5.5.5", "223.6.6.6"]
             }
-            # 检查是否已存在，不存在则塞到首位，防解析堵塞
             if not any(d.get("name") == "AliDNS" for d in ordered_obj["doh"]):
                 ordered_obj["doh"].insert(0, ali_doh)
 
         # --- 2. 彻底移除直播 lives 末尾的无用空对象 {} ---
         if "lives" in ordered_obj and isinstance(ordered_obj["lives"], list):
-            # 过滤掉没有任何键值对的空字典，杜绝电视闪退
             ordered_obj["lives"] = [live for live in ordered_obj["lives"] if live]
 
-        # --- 3. 站点（sites）名称特调：精准保留前5个TG尾巴 + 智能自动分类 ---
+        # --- 3. 站点（sites）名称特调与防留痕控制 ---
         tg_tail_count = 0  # 追踪带有指定尾巴的站点计数
         
         for site in ordered_obj.get("sites", []):
             if "name" in site:
                 name_val = site["name"]
                 
-                # A. 基础去噪处理（原逻辑）
+                # A. 基础去噪处理
                 for char in ['丨', '┃', ' ']:
                     name_val = name_val.strip(char)
                 name_val = re.sub(r'\s+', ' ', name_val)
                 
-                # B. 【核心需求】智能处理 ｜Tg：@huliys9 后缀
+                # B. 智能处理 ｜Tg：@huliys9 后缀
                 if "｜Tg：@huliys9" in name_val:
                     tg_tail_count += 1
                     if tg_tail_count > 5:
-                        # 超过 5 个，切掉小尾巴
                         name_val = name_val.replace("｜Tg：@huliys9", "").strip()
                 elif "｜Tg:@huliys9" in name_val:
                     tg_tail_count += 1
                     if tg_tail_count > 5:
                         name_val = name_val.replace("｜Tg:@huliys9", "").strip()
 
-                # C. 强制加上蝴蝶图标（原逻辑）
+                # C. 强制加上蝴蝶图标
                 if not name_val.startswith("🦋"):
                     name_val = f"🦋 {name_val}"
                 
                 site["name"] = name_val
 
-                # D. 【蜂蜜高级优化】根据站点属性自动划分左侧大类（Category）
+                # D. 根据站点属性自动划分左侧大类（Category）并注入“无痕看片参数”
                 s_key = site.get("key", "")
                 s_api = str(site.get("api", ""))
                 s_genre = site.get("genre", "")
@@ -258,9 +255,11 @@ try:
                     site["category"] = "短剧"
                 elif "🔞" in name_val or "色播" in name_val or "av" in s_key.lower() or "瓜" in name_val or "爆料" in name_val:
                     site["category"] = "福利"
-                    # 福利站不污染全局搜索和大厅
-                    site["searchable"] = 0
-                    site["quickSearch"] = 0
+                    
+                    # 💡【硬核无痕注入】：直接在合并时，为所有福利站点打上防记录死锁标志
+                    # 完美兼容绝大部分新版影视仓、新版TVBox、赤蜂蜜魔改版内核
+                    site["recordable"] = 0  # 0代表退出时不写入本地数据库历史
+                    site["history"] = 0     # 强制关闭该站点的历史存盘
                 elif "少儿" in name_val or "课堂" in name_val or "教学" in name_val:
                     site["category"] = "少儿"
                     site["searchable"] = 0
@@ -274,10 +273,9 @@ try:
                 elif "体育" in name_val or "球" in name_val or "直播" in name_val:
                     site["category"] = "体育/直播"
                 else:
-                    # 常规影视站
                     site["category"] = "综合"
 
-        # E. 特殊核心大厂站点的固定命名覆写（原逻辑）
+        # E. 特殊核心大厂站点的固定命名覆写
         for site in ordered_obj.get("sites", []):
             if "key" in site and site["key"] == "AQY":
                 site["name"] = "🦋 爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"
@@ -300,7 +298,7 @@ try:
 except Exception as e:
     print(f"❌ 严重错误：最后的本地渲染失败，原因: {e}")
 
-# 🌟 双重保险（原逻辑）
+# 🌟 双重保险
 if not os.path.exists(lock_file_path) or "-" not in (open(lock_file_path, 'r', encoding='utf-8').read() if os.path.exists(lock_file_path) else ""):
     with open(lock_file_path, 'w', encoding='utf-8') as f:
         f.write(f"{current_month}-{current_token}")
