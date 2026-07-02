@@ -18,12 +18,19 @@ class Spider(Spider):
     def init(self, extend="{}"):
         origin = 'https://zh.pikpedcams.com'
         self.host = origin
+        # 建立全局高级浏览器标头伪装
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-            'Accept': 'application/json, text/plain, */*',
+            'Accept': '*/*',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
             'Origin': origin,
             'Referer': f"{origin}/",
+            'Sec-Ch-Ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+            'Sec-Ch-Ua-Mobile': '?0',
+            'Sec-Ch-Ua-Platform': '"Windows"',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'cross-site',
             'X-Requested-With': 'XMLHttpRequest'
         }
         self.stripchat_key = self.decode_key_compact()
@@ -164,7 +171,6 @@ class Spider(Spider):
         rsp = self.session.get(domain, headers=self.headers).text
         lines = rsp.strip().split('\n')
         
-        # 1. 提取所有 v2 版本的动态 PSCH 鉴权串
         psch_list = []
         for line in lines:
             if line.startswith('#EXT-X-MOUFLON:PSCH:v2:'):
@@ -175,7 +181,6 @@ class Spider(Spider):
         url = []
         stream_count = 0
         
-        # 2. 遍历流，将对应的 psch 分配给对应的画质
         for i, line in enumerate(lines):
             if '#EXT-X-STREAM-INF' in line:
                 name_start = line.find('NAME="') + 6
@@ -183,10 +188,8 @@ class Spider(Spider):
                 qn = line[name_start:name_end]
                 url_base = lines[i + 1]
                 
-                # 根据当前的流顺序拿到对应的 psch 鉴权值
                 current_psch = psch_list[stream_count] if stream_count < len(psch_list) else ""
                 
-                # 重新组合本地解密中转代理 URL
                 full_url = f"{url_base}&psch={current_psch}"
                 proxy_url = f"{self.getProxyUrl()}&url={quote(full_url)}"
                 
@@ -203,6 +206,7 @@ class Spider(Spider):
 
     def localProxy(self, param):
         url = unquote(param['url'])
+        # 强行对本地中转服务的请求标头实施完整的浏览器特征覆盖
         data = self.session.get(url, headers=self.headers, timeout=10)
         if data.status_code != 200:
             return [404, "text/plain", ""]
