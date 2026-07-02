@@ -15,7 +15,7 @@ lock_file_path = 'datas/控制开关.txt'
 tracker_path = 'datas/最新接口文件名.txt'
 
 # ====================================================================
-# ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑 - 引入月份判定版】 (原汁原味保留)
+# ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑】 (保留)
 # ====================================================================
 today = datetime.datetime.now()
 current_month = str(today.month) 
@@ -58,7 +58,7 @@ output_path = f"datas/{output_filename}"
 print(f"🎯 最终结算 -> 目标输出：{output_filename}")
 
 # ====================================================================
-# 🛡️ 【金蝉脱壳：全量版过期旧线自动全文字大轰炸】 (原汁原味保留)
+# 🛡️ 【金蝉脱壳：全量版过期旧线自动全文字大轰炸】 (保留)
 # ====================================================================
 old_configs = glob.glob('datas/老杨TV全量版*.json') + glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
@@ -88,7 +88,7 @@ for garbage in glob.glob('datas/config_*.json'):
 
 
 # ====================================================================
-# 🧠 【核心逻辑：正统 JSON 对象读取与合并逻辑】 (原汁原味保留)
+# 🧠 【核心逻辑：正统 JSON 对象读取与合并逻辑】 (保留)
 # ====================================================================
 def load_json_safe(path):
     if not os.path.exists(path):
@@ -145,7 +145,7 @@ else:
 cnb_sites = json_cnb.get("sites", [])
 cnb_lives = json_cnb.get("lives", [])
 
-# 提取并备份三方所有的 parses，用于高阶并发解析合并
+# 🎯 核心修复：直接安全地收集上游所有原本的解析器（parses），不做高风险合并
 combined_parses = json_haitun.get("parses", []) + json_lz.get("parses", []) + json_cnb.get("parses", [])
 
 json_cnb["sites"] = haitun_sites + lz_nsfw_list + cnb_sites
@@ -185,35 +185,20 @@ try:
     ordered_obj.update(final_obj)
     
     # ====================================================================
-    # 🌟【全新深度体验优化区】（融合蜂蜜黑科技高阶玩法）
+    # 🌟【全新深度体验优化区】（移除 type=4，完全规避 ext 类型报错）
     # ====================================================================
     try:
-        # --- 高阶玩法一：智能合并并配置「超级并行解析 (parses type=4)」 ---
-        valid_parse_urls = []
-        seen_urls = set()
+        # --- 1. 去重并保留所有合法的傳統解析站點 ---
+        unique_parses = []
+        seen_names = set()
         for p in combined_parses:
-            u = p.get("url", "")
-            if u and isinstance(u, str) and u.startswith("http") and u not in seen_urls:
-                # 排除可能已经合并过的并发和本地节点
-                if "Parallel" not in u and "127.0.0.1" not in u:
-                    valid_parse_urls.append(u)
-                    seen_urls.add(u)
-        
-        # 构建超级并发解析节点 (前置放在 parses 最前面)
-        parallel_parse_node = {
-            "name": "⚡️ 老杨TV·超級並發多線解析",
-            "type": 4,
-            "url": "Parallel://"
-        }
-        if valid_parse_urls:
-            parallel_parse_node["ext"] = valid_parse_urls
+            name = p.get("name", "")
+            if name and name not in seen_names:
+                unique_parses.append(p)
+                seen_names.add(name)
+        ordered_obj["parses"] = unique_parses
 
-        # 清洗旧解析，重新组装
-        old_parses = ordered_obj.get("parses", [])
-        cleaned_parses = [p for p in old_parses if p.get("type") != 4 and p.get("name") != "⚡️ 老杨TV·超級並發多線解析"]
-        ordered_obj["parses"] = [parallel_parse_node] + cleaned_parses
-
-        # --- 高阶玩法二：注入国内高防 AliDNS 到 doh (原有逻辑优化) ---
+        # --- 2. 注入国内高防 AliDNS 到 doh ---
         if "doh" in ordered_obj and isinstance(ordered_obj["doh"], list):
             ali_doh = {
                 "name": "AliDNS",
@@ -223,36 +208,30 @@ try:
             if not any(d.get("name") == "AliDNS" for d in ordered_obj["doh"]):
                 ordered_obj["doh"].insert(0, ali_doh)
 
-        # --- 高阶玩法三：全面注入通用高级影音防屏蔽去广告 JS 脚本 ---
+        # --- 3. 全面注入通用高级影音防屏蔽去广告 JS 脚本 (安全穩定保留) ---
         custom_js_rules = [
             "console.log('老楊TV高級WebView攔截器啟動');",
             "window.addEventListener('DOMContentLoaded', function() {",
-            "   // 1. 強制靜音播放可能存在的網頁前置貼片廣告",
             "   document.querySelectorAll('video').forEach(v => { v.muted = true; v.play().catch(e=>{}); });",
-            "   // 2. 徹底封殺和摧毀無限 debugger 卡死漏洞",
             "   Function.prototype.__constructor__ = Function.prototype.constructor;",
             "   Function.prototype.constructor = function() { if (arguments && typeof arguments[0] === 'string' && arguments[0].includes('debugger')) { return function(){}; } return Function.prototype.__constructor__.apply(this, arguments); };",
             "});",
-            "// 3. 高頻定時器：精準爆破常見影視網頁和採集站的彈窗、側邊欄、Canvas 廣告元素",
             "setInterval(() => {",
             "   let selectors = ['.adv-class', '.pop-banner', '#notice-modal', '[id*=\"partner\"]', '[class*=\"baidu\"]', 'iframe[src*=\"game\"]', 'iframe[src*=\"bet\"]', '#pop-ad', '.sidebar-ads', 'a[href*=\"999\"]'];",
             "   selectors.forEach(sel => { document.querySelectorAll(sel).forEach(el => el.remove()); });",
             "}, 400);"
         ]
 
-        # 讀取現有 rules 或初始化
         current_rules = ordered_obj.get("rules", [])
         if not isinstance(current_rules, list):
             current_rules = []
             
-        # 尋找接口內原有的核心採集站或主線 Host
         ad_hosts = ["vip.wwgz.cn", "lziplayer.com", "m3u8.apibdzy.com", "cj.ffzyapi.com", "api.hbzyapi.com"]
         for rule in current_rules:
             if isinstance(rule, dict) and "hosts" in rule:
                 for h in rule["hosts"]:
                     if h not in ad_hosts: ad_hosts.append(h)
 
-        # 封裝一個高階去廣告規則塊放最前面
         js_injection_rule = {
             "name": "老楊TV·雲端高級去廣告JS注入",
             "hosts": ad_hosts,
