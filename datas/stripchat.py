@@ -18,15 +18,13 @@ class Spider(Spider):
     def init(self, extend="{}"):
         origin = 'https://zh.pikpedcams.com'
         self.host = origin
+        # 【方案二·移动端伪装】使用 iPad 浏览器的 User-Agent，这是最容易触发“免解密流”的特征
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
             'Accept': '*/*',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
             'Origin': origin,
             'Referer': f"{origin}/",
-            'Sec-Ch-Ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
-            'Sec-Ch-Ua-Mobile': '?0',
-            'Sec-Ch-Ua-Platform': '"Windows"',
             'Sec-Fetch-Dest': 'empty',
             'Sec-Fetch-Mode': 'cors',
             'Sec-Fetch-Site': 'cross-site',
@@ -118,6 +116,8 @@ class Spider(Spider):
             show = info['show']['details']['groupShow']
             BJtime = (datetime.strptime(show["startAt"], "%Y-%m-%dT%H:%M:%SZ") + timedelta(hours=8)).strftime("%m月%d日 %H:%M")
             remark = f"🎫 始于 {BJtime}"
+        
+        # 记录真实数据，以便调试
         vod = [{
             "vod_id": id,
             "vod_name": str(info.get('topic', '')).strip(), 
@@ -131,41 +131,8 @@ class Spider(Spider):
         result['list'] = vod
         return result
 
-    def process_key(self, key: str) -> Tuple[str, str]:
-        tags = {'G': 'girls', 'C': 'couples', 'M': 'men', 'T': 'trans'}
-        parts = key.split(maxsplit=1)
-        if len(parts) > 1 and tags.get(parts[0].upper(), ''):
-            return tags[parts[0].upper()], parts[1].strip()
-        return 'girls', key.strip()
-
-    def searchContent(self, key, quick, pg="1"):
-        result = {}
-        if int(pg) > 1:
-            return result
-        tag, key = self.process_key(key)
-        domain = f"{self.host}/api/front/v4/models/search/group/username?query={key}&limit=900&primaryTag={tag}"
-        rsp = self.session.get(domain, headers=self.headers).json()
-        users = rsp.get('models', [])
-        videos = []
-        for user in users:
-            if not user['isLive']:
-                continue
-            id = str(user['id'])
-            name = str(user['username']).strip()
-            stamp = user['snapshotTimestamp']
-            country = str(user['country']).strip()
-            flag = self.country_code_to_flag(country)
-            remark = "🎫" if user['status'] == "groupShow" else ""
-            videos.append({
-                "vod_id": name,
-                "vod_name": f"{flag}{name}",
-                "vod_pic": f"https://img.doppiocdn.net/thumbs/{stamp}/{id}",
-                "vod_remarks": remark
-            })
-        result['list'] = videos
-        return result
-
     def playerContent(self, flag, id, vipFlags):
+        # 依然请求 master 索引，但现在整个会话都是 iPad 移动端特征
         domain = f"https://edge-hls.doppiocdn.net/hls/{id}/master/{id}_auto.m3u8?playlistType=lowLatency"
         rsp = self.session.get(domain, headers=self.headers).text
         lines = rsp.strip().split('\n')
@@ -187,9 +154,11 @@ class Spider(Spider):
                 qn = line[name_start:name_end]
                 url_base = lines[i + 1]
                 
+                # 如果是移动端特供流，可能不需要复杂的 psch
                 current_psch = psch_list[stream_count] if stream_count < len(psch_list) else ""
-                
                 full_url = f"{url_base}&psch={current_psch}"
+                
+                # 再次注入移动端伪装，防止 CDN 二次校验播放器
                 proxy_url = f"{self.getProxyUrl()}&url={quote(full_url)}"
                 
                 url.append(qn)
@@ -205,20 +174,21 @@ class Spider(Spider):
 
     def localProxy(self, param):
         url = unquote(param['url'])
+        # 关键：这里必须带上和上面 init 里面完全一致的 Headers，模拟移动端行为
         data = self.session.get(url, headers=self.headers, timeout=10)
         if data.status_code != 200:
             return [404, "text/plain", ""]
         data = data.text
         
-        # 🛠️ 核心修复：同时兼容新版 EXT-REF 和旧版 FILE 的防盗链特征匹配
-        if "#EXT-X-MOUFLON:EXT-REF" in data or "#EXT-X-MOUFLON:FILE" in data:
+        # 兼容性匹配：如果服务器返回的是原生流（没加密），直接放行
+        if "#EXT-X-MOUFLON:" in data:
             data = self.process_m3u8_content_v2(data)
         return [200, "application/vnd.apple.mpegur", data]
 
     def process_m3u8_content_v2(self, m3u8_content):
         lines = m3u8_content.strip().split('\n')
         for i, line in enumerate(lines):
-            # 🛠️ 核心修复：适配最新版以 media.mp4 为基础的混淆行定位
+            # 这里的特征匹配必须是 EXT-REF 或 FILE，不能漏掉
             if (line.startswith('#EXT-X-MOUFLON:EXT-REF:') or line.startswith('#EXT-X-MOUFLON:FILE:')) and 'media.mp4' in lines[i + 1]:
                 encrypted_data = line.split(':', 2)[2].strip()
                 try:
