@@ -36,7 +36,7 @@ if is_reset_day and saved_month != current_month:
     current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
     with open(lock_file_path, 'w', encoding='utf-8') as f:
         f.write(f"{current_month}-{current_token}")
-    print(f"⏰ 检测到进入新月份 {current_month} 月！已生成本月新密锁: {current_token}")
+    print(f"⏰ 检测到进入新月份 {current_month} 月！已全自动抽签生成本月新密锁: {current_token}")
 elif is_reset_day and saved_month == current_month:
     current_token = saved_code
 else:
@@ -55,7 +55,7 @@ else:
 output_path = f"datas/{output_filename}"
 
 # ====================================================================
-# 🛡️ 【金蝉脱壳：过期旧线大轰炸】
+# 🛡️ 【金蝉脱壳：全量版过期旧线自动全文字大轰炸】
 # ====================================================================
 old_configs = glob.glob('datas/老杨TV全量版*.json') + glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
@@ -73,7 +73,6 @@ for old_file in old_configs:
                     {"group": "🚨 接口过期断流 ｜ 提示", "channels": [{"name": "👉 线路已过期 ➡️ 加QQ群“532637640”获取最新全量版密码", "urls": ["http://127.0.0.1"]}]}
                 ]
             }
-            # ⚠️ 注意：轰炸线不能Hex加密，必须保持明文，否则电视端读取不到加群提示
             with open(old_file, 'w', encoding='utf-8') as f:
                 json.dump(trap_json, f, ensure_ascii=False, indent=4)
         except:
@@ -150,7 +149,7 @@ for src, dst in path_replacements.items():
     final_json_text = final_json_text.replace(src, dst)
 
 thanks_warning = "👑 特别致谢与版权声明\n本接口的诞生离不开大后方几位业内顶流技术大佬的无私奉献，特此致谢：\n🐋 感谢鱼佬的付出\n源码基础与发布主页: fish2018/webhtv\nTelegram 官方群组: 👉 https://t.me/webhtv\n 感谢佬的付出\nTelegram 官方群组: 👉 https://t.me/hshsjk9"
-welcome_notice = "👑 欢迎使用【老杨TV粉丝专属缝合专线】！本接口由老杨TV结合佬&鱼佬的优质核心资源缝合而成，纯净无广告！"
+welcome_notice = "👑 欢迎使用【老杨TV粉丝专属缝合专线】！本接口由老杨TV结合佬&鱼佬的优质核心资源缝合而成，纯净无广告！🚨 重要提示：本接口密码不定期全自动更换！"
 
 try:
     final_obj = json.loads(final_json_text)
@@ -191,8 +190,11 @@ try:
                 if s_genre == "shortdrama" or "短剧" in name_val or "dj" in s_key.lower(): site["category"] = "短剧"
                 elif "🔞" in name_val or "色播" in name_val or "av" in s_key.lower() or "瓜" in name_val or "爆料" in name_val:
                     site["category"] = "福利"
-                    site["recordable"] = 0
-                    site["history"] = 0
+                    # 🍏【回归正统标准明文规范】：
+                    # 1. 移除了限制搜索的 searchable=0，大厅直接搜索彻底解放！
+                    # 2. 注入历史阻断参数（依赖您的软件客户端分支进行本地拦截）
+                    site["recordable"] = 0  
+                    site["history"] = 0     
                 elif "少儿" in name_val or "课堂" in name_val or "教学" in name_val:
                     site["category"] = "少儿"
                     site["searchable"] = 0
@@ -211,22 +213,15 @@ try:
     except: pass
 
     # ====================================================================
-    # 🌟【超级无痕黑科技：最终输出自动执行全盘十六进制 Hex 化落盘】
+    # 🎯【安全降维落盘】：全面退回到兼容性 100% 的标准明文 JSON
     # ====================================================================
-    # 1. 先将处理好的完美明文对象序列化为标准字符串
-    standard_plain_text = json.dumps(ordered_obj, ensure_ascii=False, indent=4)
-    
-    # 2. 核心：将明文编码为 utf-8 字节，再全盘转化为 16 进制纯数字乱码串
-    hex_encoded_output = standard_plain_text.encode('utf-8').hex()
-    
-    # 3. 强行落盘（FongMi壳在加载该文件时会自动瞬间秒解，同时由于混淆，完美干扰历史记录库）
     with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(hex_encoded_output)
+        json.dump(ordered_obj, f, ensure_ascii=False, indent=4)
         
     with open(tracker_path, 'w', encoding='utf-8') as f:
         f.write(output_filename)
         
-    print(f"🎉 【Hex全盘无痕版】更新成功！文件已高能加密至: {output_path}")
+    print(f"🎉 【完美兼容标准版】更新成功！文件已安全写出至: {output_path}")
 
 except Exception as e:
     print(f"❌ 严重错误：最后的本地渲染失败，原因: {e}")
