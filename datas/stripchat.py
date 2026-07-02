@@ -163,18 +163,19 @@ class Spider(Spider):
         domain = f"https://edge-hls.doppiocdn.net/hls/{id}/master/{id}_auto.m3u8?playlistType=lowLatency"
         rsp = self.session.get(domain, headers=self.headers).text
         lines = rsp.strip().split('\n')
-        psch = ''
-        pkey = ''
-        url = []
         
-        # 提取核心鉴权特征码
-        for i, line in enumerate(lines):
-            if line.startswith('#EXT-X-MOUFLON:'):
+        # 1. 提取所有 v2 版本的动态 PSCH 鉴权串
+        psch_list = []
+        for line in lines:
+            if line.startswith('#EXT-X-MOUFLON:PSCH:v2:'):
                 parts = line.split(':')
                 if len(parts) >= 4:
-                    psch = parts[2]
-                    pkey = parts[3]
+                    psch_list.append(parts[3].strip())
                     
+        url = []
+        stream_count = 0
+        
+        # 2. 遍历流，将对应的 psch 分配给对应的画质
         for i, line in enumerate(lines):
             if '#EXT-X-STREAM-INF' in line:
                 name_start = line.find('NAME="') + 6
@@ -182,14 +183,16 @@ class Spider(Spider):
                 qn = line[name_start:name_end]
                 url_base = lines[i + 1]
                 
-                # 重新恢复中转代理逻辑：把流转交给盒子的 127.0.0.1 本地代理服务
-                full_url = f"{url_base}&psch={psch}&pkey={pkey}"
+                # 根据当前的流顺序拿到对应的 psch 鉴权值
+                current_psch = psch_list[stream_count] if stream_count < len(psch_list) else ""
+                
+                # 重新组合本地解密中转代理 URL
+                full_url = f"{url_base}&psch={current_psch}"
                 proxy_url = f"{self.getProxyUrl()}&url={quote(full_url)}"
                 
-                # 加上动态标签，如果抓不到 psch 参数，在画质栏会显示 [⚠️无鉴权]
-                label = f"{qn}" if psch else f"{qn}[⚠️无鉴权]"
-                url.append(label)
+                url.append(qn)
                 url.append(proxy_url)
+                stream_count += 1
                 
         result = {}
         result["url"] = url
@@ -200,7 +203,6 @@ class Spider(Spider):
 
     def localProxy(self, param):
         url = unquote(param['url'])
-        # 本地请求时，强行加上防拦截的 Header 伪装
         data = self.session.get(url, headers=self.headers, timeout=10)
         if data.status_code != 200:
             return [404, "text/plain", ""]
@@ -215,14 +217,11 @@ class Spider(Spider):
             if (line.startswith('#EXT-X-MOUFLON:FILE:') and 'media.mp4' in lines[i + 1]):
                 encrypted_data = line.split(':', 2)[2].strip()
                 try:
-                    # 尝试首选密钥解密
                     decrypted_data = self.decrypt(encrypted_data, self.stripchat_key)
                 except Exception as e:
                     try:
-                        # 失败后尝试备用密钥解密
                         decrypted_data = self.decrypt(encrypted_data, "Zokee2OhPh9kugh4")
                     except:
-                        # 彻底失败时不做破坏，保留原样防止崩溃
                         continue
                 lines[i + 1] = lines[i + 1].replace('media.mp4', decrypted_data)
         return '\n'.join(lines)
