@@ -163,32 +163,34 @@ class Spider(Spider):
         domain = f"https://edge-hls.doppiocdn.net/hls/{id}/master/{id}_auto.m3u8?playlistType=lowLatency"
         rsp = self.session.get(domain, headers=self.headers).text
         lines = rsp.strip().split('\n')
-        psch = 'NONE_ERROR'
-        pkey = 'NONE_ERROR'
+        psch = ''
+        pkey = ''
         url = []
+        
+        # 提取核心鉴权特征码
         for i, line in enumerate(lines):
             if line.startswith('#EXT-X-MOUFLON:'):
                 parts = line.split(':')
                 if len(parts) >= 4:
                     psch = parts[2]
                     pkey = parts[3]
+                    
+        for i, line in enumerate(lines):
             if '#EXT-X-STREAM-INF' in line:
                 name_start = line.find('NAME="') + 6
                 name_end = line.find('"', name_start)
                 qn = line[name_start:name_end]
                 url_base = lines[i + 1]
                 
-                # 拼接上鉴权参数
+                # 重新恢复中转代理逻辑：把流转交给盒子的 127.0.0.1 本地代理服务
                 full_url = f"{url_base}&psch={psch}&pkey={pkey}"
+                proxy_url = f"{self.getProxyUrl()}&url={quote(full_url)}"
                 
-                # 【试验一：绕过解密层】+【强行给播放器塞入 UA 和 Referer 伪装防止 CDN 拦截挂起】
-                proxy_url = f"{full_url}#User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36&Referer=https://zh.pikpedcams.com/"
-                
-                # 修改画质标签，在盒子上露馅测试
-                debug_qn = f"{qn}[psch={psch[:5]}]" if psch != 'NONE_ERROR' else f"{qn}[⚠️提取错误]"
-                
-                url.append(debug_qn)
+                # 加上动态标签，如果抓不到 psch 参数，在画质栏会显示 [⚠️无鉴权]
+                label = f"{qn}" if psch else f"{qn}[⚠️无鉴权]"
+                url.append(label)
                 url.append(proxy_url)
+                
         result = {}
         result["url"] = url
         result["parse"] = '0'
@@ -198,6 +200,7 @@ class Spider(Spider):
 
     def localProxy(self, param):
         url = unquote(param['url'])
+        # 本地请求时，强行加上防拦截的 Header 伪装
         data = self.session.get(url, headers=self.headers, timeout=10)
         if data.status_code != 200:
             return [404, "text/plain", ""]
@@ -212,9 +215,15 @@ class Spider(Spider):
             if (line.startswith('#EXT-X-MOUFLON:FILE:') and 'media.mp4' in lines[i + 1]):
                 encrypted_data = line.split(':', 2)[2].strip()
                 try:
+                    # 尝试首选密钥解密
                     decrypted_data = self.decrypt(encrypted_data, self.stripchat_key)
                 except Exception as e:
-                    decrypted_data = self.decrypt(encrypted_data, "Zokee2OhPh9kugh4")
+                    try:
+                        # 失败后尝试备用密钥解密
+                        decrypted_data = self.decrypt(encrypted_data, "Zokee2OhPh9kugh4")
+                    except:
+                        # 彻底失败时不做破坏，保留原样防止崩溃
+                        continue
                 lines[i + 1] = lines[i + 1].replace('media.mp4', decrypted_data)
         return '\n'.join(lines)
 
