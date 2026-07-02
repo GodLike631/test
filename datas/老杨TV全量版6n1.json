@@ -94,12 +94,12 @@
         },
         {
             "key": "GZ",
-            "name": "🦋 瓜子APP.py(关梯)",
+            "name": "🦋 瓜子APP.py",
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/瓜子APP.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "nmvm",
@@ -169,10 +169,12 @@
             "name": "🦋 艾旦影视(聚)(有三级片)🔞",
             "type": 1,
             "api": "https://lovedan.net/api.php/provide/vod/",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "ikun",
@@ -209,10 +211,12 @@
             "name": "🦋 天天┃影视(有三级片)🔞",
             "type": 1,
             "api": "https://api.1080zyku.com/inc/apijson.php",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "非凡",
@@ -582,8 +586,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/色播聚合.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "stripchat",
@@ -591,8 +595,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/stripchat.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "Cam4",
@@ -600,8 +604,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/Cam4直播.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "Pandalive",
@@ -609,8 +613,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/Pandalive直播.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "007qg",
@@ -618,8 +622,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/007吃瓜.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "51qg",
@@ -627,8 +631,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/51吃瓜.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "51dc",
@@ -636,8 +640,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/51大赛.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "51bl",
@@ -645,8 +649,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/51爆料.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "91bl",
@@ -654,8 +658,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/91爆料.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "91qgzx",
@@ -663,8 +667,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/91吃瓜中心.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "xmzb",
@@ -672,8 +676,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/熊猫视频.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "scpd",
@@ -681,8 +685,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/香肠派对.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "llav",
@@ -690,8 +694,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/萝莉AV.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "123av",
@@ -699,8 +703,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/123AV.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "Xvideos",
@@ -708,8 +712,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/Xvideos.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "fullhd",
@@ -717,8 +721,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/FullHD.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "JAV36",
@@ -726,8 +730,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/JAV36.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "ggsp",
@@ -735,8 +739,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/久久視頻.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "TOPTV",
@@ -744,8 +748,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/TOPTV.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "VHUB",
@@ -753,8 +757,8 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/VHUB[成人].py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "MD",
@@ -762,188 +766,224 @@
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/麻豆免费在线播放.py",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "slyzy",
             "name": "🦋 湿乐园｜🔞",
             "type": 1,
             "api": "https://xxavs.com/api.php/provide/vod",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "nxxzy",
             "name": "🦋 奶香香｜🔞",
             "type": 1,
             "api": "https://naixxzy.com/api.php/provide/vod",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "无尽资源",
             "name": "🦋 无尽资源｜🔞",
             "type": 1,
             "api": "https://api.wujinapi.net/api.php/provide/vod/",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "玉兔资源",
             "name": "🦋 玉兔資源｜🔞",
             "type": 1,
             "api": "https://apiyutu.com/api.php/provide/vod/",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "精品资源",
             "name": "🦋 精品資源｜🔞",
             "type": 1,
             "api": "https://www.jingpinx.com/api.php/provide/vod/",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "夜色资源",
             "name": "🦋 越南資源｜🔞",
             "type": 1,
             "api": "https://www.vnzyz.com/api.php/provide/vod/",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "辣椒資源",
             "name": "🦋 辣椒資源｜🔞",
             "type": 1,
             "api": "http://apilj.com/api.php/provide/vod/at/json/",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "鯊魚資源",
             "name": "🦋 鯊魚資源｜🔞",
             "type": 1,
             "api": "https://shayuapi.com/api.php/provide/vod/",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "155資源",
             "name": "🦋 155資源｜🔞",
             "type": 1,
             "api": "https://155api.com/api.php/provide/vod/",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "滴滴资源",
             "name": "🦋 滴滴资源｜🔞",
             "type": 1,
             "api": "https://api.ddapi.cc/api.php/provide/vod/at/json",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "蕃茄",
             "name": "🦋 18+蕃茄｜🔞",
             "type": 1,
             "api": "https://fqzy.me//api.php/provide/vod/",
-            "searchable": 0,
+            "searchable": 1,
             "quickSearch": 0,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "红桃🍑",
             "name": "🦋 红桃视频🍑｜🔞",
             "type": 1,
             "api": "https://apidanaizi.com/api.php/provide/vod/?ac=list",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "jkun资源",
             "name": "🦋 jkun资源｜🔞",
             "type": 1,
             "api": "https://jkunzyapi.com/api.php/provide/vod",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "精品X资源",
             "name": "🦋 精品X资源｜🔞",
             "type": 1,
             "api": "https://www.jingpinx.com/api.php/provide/vod",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "CK资源",
             "name": "🦋 CK资源｜🔞",
             "type": 1,
             "api": "https://ckzy.me/api.php/provide/vod",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "🔞七天资源🌈",
             "name": "🦋 七天资源🌈｜🔞",
             "type": 1,
             "api": "https://8day.icu/api.php/provide/vod/at/json",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "百万",
             "name": "🦋 百万｜🔞",
             "type": 1,
             "api": "https://api.bwzyz.com/api.php/provide/vod/at/json",
-            "quickSearch": 0,
-            "searchable": 0,
+            "quickSearch": 1,
+            "searchable": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "鸡坤",
             "name": "🦋 鸡坤｜🔞",
             "type": 1,
             "api": "https://jkunzyapi.com/api.php/provide/vod/",
-            "quickSearch": 0,
-            "searchable": 0,
+            "quickSearch": 1,
+            "searchable": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "*AIvin",
@@ -951,17 +991,19 @@
             "type": 0,
             "api": "http://lbapiby.com/api.php/provide/vod/at/xml",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "香蕉资源",
             "name": "🦋 香蕉资源🔞",
             "type": 0,
             "api": "https://www.xiangjiaozyw.com/api.php/provide/vod/at/xml/",
-            "searchable": 0,
+            "searchable": 1,
             "quickSearch": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "大地采集",
@@ -969,10 +1011,12 @@
             "type": 0,
             "api": "https://dadiapi.com/apple_m3u8.php",
             "playUrl": "https://play.dadiapi.com/watch?url=",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "*番号资源",
@@ -982,44 +1026,52 @@
             "searchable": 0,
             "quickSearch": 0,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "黄色仓库|AV",
             "name": "🦋 黄色仓库(旧)｜🔞",
             "type": 1,
             "api": "https://hsckzy.vip/api.php/provide/vod/",
-            "quickSearch": 0,
-            "searchable": 0,
+            "quickSearch": 1,
+            "searchable": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "桃花资源|AV",
             "name": "🦋 桃花资源｜🔞",
             "type": 1,
             "api": "https://thzy1.me/api.php/provide/vod/",
-            "quickSearch": 0,
-            "searchable": 0,
+            "quickSearch": 1,
+            "searchable": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "乐播资源|AV",
             "name": "🦋 乐播资源｜🔞",
             "type": 1,
             "api": "https://lbapi9.com/api.php/provide/vod/",
-            "quickSearch": 0,
-            "searchable": 0,
+            "quickSearch": 1,
+            "searchable": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "fqzy资源",
             "name": "🦋 国产资源｜🔞",
             "type": 1,
             "api": "https://fqzy.me//api.php/provide/vod/?ac=list",
-            "searchable": 0,
+            "searchable": 1,
             "changeable": 1,
             "categories": [
                 "黑料网曝",
@@ -1035,27 +1087,31 @@
                 "欧美精品"
             ],
             "category": "福利",
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "lsb资源|AV",
             "name": "🦋 lsb资源｜🔞",
             "type": 1,
             "api": "https://apilsbzy1.com/api.php/provide/vod/",
-            "quickSearch": 0,
-            "searchable": 0,
+            "quickSearch": 1,
+            "searchable": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "91",
             "name": "🦋 传媒系列｜🔞(梯子)",
             "type": 1,
             "api": "https://91md.me/api.php/provide/vod/",
-            "searchable": 0,
+            "searchable": 1,
             "changeable": 1,
             "category": "福利",
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "vf.py",
@@ -1064,20 +1120,22 @@
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/vf.py",
             "changeable": 1,
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "MissAV-py",
             "name": "🦋 MissAV(py)｜🔞",
             "type": 3,
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 1,
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/爱AV.py",
             "order_num": 5,
             "ext": "",
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "Hanime",
@@ -1086,8 +1144,8 @@
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/Hanime.py",
             "changeable": 1,
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "91rb",
@@ -1096,8 +1154,8 @@
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/91rb.py",
             "changeable": 1,
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "DSYS",
@@ -1106,8 +1164,8 @@
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/DSYS.py",
             "changeable": 1,
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "lav",
@@ -1116,8 +1174,8 @@
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/lav.py",
             "changeable": 1,
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "色播聚合",
@@ -1126,8 +1184,8 @@
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/色播聚合.py",
             "changeable": 1,
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "一个区",
@@ -1136,8 +1194,8 @@
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/一个区.py",
             "changeable": 1,
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "九个区",
@@ -1146,8 +1204,8 @@
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/九个区.py",
             "changeable": 1,
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "香蕉视频",
@@ -1156,20 +1214,22 @@
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/香蕉视频.py",
             "changeable": 1,
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "js_madou",
             "name": "🦋 麻豆(js)｜🔞",
             "type": 3,
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/js/麻豆.min.js",
-            "searchable": 0,
+            "searchable": 1,
             "quickSearch": 0,
             "filterable": 0,
             "changeable": 0,
             "ext": {},
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "小红薯",
@@ -1178,8 +1238,8 @@
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/小红薯.py",
             "changeable": 1,
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "推特",
@@ -1188,18 +1248,20 @@
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/推特.py",
             "changeable": 1,
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "kemono",
             "name": "🦋 kemono(py)｜🔞",
             "type": 3,
             "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/kemono.py",
-            "searchable": 0,
-            "quickSearch": 0,
+            "searchable": 1,
+            "quickSearch": 1,
             "filterable": 0,
-            "category": "福利"
+            "category": "福利",
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "Nostr",
@@ -2011,8 +2073,8 @@
             "type": 3,
             "api": "csp_Gz360",
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "云播影视",
@@ -2420,8 +2482,8 @@
                 "type": "list"
             },
             "category": "福利",
-            "searchable": 0,
-            "quickSearch": 0
+            "recordable": 0,
+            "history": 0
         },
         {
             "key": "咖啡体育",
