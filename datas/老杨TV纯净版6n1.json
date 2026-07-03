@@ -1903,18 +1903,10 @@
             "searchable": 0
         },
         {
-            "key": "网易云音乐",
-            "name": "🦋 网易云[音乐]",
+            "key": "djjh",
+            "name": "🦋 短剧聚合.py",
             "type": 3,
-            "api": "https://xn--fjq53n.xyz/Ting/yinyue/网易云音乐.py",
-            "category": "音乐",
-            "searchable": 0
-        },
-        {
-            "key": "网易云音乐1",
-            "name": "🦋 网易云1[音乐]",
-            "type": 3,
-            "api": "https://xn--fjq53n.xyz/Ting/yinyue/网易云音乐1.py",
+            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/短剧聚合.py",
             "category": "音乐",
             "searchable": 0
         },
