@@ -58,7 +58,7 @@ output_path = f"datas/{output_filename}"
 print(f"🎯 最终结算 -> 目标输出：{output_filename}")
 
 # ====================================================================
-# 🛡️ 【金蝉脱壳：全量版过期旧线自动全文字大轰炸】 (保留)
+# 🛡️ 【金蝉脱壳：全量版过期旧线自动全文字大轰炸】
 # ====================================================================
 old_configs = glob.glob('datas/老杨TV全量版*.json') + glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
@@ -67,7 +67,6 @@ for old_file in old_configs:
             trap_json = {
                 "spider": "", 
                 "notice": f"⚠️ 警告：当前专线已过期断流！老链接已彻底作废！\n\n最新全量版链接或当前密码请加QQ群“532637640”获取",
-                "warningText": "👑 特别提示：加QQ群“532637640”获取最新接口",
                 "sites": [
                     {"key": "老杨纯文字提示", "name": "🚨 请前往QQ群“532637640”获取最新密码🚨 当前专线密码已过期断流！", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0},
                     {"key": "老杨纯文字提示2", "name": "🚨 请前往QQ群“532637640”获取最新全量版链接", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0}
@@ -88,7 +87,7 @@ for garbage in glob.glob('datas/config_*.json'):
 
 
 # ====================================================================
-# 🧠 【核心逻辑：正统 JSON 对象读取与合并逻辑】 (保留)
+# 🧠 【核心逻辑：正统 JSON 对象读取与合并逻辑】
 # ====================================================================
 def load_json_safe(path):
     if not os.path.exists(path):
@@ -134,7 +133,7 @@ country_live_dict = {
     "name": "乡村电视 ｜Tg：@huliys9",
     "type": 0,
     "playerType": 2,
-    "ua": "okhttp",
+    "ua": "okhttp/5.3.2",
     "url": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E4%B9%A1%E6%9D%91%E7%94%B5%E8%A7%86.txt"
 }
 if len(haitun_lives) >= 5:
@@ -171,21 +170,25 @@ path_replacements = {
 for src, dst in path_replacements.items():
     final_json_text = final_json_text.replace(src, dst)
 
-thanks_warning = "👑 特别致谢与版权声明\n本接口的诞生离不开大后方几位业内顶流技术大佬的无私奉献，特此致谢：\n🐋 感谢鱼佬的付出\n源码基础与发布主页: fish2018/webhtv\n版本发布绝对地址: fish2018/webhtv/releases\nTelegram 官方群组: 👉 https://t.me/webhtv\n 感谢佬的付出\n核心仓库主页: FGBLH/GHK\n数据源直链地址: FGBLH/GHK/.json\nTelegram 官方群组: 👉 https://t.me/hshsjk9"
+thanks_warning = "\n\n👑 【特别致谢与版权声明】\n本接口的诞生离不开大后方几位业内顶流技术大佬的无私奉献，特此致谢：\n🐋 感谢鱼佬的付出 (源码基础: fish2018/webhtv，TG群: https://t.me/webhtv)\n 感谢佬的付出 (核心仓库: FGBLH/GHK，TG群: https://t.me/hshsjk9)"
 welcome_notice = "👑 欢迎使用【老杨TV粉丝专属缝合专线】！本接口由老杨TV结合佬&鱼佬的优质核心资源缝合而成，纯净无广告！🚨 重要提示：本接口密码不定期全自动更换！如果遇到失效 or 断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码！"
 
 try:
     final_obj = json.loads(final_json_text)
-    final_obj["notice"] = welcome_notice
-    final_obj["warningText"] = thanks_warning
+    
+    # 🌟【FongMi 规范性改造】将公告与致谢合并到唯一的 notice 字段中，并彻底移除无用字段 warningText
+    final_obj["notice"] = welcome_notice + thanks_warning
+    if "warningText" in final_obj:
+        final_obj.pop("warningText")
     
     ordered_obj = {}
-    if "notice" in final_obj: ordered_obj["notice"] = final_obj.pop("notice")
-    if "warningText" in final_obj: ordered_obj["warningText"] = final_obj.pop("warningText")
+    if "notice" in final_obj: 
+        ordered_obj["notice"] = final_obj.pop("notice")
+        
     ordered_obj.update(final_obj)
     
     # ====================================================================
-    # 🌟【全新深度体验优化区】（移除 type=4，完全规避 ext 类型报错）
+    # 🌟【全新深度体验优化区】
     # ====================================================================
     try:
         # --- 1. 去重并保留所有合法的傳統解析站點 ---
@@ -198,8 +201,13 @@ try:
                 seen_names.add(name)
         ordered_obj["parses"] = unique_parses
 
-        # --- 2. 注入国内高防 AliDNS 到 doh ---
+        # --- 2. 注入国内高防 AliDNS 到 doh 并修复原有拼写错误 ---
         if "doh" in ordered_obj and isinstance(ordered_obj["doh"], list):
+            # 🛠️ 核心修复：自动校正原有错误拼写的 dns-quer 路径
+            for doh_item in ordered_obj["doh"]:
+                if doh_item.get("url", "").endswith("/dns-quer"):
+                    doh_item["url"] = doh_item["url"] + "y"
+            
             ali_doh = {
                 "name": "AliDNS",
                 "url": "https://dns.alidns.com/dns-query",
@@ -208,7 +216,7 @@ try:
             if not any(d.get("name") == "AliDNS" for d in ordered_obj["doh"]):
                 ordered_obj["doh"].insert(0, ali_doh)
 
-        # --- 3. 全面注入通用高级影音防屏蔽去广告 JS 脚本 (安全穩定保留) ---
+        # --- 3. 全面注入通用高级影音防屏蔽去广告 JS 脚本 ---
         custom_js_rules = [
             "console.log('老楊TV高級WebView攔截器啟動');",
             "window.addEventListener('DOMContentLoaded', function() {",
@@ -239,11 +247,18 @@ try:
         }
         ordered_obj["rules"] = [js_injection_rule] + [r for r in current_rules if r.get("name") != "老楊TV·雲端高級去廣告JS注入"]
 
-        # --- 4. 彻底移除直播 lives 末尾的无用空对象 ---
+        # --- 4. 彻底移除直播 lives 末尾的无用空对象并统一重写补齐 OkHttp 头部 ---
         if "lives" in ordered_obj and isinstance(ordered_obj["lives"], list):
-            ordered_obj["lives"] = [live for live in ordered_obj["lives"] if live]
+            clean_lives = []
+            for live in ordered_obj["lives"]:
+                if live and isinstance(live, dict):
+                    # 🛠️ 优化：对所有直播流统一补齐最稳健的 okhttp UA，防止第三方防盗链导致断流
+                    if not live.get("ua") or live.get("ua") == "okhttp":
+                        live["ua"] = "okhttp/5.3.2"
+                    clean_lives.append(live)
+            ordered_obj["lives"] = clean_lives
 
-        # --- 5. 站点（sites）名称特调与智能自动分类 ---
+        # --- 5. 站点（sites）名称特调、智能自动分类及 FongMi 专属短剧特化 ---
         tg_tail_count = 0  
         for site in ordered_obj.get("sites", []):
             if "name" in site:
@@ -270,11 +285,16 @@ try:
                 s_key = site.get("key", "")
                 s_genre = site.get("genre", "")
                 
+                # 🛠️ 强类型矫正：杜绝残留的空对象 {} 影响低端电视盒子解析
+                if "ext" in site and site["ext"] == {}:
+                    site["ext"] = ""
+
+                # --- 核心智能分类与高级标签精准分流逻辑 ---
                 if s_genre == "shortdrama" or "短剧" in name_val or "dj" in s_key.lower():
                     site["category"] = "短剧"
+                    site["genre"] = "shortdrama"  # 🛠️ 核心修复：100% 补全短剧标签，激活 FongMi 原生短剧聚合侧边栏
                 elif "🔞" in name_val or "色播" in name_val or "av" in s_key.lower() or "瓜" in name_val or "爆料" in name_val:
                     site["category"] = "福利"
-                    pass 
                 elif "少儿" in name_val or "课堂" in name_val or "教学" in name_val:
                     site["category"] = "少儿"
                     site["searchable"] = 0
@@ -285,15 +305,34 @@ try:
                     site["category"] = "动漫"
                 elif "磁力" in name_val or "索" in name_val or "盘" in name_val or "云盘" in name_val or "4K" in name_val:
                     site["category"] = "网盘/磁力"
+                    if "PanWebShare" in site.get("api", ""):
+                        site["changeable"] = 1  # 🛠️ 磁力云盘专属优化：开放自由换源搜索开关
                 elif "体育" in name_val or "球" in name_val or "直播" in name_val:
                     site["category"] = "体育/直播"
                 else:
                     site["category"] = "综合"
+                
+                # 🛠️ 兜底防护：除了被主动切断搜索的板块，其余所有多媒体站点缺省强制为 1，防止搜索逻辑罢工
+                if "searchable" not in site and site.get("category") not in ["少儿", "音乐"]:
+                    site["searchable"] = 1
 
         for site in ordered_obj.get("sites", []):
             if "key" in site and site["key"] == "AQY":
                 site["name"] = "🦋 爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"
                 site["category"] = "综合"
+                
+        # --- 6. 首页极速大图墙海报激活机制（高级调序优化） ---
+        # 挑选自带优质推荐海报数据源的站点（如厂长影视等）移至 sites 第一位，让用户开机不留白
+        current_sites = ordered_obj.get("sites", [])
+        recommend_index = -1
+        for idx, site in enumerate(current_sites):
+            if site.get("key") in ["厂长影视", "爱看机器人"]:
+                recommend_index = idx
+                break
+        if recommend_index > 0:
+            target_site = current_sites.pop(recommend_index)
+            current_sites.insert(0, target_site)
+            print(f"🚀 【启动加速】已自动将高画质聚合海报站 [{target_site.get('key')}] 提升至首位，完美激活首页推荐大图墙！")
     
     except Exception as inner_e:
         print(f"⚠️ 提示：美化与智能优化阶段跳过，原因: {inner_e}")
