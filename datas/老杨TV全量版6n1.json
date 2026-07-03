@@ -14,7 +14,7 @@
         },
         {
             "key": "AQY",
-            "name": "🦋 爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9",
+            "name": "🦋 爱奇艺 ｜Tg：@huliys9",
             "type": 3,
             "api": "https://file.icve.com.cn/file_doc/249/899/3E7E0C8A023B624CEC6BDCC200F06F02.js",
             "ext": "https://cdn.waimaimingtang.com/file/images/bwc/20251023002031-6064033c16.js",
@@ -86,6 +86,14 @@
             "name": "🦋 热播APP.py",
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/热播APP.py",
+            "category": "综合",
+            "searchable": 1
+        },
+        {
+            "key": "GZ",
+            "name": "🦋 瓜子APP.py",
+            "type": 3,
+            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/瓜子APP.py",
             "category": "综合",
             "searchable": 1
         },
@@ -921,6 +929,14 @@
             "searchable": 1
         },
         {
+            "key": "瓜子影视",
+            "name": "🦋 瓜子 • 影视",
+            "type": 3,
+            "api": "csp_Gz360",
+            "category": "综合",
+            "searchable": 1
+        },
+        {
             "key": "云播影视",
             "name": "🦋 云播 • 影视",
             "type": 3,
@@ -1066,15 +1082,6 @@
             "searchable": 1
         },
         {
-            "key": "hgdj",
-            "name": "🦋 红果短剧.py",
-            "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/红果短剧.py",
-            "category": "短剧",
-            "genre": "shortdrama",
-            "searchable": 1
-        },
-        {
             "key": "河马短剧",
             "name": "🦋 河马 • 短剧",
             "type": 3,
@@ -1121,30 +1128,6 @@
             "filterable": 1,
             "genre": "shortdrama",
             "category": "短剧"
-        },
-        {
-            "key": "呦呦DJ",
-            "name": "🦋 呦呦 • DJ",
-            "type": 3,
-            "api": "csp_Djuu",
-            "style": {
-                "type": "list"
-            },
-            "category": "短剧",
-            "genre": "shortdrama",
-            "searchable": 1
-        },
-        {
-            "key": "轮回DJ",
-            "name": "🦋 轮回 • DJ",
-            "type": 3,
-            "api": "csp_Djlh",
-            "style": {
-                "type": "list"
-            },
-            "category": "短剧",
-            "genre": "shortdrama",
-            "searchable": 1
         },
         {
             "key": "MiFun",
@@ -1816,6 +1799,17 @@
             "searchable": 1
         },
         {
+            "key": "瓜子体育",
+            "name": "🦋 瓜子 • 体育",
+            "type": 3,
+            "api": "csp_GuaziTY",
+            "style": {
+                "type": "list"
+            },
+            "category": "体育/直播",
+            "searchable": 1
+        },
+        {
             "key": "咖啡体育",
             "name": "🦋 咖啡 • 体育",
             "type": 3,
@@ -1941,6 +1935,14 @@
             "category": "少儿"
         },
         {
+            "key": "hgdj",
+            "name": "🦋 红果短剧.py",
+            "type": 3,
+            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/红果短剧.py",
+            "category": "音乐",
+            "searchable": 0
+        },
+        {
             "key": "网易云音乐",
             "name": "🦋 网易云[音乐]",
             "type": 3,
@@ -1997,6 +1999,28 @@
             "type": 3,
             "api": "csp_LocalFile",
             "category": "综合",
+            "searchable": 0
+        },
+        {
+            "key": "呦呦DJ",
+            "name": "🦋 呦呦 • DJ",
+            "type": 3,
+            "api": "csp_Djuu",
+            "style": {
+                "type": "list"
+            },
+            "category": "音乐",
+            "searchable": 0
+        },
+        {
+            "key": "轮回DJ",
+            "name": "🦋 轮回 • DJ",
+            "type": 3,
+            "api": "csp_Djlh",
+            "style": {
+                "type": "list"
+            },
+            "category": "音乐",
             "searchable": 0
         },
         {
@@ -2150,14 +2174,6 @@
             "filterable": 0,
             "changeable": 0,
             "category": "综合"
-        },
-        {
-            "key": "GZ",
-            "name": "🦋 瓜子APP.py",
-            "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/瓜子APP.py",
-            "category": "福利",
-            "searchable": 1
         },
         {
             "key": "aidan",
@@ -2776,25 +2792,6 @@
             "quickSearch": 1,
             "filterable": 0,
             "category": "福利"
-        },
-        {
-            "key": "瓜子影视",
-            "name": "🦋 瓜子 • 影视",
-            "type": 3,
-            "api": "csp_Gz360",
-            "category": "福利",
-            "searchable": 1
-        },
-        {
-            "key": "瓜子体育",
-            "name": "🦋 瓜子 • 体育",
-            "type": 3,
-            "api": "csp_GuaziTY",
-            "style": {
-                "type": "list"
-            },
-            "category": "福利",
-            "searchable": 1
         }
     ],
     "lives": [
