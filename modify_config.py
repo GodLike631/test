@@ -15,7 +15,7 @@ lock_file_path = 'datas/控制开关.txt'
 tracker_path = 'datas/最新接口文件名.txt'
 
 # ====================================================================
-# ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑】 (保留)
+# ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑】
 # ====================================================================
 today = datetime.datetime.now()
 current_month = str(today.month) 
@@ -203,7 +203,6 @@ try:
 
         # --- 2. 注入国内高防 AliDNS 到 doh 并修复原有拼写错误 ---
         if "doh" in ordered_obj and isinstance(ordered_obj["doh"], list):
-            # 🛠️ 核心修复：自动校正原有错误拼写的 dns-quer 路径
             for doh_item in ordered_obj["doh"]:
                 if doh_item.get("url", "").endswith("/dns-quer"):
                     doh_item["url"] = doh_item["url"] + "y"
@@ -252,90 +251,115 @@ try:
             clean_lives = []
             for live in ordered_obj["lives"]:
                 if live and isinstance(live, dict):
-                    # 🛠️ 优化：对所有直播流统一补齐最稳健的 okhttp UA，防止第三方防盗链导致断流
                     if not live.get("ua") or live.get("ua") == "okhttp":
                         live["ua"] = "okhttp/5.3.2"
                     clean_lives.append(live)
             ordered_obj["lives"] = clean_lives
 
-        # --- 5. 站点（sites）名称特调、智能自动分类及 FongMi 专属短剧特化 ---
-        tg_tail_count = 0  
+        # --- 5. 统一清洗、智能标签与空对象处理 ---
         for site in ordered_obj.get("sites", []):
             if "name" in site:
                 name_val = site["name"]
-                
                 for char in ['丨', '┃', ' ']:
                     name_val = name_val.strip(char)
                 name_val = re.sub(r'\s+', ' ', name_val)
                 
                 if "｜Tg：@huliys9" in name_val:
                     tg_tail_count += 1
-                    if tg_tail_count > 5:
-                        name_val = name_val.replace("｜Tg：@huliys9", "").strip()
+                    if tg_tail_count > 5: name_val = name_val.replace("｜Tg：@huliys9", "").strip()
                 elif "｜Tg:@huliys9" in name_val:
                     tg_tail_count += 1
-                    if tg_tail_count > 5:
-                        name_val = name_val.replace("｜Tg:@huliys9", "").strip()
+                    if tg_tail_count > 5: name_val = name_val.replace("｜Tg:@huliys9", "").strip()
 
                 if not name_val.startswith("🦋"):
                     name_val = f"🦋 {name_val}"
-                
                 site["name"] = name_val
 
-                s_key = site.get("key", "")
-                s_genre = site.get("genre", "")
-                
-                # 🛠️ 强类型矫正：杜绝残留的空对象 {} 影响低端电视盒子解析
                 if "ext" in site and site["ext"] == {}:
                     site["ext"] = ""
 
-                # --- 核心智能分类与高级标签精准分流逻辑 ---
-                if s_genre == "shortdrama" or "短剧" in name_val or "dj" in s_key.lower():
-                    site["category"] = "短剧"
-                    site["genre"] = "shortdrama"  # 🛠️ 核心修复：100% 补全短剧标签，激活 FongMi 原生短剧聚合侧边栏
-                elif "🔞" in name_val or "色播" in name_val or "av" in s_key.lower() or "瓜" in name_val or "爆料" in name_val:
-                    site["category"] = "福利"
-                elif "少儿" in name_val or "课堂" in name_val or "教学" in name_val:
-                    site["category"] = "少儿"
-                    site["searchable"] = 0
-                elif "音乐" in name_val or "网易云" in name_val or "听书" in name_val or "唱会" in name_val or "FM" in name_val:
-                    site["category"] = "音乐"
-                    site["searchable"] = 0
-                elif "动漫" in name_val or "新番" in name_val or "Anime" in s_key:
-                    site["category"] = "动漫"
-                elif "磁力" in name_val or "索" in name_val or "盘" in name_val or "云盘" in name_val or "4K" in name_val:
-                    site["category"] = "网盘/磁力"
-                    if "PanWebShare" in site.get("api", ""):
-                        site["changeable"] = 1  # 🛠️ 磁力云盘专属优化：开放自由换源搜索开关
-                elif "体育" in name_val or "球" in name_val or "直播" in name_val:
-                    site["category"] = "体育/直播"
-                else:
-                    site["category"] = "综合"
-                
-                # 🛠️ 兜底防护：除了被主动切断搜索的板块，其余所有多媒体站点缺省强制为 1，防止搜索逻辑罢工
-                if "searchable" not in site and site.get("category") not in ["少儿", "音乐"]:
-                    site["searchable"] = 1
+        # --- 6. 🏆【核心重写：九大方阵智能分类及豆瓣首页硬核置顶排序算法】 ---
+        # 准备 9 个大空阵营列表
+        block_1_douban = []       # 1. 豆瓣首页专享
+        block_2_yingshi = []      # 2. 影视/追剧/APP大类
+        block_3_duanju = []       # 3. 短剧/剧场
+        block_4_dongman = []      # 4. 动漫类
+        block_5_cili = []         # 5. 网盘/磁力/4K
+        block_6_tiyu = []         # 6. 体育/看球/直播
+        block_7_shaoer = []       # 7. 少儿课堂/教育
+        block_8_yinyue = []       # 8. 音乐/听书/功能线
+        block_9_fuli = []         # 9. 福利/18禁 (永远垫底)
 
         for site in ordered_obj.get("sites", []):
-            if "key" in site and site["key"] == "AQY":
-                site["name"] = "🦋 爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"
+            name = site.get("name", "")
+            s_key = site.get("key", "")
+            s_genre = site.get("genre", "")
+
+            # A. 提取特定敏感福利关键字和直连词
+            is_nsfw = "🔞" in name or "色播" in name or "av" in s_key.lower() or "瓜" in name or "爆料" in name or "chat" in name.lower() or "cam" in name.lower() or "panda" in name.lower() or "video" in name.lower() or "md" in s_key
+
+            # B. 分流到各大阵营
+            if "豆瓣" in name and "首页" in name:
                 site["category"] = "综合"
+                site["searchable"] = 0
+                block_1_douban.append(site)
                 
-        # --- 6. 首页极速大图墙海报激活机制（高级调序优化） ---
-        # 挑选自带优质推荐海报数据源的站点（如厂长影视等）移至 sites 第一位，让用户开机不留白
-        current_sites = ordered_obj.get("sites", [])
-        recommend_index = -1
-        for idx, site in enumerate(current_sites):
-            if site.get("key") in ["厂长影视", "爱看机器人"]:
-                recommend_index = idx
-                break
-        if recommend_index > 0:
-            target_site = current_sites.pop(recommend_index)
-            current_sites.insert(0, target_site)
-            print(f"🚀 【启动加速】已自动将高画质聚合海报站 [{target_site.get('key')}] 提升至首位，完美激活首页推荐大图墙！")
-    
+            elif is_nsfw:
+                site["category"] = "福利"
+                block_9_fuli.append(site)
+                
+            elif "短剧" in name or "剧场" in name or "dj" in s_key.lower():
+                site["category"] = "短剧"
+                site["genre"] = "shortdrama"   # 自动追补 FongMi 短剧标签
+                block_3_duanju.append(site)
+                
+            elif "动漫" in name or "新番" in name or "anime" in s_key.lower() or "a1" in name.lower():
+                site["category"] = "动漫"
+                block_4_dongman.append(site)
+                
+            elif "磁力" in name or "索" in name or "盘" in name or "云盘" in name or "4k" in name.lower():
+                site["category"] = "网盘/磁力"
+                if "PanWebShare" in site.get("api", ""):
+                    site["changeable"] = 1     # 云盘自动开启多源换源
+                block_5_cili.append(site)
+                
+            elif "体育" in name or "球" in name or "直播" in name:
+                site["category"] = "体育/直播"
+                block_6_tiyu.append(site)
+                
+            elif "少儿" in name or "课堂" in name or "教学" in name or "教育" in name:
+                site["category"] = "少儿"
+                site["searchable"] = 0
+                block_7_shaoer.append(site)
+                
+            elif "音乐" in name or "网易云" in name or "听书" in name or "唱会" in name or "fm" in name.lower() or "相声" in name or "小品" in name or "戏曲" in name or "推送" in name or "配置" in name or "版本" in name or "本地" in name:
+                if "音乐" in name or "网易云" in name or "听书" in name or "fm" in name.lower():
+                    site["category"] = "音乐"
+                else:
+                    site["category"] = "综合"
+                site["searchable"] = 0
+                block_8_yinyue.append(site)
+                
+            else:
+                # 默认落入影视/追剧大类
+                site["category"] = "综合"
+                block_2_yingshi.append(site)
+
+            # 统一补齐标准站点的搜索引擎开关
+            if site.get("category") not in ["少儿", "音乐"] and "searchable" not in site:
+                site["searchable"] = 1
+
+        # 特调爱奇艺基础信息
+        for site in block_2_yingshi:
+            if site.get("key") == "AQY":
+                site["name"] = "🦋 爱奇艺｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"
+
+        # 👑 【核心组装】按九大方阵顺序无缝拼接
+        ordered_obj["sites"] = block_1_douban + block_2_yingshi + block_3_duanju + block_4_dongman + block_5_cili + block_6_tiyu + block_7_shaoer + block_8_yinyue + block_9_fuli
+        print(f"🚀 【重排结算】已完成全量合并站点的智能排序！豆瓣首页锁定在 0 号位，福利线路归位到最末尾！")
+
     except Exception as inner_e:
-        print(f"⚠️ 提示：美化与智能优化阶段跳过，原因: {inner_e}")
+        print(f"⚠️ 提示：美化与智能重排阶段跳过，原因: {inner_e}")
 
     # ====================================================================
     # 🌟【数据安全落盘】
