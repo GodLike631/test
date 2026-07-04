@@ -20,18 +20,14 @@ tracker_path = 'datas/最新接口文件名.txt'
 # 贴在这里的线路会雷打不动地并入总池子，并自动享受后面的方阵分类美化和洗牌规则。
 # ====================================================================
 MY_CUSTOM_SITES = [
-    # 示例1（你可以参照这个格式增删，注意每条线之间用逗号隔开）：
-    # {
-    #     "key": "我的自定义站",
-    #     "name": "自定义影视",
-    #     "type": 3,
-    #     "api": "csp_AppRJ",
-    #     "searchable": 1,
-    #     "quickSearch": 1,
-    #     "filterable": 0,
-    #     "ext": {"url": "http://xxx.xxx"}
-    # },
-    
+    {
+        "key": "山楂影视",
+        "name": "山楂影视.py",  
+        "type": 3,
+        "api": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E5%B1%B1%E6%A5%82%E5%BD%B1%E8%A7%86.py",
+        "searchable": 1,
+        "quickSearch": 1
+    }
 ]
 
 # ====================================================================
