@@ -15,6 +15,26 @@ lock_file_path = 'datas/控制开关.txt'
 tracker_path = 'datas/最新接口文件名.txt'
 
 # ====================================================================
+# ✍️ 【老杨专属：手工便捷加线区】
+# 提示：以后你想添加任何单独的爬虫线路，直接按照标准格式贴在下面中括号里即可！
+# 贴在这里的线路会雷打不动地并入总池子，并自动享受后面的方阵分类美化和洗牌规则。
+# ====================================================================
+MY_CUSTOM_SITES = [
+    # 示例1（你可以参照这个格式增删，注意每条线之间用逗号隔开）：
+    # {
+    #     "key": "我的自定义站",
+    #     "name": "自定义影视",
+    #     "type": 3,
+    #     "api": "csp_AppRJ",
+    #     "searchable": 1,
+    #     "quickSearch": 1,
+    #     "filterable": 0,
+    #     "ext": {"url": "http://xxx.xxx"}
+    # },
+    
+]
+
+# ====================================================================
 # ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑】
 # ====================================================================
 today = datetime.datetime.now()
@@ -147,7 +167,8 @@ cnb_lives = json_cnb.get("lives", [])
 # 🎯 直接安全地收集上游所有原本的解析器（parses）
 combined_parses = json_haitun.get("parses", []) + json_lz.get("parses", []) + json_cnb.get("parses", [])
 
-json_cnb["sites"] = haitun_sites + lz_nsfw_list + cnb_sites
+# ➕ 【核心合流】将你手工配置的自定义站点列表并入全国总池子
+json_cnb["sites"] = haitun_sites + lz_nsfw_list + cnb_sites + MY_CUSTOM_SITES
 json_cnb["lives"] = haitun_lives + cnb_lives
 
 final_json_text = json.dumps(json_cnb, ensure_ascii=False, indent=4)
@@ -308,13 +329,13 @@ try:
 
             # 🛠️ 6. 彻底完成洗牌分流与名字特调
             if is_target_rebo_main:
-                # 🎯 唯独将“热播影视”注入大长鸣谢声明，推入置顶第一位 block_1[cite: 7]
+                # 🎯 唯独将“热播影视”注入大长鸣谢声明，推入置顶第一位 block_1
                 site["name"] = "热播 • APP｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜@huliys9"
                 site["category"] = "综合"
                 block_1_rebo.append(site)
 
             elif "豆瓣" in raw_name and "首页" in raw_name:
-                # 豆瓣解绑：恢复其原本清净名，退回普通影视区 block_2[cite: 7]
+                # 豆瓣解绑：恢复其原本清净名，退回普通影视区 block_2
                 site["name"] = "🦋 豆瓣 • 首页"
                 site["category"] = "综合"
                 site["searchable"] = 0
@@ -327,7 +348,7 @@ try:
                 block_9_fuli.append(site)
                 
             elif "短剧" in raw_name or "剧场" in raw_name:
-                # 包含 DJ/dj 关键词的线一律强行分流进入音乐阵营[cite: 7]
+                # 包含 DJ/dj 关键词的线一律强行分流进入音乐阵营
                 if "dj" in raw_name.lower() or "dj" in s_key.lower():
                     if not raw_name.startswith("🦋"): raw_name = f"🦋 {raw_name}"
                     site["name"] = raw_name
@@ -379,7 +400,7 @@ try:
                 block_8_yinyue.append(site)
                 
             else:
-                # 默认影视大类（包含名称带瓜子APP、视频、以及保留原地归类的 "key": "rb" 线路）[cite: 7]
+                # 默认影视大类（包含名称带瓜子APP、视频、以及保留原地归类的 "key": "rb" 线路）
                 if not raw_name.startswith("🦋"): raw_name = f"🦋 {raw_name}"
                 site["name"] = raw_name
                 site["category"] = "综合"
@@ -394,22 +415,22 @@ try:
             if site.get("key") == "AQY":
                 site["name"] = "🦋 爱奇艺 ｜Tg：@huliys9"
 
-        # 👑 【新首页硬组装】"key": "热播影视" 携长致谢完美置顶（Index 0），另一个热播"key": "rb"正常随大部队在影视区排列[cite: 7]
+        # 👑 【新首页硬组装】"key": "热播影视" 携长致谢完美置顶（Index 0），另一个热播"key": "rb"正常随大部队在影视区排列
         ordered_obj["sites"] = (
-            block_1_rebo +         # 1. 🎯 "key": "热播影视" 绝对置顶 (0号位海报墙扛把子)[cite: 7]
-            block_2_yingshi +      # 2. 传统综合影视单线路 (包含回归的豆瓣首页和原本就在此的 key: rb 线路)[cite: 7]
-            block_3_duanju +       # 3. 独立短剧[cite: 7]
-            block_4_dongman +      # 4. 动漫新番[cite: 7]
-            block_6_tiyu +         # 5. 体育直播[cite: 7]
-            block_7_shaoer +       # 6. 少儿课堂[cite: 7]
-            block_8_yinyue +       # 7. 音乐/听书/功能辅助线[cite: 7]
-            block_5_cili +         # 8. 网盘/磁力/4K降权区[cite: 7]
-            block_9_fuli           # 9. 福利18禁安全坠尾[cite: 7]
+            block_1_rebo +         # 1. 🎯 "key": "热播影视" 绝对置顶 (0号位海报墙扛把子)
+            block_2_yingshi +      # 2. 传统综合影视单线路 (包含回归的豆瓣首页和原本就在此的 key: rb 线路)
+            block_3_duanju +       # 3. 独立短剧
+            block_4_dongman +      # 4. 动漫新番
+            block_6_tiyu +         # 5. 体育直播
+            block_7_shaoer +       # 6. 少儿课堂
+            block_8_yinyue +       # 7. 音乐/听书/功能辅助线
+            block_5_cili +         # 8. 网盘/磁力/4K降权区
+            block_9_fuli           # 9. 福利18禁安全坠尾
         )
         print(f"🚀 【洗牌结算】靶向隔离重排成功！\"key\": \"热播影视\" 已锁定置顶，\"key\": \"rb\" 线路已安稳保留在其原有的影视分类位置。")
 
     except Exception as inner_e:
-        print(f"⚠️ 提示：美化与智能重排阶段跳过，原因: {inner_e}")
+        print(f"⚠️ 提示：美化与智能重排阶段跳过，reason: {inner_e}")
 
     # ====================================================================
     # 🌟【数据安全落盘】
