@@ -4,9 +4,9 @@ on:
   schedule:
     # 🎯 彻底避开整点塞车！换算北京时间为早上 8:43 和晚上 20:43 准时全自动合流
     - cron: '43 0,12 * * *'
-  workflow_dispatch:
+  workflow_dispatch: 
 
-# 🌟 显式强制赋予工作流最高写权限，彻底杜绝 128 推送报错
+# 🌟 显式强制赋予工作流最高写权限，彻底杜绝 128 报错
 permissions: write-all
 
 jobs:
@@ -22,34 +22,32 @@ jobs:
       with:
         python-version: '3.10'
 
-    # 1. 下载两个标准公共大底包
+    # 1. 下载三个源（标准接口底座）
     - name: Fetch target files
       run: |
         mkdir -p datas
         curl -L "https://cnb.cool/fish2018/xs/-/git/raw/main/api.json" -o datas/cnb.json
-        curl -L "https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/海豚666.json" -o datas/haitun.json
+        curl -L "https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/%E6%B5%B7%E8%B1%9A666.json" -o datas/haitun.json
+        curl -L "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py.json" -o datas/lz.json
 
-    # 2. 执行安全对象级绿色过滤与自适应改名脚本
+    # 2. 执行自适应对象级合流脚本
     - name: Text Merge JSON
       run: |
         python modify_config.py
 
-    # 3. 核心修正：全量追踪、中文防乱码、缓冲区精准防护提交机制
+    # 3. 核心修正：全量目录追踪与缓冲区比对，彻底杜绝单文件遗漏及空提交报错
     - name: Commit and Push changes
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         
-        # 🌟【核心修复】禁止 Git 对中文路径进行转义，彻底解决乱码匹配不到文件的问题
-        git config --global core.quotepath false
-        
-        # 🌟 直接把整个 datas 文件夹全部 add 进来，不管中文名怎么变都能 100% 抓到
+        # 🌟 终极防错：直接暂存整个 datas 文件夹。无论脚本动了老杨TV、开关txt还是下载的底包，通通一网打尽
         git add datas/
         
-        # 🌟【终极防错】只比对已经被 git add 进去的缓存区行内容。有真实内容变化才提交，无变化就优雅跳过
+        # 🌟 安全防御：只比对已经被 git add 进去的缓存区。有内容变化才提交，没变化就优雅跳过
         if ! git diff --cached --exit-code --quiet; then
-          git commit -m "双源自适应硬核净化合并 (老杨TV纯净版系列): $(date +'%Y-%m-%d %H:%M:%S')"
+          git commit -m "多源自适应硬核合并 (老杨TV全量版系列): $(date +'%Y-%m-%d %H:%M:%S')"
           git push origin main
         else
-          echo "文件内容没有发生实际变化，无需更新，跳过本次提交。"
+          echo "检测到合并后的文件内容与仓库完全一致，无需更新，跳过本次提交。"
         fi
