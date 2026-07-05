@@ -119,18 +119,26 @@
             "searchable": 1
         },
         {
-            "key": "QU",
-            "name": "🦋 奇优影院.py",
+            "key": "nnyy",
+            "name": "🦋 努努影院.py",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/奇优影院.py",
+            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/努努影院.py",
             "category": "综合",
             "searchable": 1
         },
         {
-            "key": "UVOD",
-            "name": "🦋 优视频.py",
+            "key": "nvm",
+            "name": "🦋 泥视频.py",
             "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/优视频.py",
+            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/泥视频.py",
+            "category": "综合",
+            "searchable": 1
+        },
+        {
+            "key": "QU",
+            "name": "🦋 奇优影院.py",
+            "type": 3,
+            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/奇优影院.py",
             "category": "综合",
             "searchable": 1
         },
@@ -2259,6 +2267,14 @@
             "category": "网盘/磁力"
         },
         {
+            "key": "UVOD",
+            "name": "🦋 优视频.py 有🔞",
+            "type": 3,
+            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/优视频.py",
+            "category": "福利",
+            "searchable": 1
+        },
+        {
             "key": "xyzkk",
             "name": "🦋 小鸭子看看.py 有🔞",
             "type": 3,
@@ -2507,6 +2523,14 @@
             "name": "🦋 Pornhub.py｜🔞",
             "type": 3,
             "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/Pornhub.py",
+            "category": "福利",
+            "searchable": 1
+        },
+        {
+            "key": "xhamster",
+            "name": "🦋 xhamster.py｜🔞",
+            "type": 3,
+            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/xhamster.py",
             "category": "福利",
             "searchable": 1
         },
@@ -3042,22 +3066,10 @@
             "url": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E4%B9%A1%E6%9D%91%E7%94%B5%E8%A7%86.txt"
         },
         {
-            "name": "海燕直播｜Tg：@huliys9",
-            "type": 0,
-            "ua": "okhttp/5.3.2",
-            "url": "https://gh-proxy.org/https://raw.githubusercontent.com/wujiangliu/live-sources/refs/heads/main/haiyan.txt"
-        },
-        {
             "name": "薄荷直播｜Tg：@huliys9",
             "type": 0,
             "ua": "okhttp/5.3.2",
             "url": "https://gh-proxy.org/https://raw.githubusercontent.com/wujiangliu/live-sources/refs/heads/main/bhmb.m3u"
-        },
-        {
-            "name": "湘西直播｜Tg：@huliys9",
-            "type": 0,
-            "ua": "okhttp/5.3.2",
-            "url": "https://hub.glowp.xyz/https://raw.githubusercontent.com/wujiangliu/live-sources/refs/heads/main/xiangxi.txt"
         },
         {
             "name": "全球直播｜Tg：@huliys9",
@@ -3076,6 +3088,12 @@
             "type": 0,
             "ua": "okhttp/5.3.2",
             "url": "https://wget.la/https://raw.githubusercontent.com/vinkerq/iptv-api/refs/heads/master/iptv.txt"
+        },
+        {
+            "name": "juli｜Tg：@huliys9",
+            "type": 0,
+            "ua": "okhttp/5.3.2",
+            "url": "https://files.catbox.moe/h3mb5a.txt"
         },
         {
             "name": "小新TV｜Tg：@huliys9",
@@ -3112,12 +3130,6 @@
             "type": 0,
             "ua": "okhttp/5.3.2",
             "url": "https://raw.githubusercontent.com/xJEYDAin/iptv/main/output/all_merged.m3u"
-        },
-        {
-            "name": "UnifiTV(马来节点)｜Tg：@huliys9",
-            "type": 0,
-            "ua": "okhttp/5.3.2",
-            "url": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/unifi.txt"
         },
         {
             "name": "裤佬TV｜Tg：@huliys9",
