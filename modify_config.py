@@ -48,6 +48,12 @@ MY_CUSTOM_LIVES = [
         "type": 0,
         "ua": "okhttp/5.3.2",
         "url": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/Ly_18/refs/heads/main/datas/%E6%9C%80%E6%96%B0%E7%94%B5%E5%BD%B1.m3u"
+    },
+    {
+        "name": "超稳定流畅｜Tg：@huliys9",
+        "type": 0,
+        "ua": "okhttp/5.3.2",
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E8%B6%85%E7%A8%B3%E5%AE%9A%E6%B5%81%E7%95%85.txt"
     }
 ]
 
