@@ -239,7 +239,7 @@ json_cnb["sites"] = clean_upstream_sites + MY_CUSTOM_SITES
 custom_live_names = {live.get("name") for live in MY_CUSTOM_LIVES if live.get("name")}
 base_lives = haitun_lives + cnb_lives
 
-# 🛠️ 核心修正：同时清洗并剔除名称中带有“日本女优”或“日本女友”的上游直播线路
+# 🛠️ 核心修改：同时清洗并剔除名称中带有“日本女优”或“日本女友”的上游直播线路
 clean_base_lives = [
     live for live in base_lives 
     if live.get("name") not in custom_live_names 
@@ -315,7 +315,7 @@ try:
         ordered_obj["parses"] = unique_parses
 
         # --- 2. 注入国内高防 AliDNS 到 doh 并修复原有拼写错误 ---
-        if "doh" in ordered_obj && isinstance(ordered_obj["doh"], list):
+        if "doh" in ordered_obj and isinstance(ordered_obj["doh"], list):
             for doh_item in ordered_obj["doh"]:
                 if doh_item.get("url", "").endswith("/dns-quer"):
                     doh_item["url"] = doh_item["url"] + "y"
