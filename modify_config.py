@@ -238,7 +238,9 @@ json_cnb["sites"] = clean_upstream_sites + MY_CUSTOM_SITES
 # ➕ 【手工特权直播去重锁 & 从第6位正向依序后排核心算法】
 custom_live_names = {live.get("name") for live in MY_CUSTOM_LIVES if live.get("name")}
 base_lives = haitun_lives + cnb_lives
-clean_base_lives = [live for live in base_lives if live.get("name") not in custom_live_names]
+
+# 🛠️ 核心修改：在清洗上游重名线的同时，强力剔除名称中带有“日本女友”的上游直播线路
+clean_base_lives = [live for live in base_lives if live.get("name") not in custom_live_names and "日本女友" not in live.get("name", "")]
 
 # 🛠️ 核心修改：使用正向切片递增算法。如果手工直播源带 🔞 则不占前排，直接归入大池子末尾。
 inserted_count = 0  # 追踪真正插入前排的手工源数量，确保后排递增索引连续
