@@ -16,7 +16,7 @@ tracker_path = 'datas/最新接口文件名.txt'
 
 # ====================================================================
 # ✍️ 【通道一：老杨专属点播手工加线区】
-# 提示：单独加点播爬虫线贴在这里，自动享受后面的方阵分类美化和洗牌规则。
+# 提示：想单独加点播爬虫线贴在这里，如果上游有同 key 线路，脚本会自动蒸发上游、以此处为准。
 # ====================================================================
 MY_CUSTOM_SITES = [
     {
@@ -38,11 +38,19 @@ MY_CUSTOM_SITES = [
 ]
 
 # ====================================================================
-# 📺 【通道二：老杨专属直播手工加线区（精准插入第 6 位）】
-# 提示：以后你想添加任何单独的 M3U 直连线路，直接用你最习惯的字典格式贴在这里！
-# 贴在这里的线路，在打包落盘时，会被脚本雷打不动地强行插到最终 lives 列表的第 6 位！
+# 📺 【通道二：老杨专属直播手工加线区（从第 6 位开始正向依序后排）】
+# 提示：乡村电视已完美收录！第一个手工源(乡村电视)占第 6 位，第二个(最新电影)自动顺延排第 7 位！
+# 如果手工加的直播线路名字与上游重复，脚本会自动触发“特权锁”全自动蒸发上游同名源！
+# 🌟 特别规则：若线路名称中含有 🔞，则放弃前排特权，自动融入大池子并追加到末尾进行沉底。
 # ====================================================================
 MY_CUSTOM_LIVES = [
+    {
+        "name": "乡村电视 ｜Tg：@huliys9",
+        "type": 0,
+        "playerType": 2,
+        "ua": "okhttp/5.3.2",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E4%B9%A1%E6%9D%91%E7%94%B5%E8%A7%86.txt"
+    },
     {
         "name": "最新电影｜Tg：@huliys9",
         "type": 0,
@@ -50,15 +58,58 @@ MY_CUSTOM_LIVES = [
         "url": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/Ly_18/refs/heads/main/datas/%E6%9C%80%E6%96%B0%E7%94%B5%E5%BD%B1.m3u"
     },
     {
+        "name": "Kimentanm",
+        "type": 0,
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/Kimentanm/aptv/master/m3u/iptv.m3u",
+        "playerType": 2
+    },
+    {
+      "name": "综合直播",
+      "type": 0,
+      "playerType": 2,
+      "url": "https://ghfast.top/https://raw.githubusercontent.com/develop202/migu_video/refs/heads/main/interface.txt",
+      "ua": "bingcha/1.1 (mianfeifenxiang) "
+    },
+    {
+        "name": "央卫TV｜Tg：@huliys9",
+        "type": 0,
+        "ua": "okhttp/5.3.2",
+        "url": "http://47.120.41.246:8025/vip/jar/zb.php"
+    },
+    {
         "name": "超稳定流畅｜Tg：@huliys9",
         "type": 0,
         "ua": "okhttp/5.3.2",
         "url": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E8%B6%85%E7%A8%B3%E5%AE%9A%E6%B5%81%E7%95%85.txt"
+    },
+    {
+        "name": "国产直播🔞｜Tg：@huliys9",
+        "type": 0,
+        "ua": "okhttp/5.3.2",
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/Ameria22/TV/refs/heads/main/data/01%E5%9B%BD%E4%BA%A7%E7%9B%B4%E6%92%AD_20260417_024507.m3u"
+    },
+    {
+        "name": "国产精品🔞｜Tg：@huliys9",
+        "type": 0,
+        "ua": "okhttp/5.3.2",
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/Ameria22/TV/refs/heads/main/data/01%E5%9B%BD%E4%BA%A7%E7%B2%BE%E5%93%81_20260417_024507.m3u"
+    },
+    {
+        "name": "4K福利🔞｜Tg：@huliys9",
+        "type": 0,
+        "ua": "okhttp/5.3.2",
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/Ameria22/TV/refs/heads/main/data/4k%E7%A6%8F%E5%88%A9.m3u"
+    },
+    {
+        "name": "探花🔞｜Tg：@huliys9",
+        "type": 0,
+        "ua": "okhttp/5.3.2",
+        "url": "https://raw.githubusercontent.com/Ameria22/TV/refs/heads/main/data/01%E6%8E%A2%E8%8A%B1%E7%BA%A6%E7%82%AE_20260417_024507.m3u"
     }
 ]
 
 # ====================================================================
-# ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑】
+# ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑】 (原汁原味保留)
 # ====================================================================
 today = datetime.datetime.now()
 current_month = str(today.month) 
@@ -101,7 +152,7 @@ output_path = f"datas/{output_filename}"
 print(f"🎯 最终结算 -> 目标输出：{output_filename}")
 
 # ====================================================================
-# 🛡️ 【金蝉脱壳：全量版过期旧线自动全文字大轰炸】
+# 🛡️ 【金蝉脱壳：全量版过期旧线自动全文字大轰炸】 (原汁原味保留)
 # ====================================================================
 old_configs = glob.glob('datas/老杨TV全量版*.json') + glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
@@ -130,7 +181,7 @@ for garbage in glob.glob('datas/config_*.json'):
 
 
 # ====================================================================
-# 🧠 【核心逻辑：正统 JSON 对象读取与合并逻辑】
+# 🧠 【核心逻辑：正统 JSON 对象读取与合并逻辑】 (原汁原味保留)
 # ====================================================================
 def load_json_safe(path):
     if not os.path.exists(path):
@@ -172,35 +223,40 @@ for item in haitun_lives:
     if "name" in item:
         item["name"] = f"{item['name']}｜Tg：@huliys9"
 
-country_live_dict = {
-    "name": "乡村电视 ｜Tg：@huliys9",
-    "type": 0,
-    "playerType": 2,
-    "ua": "okhttp/5.3.2",
-    "url": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E4%B9%A1%E6%9D%91%E7%94%B5%E8%A7%86.txt"
-}
-if len(haitun_lives) >= 5:
-    haitun_lives.insert(5, country_live_dict)
-else:
-    haitun_lives.append(country_live_dict)
-
 cnb_sites = json_cnb.get("sites", [])
 cnb_lives = json_cnb.get("lives", [])
 
 # 🎯 直接安全地收集上游所有原本的解析器（parses）
 combined_parses = json_haitun.get("parses", []) + json_lz.get("parses", []) + json_cnb.get("parses", [])
 
-# ➕ 【核心合流：点播合并逻辑】
-json_cnb["sites"] = haitun_sites + lz_nsfw_list + cnb_sites + MY_CUSTOM_SITES
+# ➕ 【手工特权点播去重锁】智能检测上游，若有冲突，物理蒸发上游重名 key 线路
+custom_keys = {site.get("key") for site in MY_CUSTOM_SITES if site.get("key")}
+upstream_sites = haitun_sites + lz_nsfw_list + cnb_sites
+clean_upstream_sites = [site for site in upstream_sites if site.get("key") not in custom_keys]
+json_cnb["sites"] = clean_upstream_sites + MY_CUSTOM_SITES
 
-# ➕ 【核心置中：直播精准第 6 位合并逻辑】
+# ➕ 【手工特权直播去重锁 & 从第6位正向依序后排核心算法】
+custom_live_names = {live.get("name") for live in MY_CUSTOM_LIVES if live.get("name")}
 base_lives = haitun_lives + cnb_lives
-for custom_live in reversed(MY_CUSTOM_LIVES):
-    if len(base_lives) >= 5:
-        base_lives.insert(5, custom_live)
+clean_base_lives = [live for live in base_lives if live.get("name") not in custom_live_names]
+
+# 🛠️ 核心修改：使用正向切片递增算法。如果手工直播源带 🔞 则不占前排，直接归入大池子末尾。
+inserted_count = 0  # 追踪真正插入前排的手工源数量，确保后排递增索引连续
+for custom_live in MY_CUSTOM_LIVES:
+    live_name = custom_live.get("name", "")
+    if "🔞" in live_name:
+        # 带有 🔞 的线路：不给前排特权，直接融入大池子追加到末尾
+        clean_base_lives.append(custom_live)
     else:
-        base_lives.append(custom_live)
-json_cnb["lives"] = base_lives
+        # 普通线路：依然享受原规则，从第 6 位（索引 5）开始正向依序插入
+        insert_idx = 5 + inserted_count
+        if len(clean_base_lives) >= insert_idx:
+            clean_base_lives.insert(insert_idx, custom_live)
+        else:
+            clean_base_lives.append(custom_live)
+        inserted_count += 1
+
+json_cnb["lives"] = clean_base_lives
 
 final_json_text = json.dumps(json_cnb, ensure_ascii=False, indent=4)
 
@@ -273,10 +329,7 @@ try:
             "   Function.prototype.__constructor__ = Function.prototype.constructor;",
             "   Function.prototype.constructor = function() { if (arguments && typeof arguments[0] === 'string' && arguments[0].includes('debugger')) { return function(){}; } return Function.prototype.__constructor__.apply(this, arguments); };",
             "});",
-            "setInterval(() => {",
-            "   let selectors = ['.adv-class', '.pop-banner', '#notice-modal', '[id*=\"partner\"]', '[class*=\"baidu\"]', 'iframe[src*=\"game\"]', 'iframe[src*=\"bet\"]', '#pop-ad', '.sidebar-ads', 'a[href*=\"999\"]'];",
-            "   selectors.forEach(sel => { document.querySelectorAll(sel).forEach(el => el.remove()); });",
-            "}, 400);"
+            "setInterval(() => { let selectors = ['.adv-class', '.pop-banner', '#notice-modal', '[id*=\"partner\"]', '[class*=\"baidu\"]', 'iframe[src*=\"game\"]', 'iframe[src*=\"bet\"]', '#pop-ad', '.sidebar-ads', 'a[href*=\"999\"]']; selectors.forEach(sel => { document.querySelectorAll(sel).forEach(el => el.remove()); }); }, 400);"
         ]
 
         current_rules = ordered_obj.get("rules", [])
@@ -449,7 +502,7 @@ try:
         # 👑 【新首页硬组装】"key": "热播影视" 携长致谢完美置顶（Index 0），另一个热播"key": "rb"正常随大部队在影视区排列
         ordered_obj["sites"] = (
             block_1_rebo +         # 1. 🎯 "key": "热播影视" 绝对置顶 (0号位海报墙扛把子)
-            block_2_yingshi +      # 2. 传统综合影视单线路 (包含回归的豆瓣首页和原本就在此的 key: rb 线路)
+            block_2_yingshi +      # 2. 传统综合影视单线路 (包含回归的豆瓣首页 and 原本就在此的 key: rb 线路)
             block_3_duanju +       # 3. 独立短剧
             block_4_dongman +      # 4. 动漫新番
             block_6_tiyu +         # 5. 体育直播
