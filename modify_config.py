@@ -90,7 +90,7 @@ def load_haitun_with_smart_fallback(file_path):
     # ---- 🛑 第一阶段：尝试获取远程地址 ----
     # 优先检测是否配置了【手动指定URL】
     if HAITUN_MANUAL_URL.strip():
-        chosen_url = HAITUN_MANUAL_URL.strip()
+        chosen_url = HAITUAL_URL.strip()
         print(f"👑 [手动控制触发] 优先采用你手动硬编码指定的下载链接: {chosen_url}")
     else:
         # 没有手动指定，启动 API 盲搜索
@@ -137,37 +137,37 @@ def load_haitun_with_smart_fallback(file_path):
 
 # ====================================================================
 # ✍️ 【通道一：老杨专属点播手工加线区】
-# 提示：想单独加点播爬虫线贴在这里，如果上游有同 key 线路，脚本会自动蒸发上游、以此处为准。[cite: 1]
+# 提示：想单独加点播爬虫线贴在这里，如果上游有同 key 线路，脚本会自动蒸发上游、以此处为准。
 # ====================================================================
 MY_CUSTOM_SITES = [
     {
-        "key": "山楂影视",[cite: 1]
-        "name": "山楂影视.py",  [cite: 1]
-        "type": 3,[cite: 1]
-        "api": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E5%B1%B1%E6%A5%82%E5%BD%B1%E8%A7%86.py",[cite: 1]
-        "searchable": 1,[cite: 1]
-        "quickSearch": 1[cite: 1]
+        "key": "山楂影视",
+        "name": "山楂影视.py", 
+        "type": 3,
+        "api": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E5%B1%B1%E6%A5%82%E5%BD%B1%E8%A7%86.py",
+        "searchable": 1,
+        "quickSearch": 1
     },
     {
-        "key": "红果短剧",[cite: 2]
-        "name": "红果短剧.py",  [cite: 2]
-        "type": 3,[cite: 2]
-        "api": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E7%BA%A2%E6%9E%9C%E7%9F%AD%E5%89%A7.py",[cite: 2]
-        "searchable": 1,[cite: 2]
-        "quickSearch": 1[cite: 2]
+        "key": "红果短剧",
+        "name": "红果短剧.py", 
+        "type": 3,
+        "api": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E7%BA%A2%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+        "searchable": 1,
+        "quickSearch": 1
     }
 ]
 
 # ====================================================================
-# 📺 【通道二：老杨专属直播手工加线区（从第 6 位开始正向依序后排）】[cite: 2]
-# 提示：乡村电视已完美收录！第一个手工源(乡村电视)占第 6 位，第二个(最新电影)自动顺延排第 7 位！[cite: 2]
-# 如果手工加的直播线路名字与上游重复，脚本会自动触发“特权锁”全自动蒸发上游同名源！[cite: 2]
-# 🌟 特别规则：若线路名称中含有 🔞，则放弃前排特权，自动融入大池子并追加到末尾进行沉底。[cite: 2]
+# 📺 【通道二：老杨专属直播手工加线区（从第 6 位开始正向依序后排）】
+# 提示：乡村电视已完美收录！第一个手工源(乡村电视)占第 6 位，第二个(最新电影)自动顺延排第 7 位！
+# 如果手工加的直播线路名字与上游重复，脚本会自动触发“特权锁”全自动蒸发上游同名源！
+# 🌟 特别规则：若线路名称中含有 🔞，则放弃前排特权，自动融入大池子并追加到末尾进行沉底。
 # ====================================================================
 MY_CUSTOM_LIVES = [
     {
-        "name": "乡村电视 ｜Tg：@huliys9",[cite: 2]
-        "type": 0,[cite: 2]
+        "name": "乡村电视 ｜Tg：@huliys9",
+        "type": 0,
         "playerType": 2,
         "ua": "okhttp/5.3.2",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E4%B9%A1%E6%9D%91%E7%94%B5%E8%A7%86.txt"
@@ -524,7 +524,7 @@ try:
             s_genre = site.get("genre", "")
             s_api = site.get("api", "")
 
-            # 🛠️ 1. 清洗名称里的脏字符
+            # 🛠️ 1. 清浅名称里的脏字符
             for char in ['丨', '┃', ' ']:
                 raw_name = raw_name.strip(char)
             raw_name = re.sub(r'\s+', ' ', raw_name)
