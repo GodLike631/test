@@ -35,8 +35,8 @@ jobs:
       env:
         MY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 🔑 核心注入：将官方内置令牌传给变量，供 Python 脚本过白名单防限流
       run: |
-        # 🛠️ 精准对齐：已修正为你仓库中的标准脚本名称 "ColorWin_Monitor_Final.py"
-        python ColorWin_Monitor_Final.py
+        # 🎯 已精准修正回你原始的合并脚本名称 "modify_config.py"
+        python modify_config.py
 
     - name: Commit and Push changes
       run: |
