@@ -173,6 +173,13 @@ MY_CUSTOM_LIVES = [
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E4%B9%A1%E6%9D%91%E7%94%B5%E8%A7%86.txt"
     },
     {
+        "name": "港台直播 ｜Tg：@huliys9",
+        "type": 0,
+        "playerType": 2,
+        "ua": "okhttp/5.3.2",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/Ameria22/TV/refs/heads/main/data/%E6%B8%AF%E5%8F%B0%E7%9B%B4%E6%92%AD0709.txt"
+    },
+    {
         "name": "最新电影｜Tg：@huliys9",
         "type": 0,
         "ua": "okhttp/5.3.2",
