@@ -595,7 +595,7 @@ try:
             pwd_msg += f"👑 全量版与纯净版已在后台全自动换锁，请及时前往电视端更新。若电视端遇到断流请尝试重启软件或前往频道（@huliys9）获取支持！"
 
             pwd_url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
-            pwd_data = urllib.parse.urlencode({"chat_id": tg_chat_id, "parse_mode": "Markdown", "text": pwd_msg}).encode("utf-8")
+            pwd_data = urllib.parse.urlencode({"chat_id": tg_chat_id, "parse_mode": "html", "text": pwd_msg}).encode("utf-8")
             pwd_req = urllib.request.Request(pwd_url, data=pwd_data)
             with urllib.request.urlopen(pwd_req, timeout=15) as response:
                 print("🚀 [专属密码通道] 密锁全自动双通道独立通知直发成功！")
@@ -660,7 +660,7 @@ try:
                 full_msg += f"👑 全量版与纯净版已在后台无缝更新。更新配置即可，若遇到断流请尝试重启软件或及时前往频道（@huliys9）获取当前最新密码锁！"
 
                 url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
-                data = urllib.parse.urlencode({"chat_id": tg_chat_id, "parse_mode": "Markdown", "text": full_msg}).encode("utf-8")
+                data = urllib.parse.urlencode({"chat_id": tg_chat_id, "parse_mode": "html", "text": full_msg}).encode("utf-8")
                 req = urllib.request.Request(url, data=data)
                 try:
                     with urllib.request.urlopen(req, timeout=15) as response:
