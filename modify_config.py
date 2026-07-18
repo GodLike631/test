@@ -149,7 +149,7 @@ MY_CUSTOM_LIVES = [
       "playerType": 2
     },
     {
-      "name": "myTV1「香港」1｜Tg：@huliys9",
+      "name": "myTV「香港」1｜Tg：@huliys9",
       "type": 3,
       "url": "https://iptv.yang-1989.xyz/myTV/playlist.m3u",
       "epg":"https://material.yang-1989.xyz/epg.xml.gz",
@@ -194,27 +194,25 @@ else:
     else:
         current_token = saved_code
 
-# 确定基础输出文件名（这里生成基础名称，后续写出时会动态分裂全量版和纯净版）
+# 确定动态密码命名规则
 if current_token in ["全量版", "纯净版"]:
-    base_output_filename = "老杨TV全量版"
+    full_output_filename = "老杨TV全量版.json"
+    clean_output_filename = "老杨TV纯净版.json"
 else:
-    base_output_filename = f"老杨TV全量版{current_token}"
+    full_output_filename = f"老杨TV全量版{current_token}.json"
+    clean_output_filename = f"老杨TV纯净版{current_token}.json"  # 🟢 修正 1：完美规范命名
 
 # ====================================================================
-# 🛡️ 【金蝉脱壳：历史过期旧线同步全文字大轰炸（升级支持多版本扫描）】
+# 🛡️ 【金蝉脱壳：全自动过期大轰炸提示（支持全量版与纯净版双线扫描）】
 # ====================================================================
-old_configs = glob.glob('datas/老杨TV全量版*.json') + glob.glob('datas/老杨TV*.json')
+old_configs = glob.glob('datas/老杨TV全量版*.json') + glob.glob('datas/老杨TV纯净版*.json') + glob.glob('datas/老杨TV*.json')
 for old_file in old_configs:
     old_base = os.path.basename(old_file)
-    # 如果不是本月刚生成的最新全量版和最新纯净版，则全部无情执行大轰炸覆写
-    current_full_name = f"{base_output_filename}.json"
-    current_clean_name = f"{base_output_filename}_Clean.json"
-    
-    if old_base != current_full_name and old_base != current_clean_name:
+    if old_base != full_output_filename and old_base != clean_output_filename:
         try:
             trap_json = {
                 "spider": "", 
-                "notice": f"⚠️ 警告：当前专线已过期断流！老链接已彻底作废！\n\n最新订阅链接或当前密码请前往QQ群“532637640”获取",
+                "notice": f"⚠️ 警告：当前专线已过期断流！老链接已彻底作废！\n\n最新全量/纯净矩阵链接或当前密码请加QQ群“532637640”获取",
                 "sites": [
                     {"key": "老杨纯文字提示", "name": "🚨 请前往QQ群“532637640”获取最新密码🚨 当前专线密码已过期断流！", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0},
                     {"key": "老杨纯文字提示2", "name": "🚨 请前往QQ群“532637640”获取最新订阅链接矩阵", "type": 3, "api": "csp_JuDou", "searchable": 0, "quickSearch": 0, "filterable": 0}
@@ -374,7 +372,7 @@ path_replacements = {
     './js/': 'https://cnb.cool/fish2018/xs/-/git/raw/main/js/',
     './json/': 'https://cnb.cool/fish2018/xs/-/git/raw/main/json/',
     './py/': 'https://cnb.cool/fish2018/xs/-/git/raw/main/py/',
-    'http://127.0.0.1:9978/file/TVBox/logo.png': DEFAULT_LOGO_URL  # 优雅应用最上方定义的全局变量
+    'http://127.0.0.1:9978/file/TVBox/logo.png': DEFAULT_LOGO_URL
 }
 for src, dst in path_replacements.items():
     final_json_text = final_json_text.replace(src, dst)
@@ -517,37 +515,32 @@ try:
         for site in block_2_yingshi:
             if site.get("key") == "AQY": site["name"] = "🦋 爱奇艺 ｜Tg：@huliys9"
 
-        # 得到归类整齐后的主列表
         ordered_obj["sites"] = (block_1_rebo + block_2_yingshi + block_3_duanju + block_4_dongman + block_6_tiyu + block_7_shaoer + block_8_yinyue + block_5_cili + block_9_fuli)
     except Exception as merge_err:
         print(f"⚠️ 分类合并发生异常: {merge_err}")
 
     # ====================================================================
-    # 🔀 【本次核心升级：全量版 与 客厅纯净版 双版本矩阵分流生成】
+    # 🔀 【双版本矩阵分流写出逻辑】
     # ====================================================================
-    # 1. 构造【版本 A：全量至尊版】
+    # 1. 构造【全量至尊版】
     full_version_obj = copy.deepcopy(ordered_obj)
-    full_welcome_notice = "👑 欢迎使用【老杨TV粉丝专属全量至尊专线】！本接口结合佬&鱼佬的优质核心资源缝合而成，纯净无广告！🚨 重要提示：本接口密码不定期全自动更换！"
+    full_welcome_notice = "👑 欢迎使用【老杨TV粉丝专属全量至尊专线】！本接口结合豚佬&鱼佬的优质核心资源缝合而成，纯净无广告！🚨 重要提示：本接口密码不定期全自动更换！"
     full_version_obj["notice"] = full_welcome_notice + thanks_warning
     
-    # 确保 notice 置顶排版
     full_final_out = {}
     if "notice" in full_version_obj: full_final_out["notice"] = full_version_obj.pop("notice")
     full_final_out.update(full_version_obj)
 
-    # 2. 构造【版本 B：客厅纯净版】
+    # 2. 构造【客厅纯净版】
     clean_version_obj = copy.deepcopy(ordered_obj)
     clean_welcome_notice = "🏡 欢迎使用【老杨TV专属绿色客厅专线】！本接口已全面过滤敏感、擦边和福利内容，全家老少看电视更安全、更绿色！"
     clean_version_obj["notice"] = clean_welcome_notice + thanks_warning
     
-    # 执行无情清洗：过滤掉 sites 和 lives 里面所有带 🔞、福利、探花、约炮、色播、av 等敏感字眼的节点
     nsfw_keywords = ["🔞", "福利", "探花", "约炮", "色播", "av", "爆料", "蜜桃"]
-    
     clean_version_obj["sites"] = [
         s for s in clean_version_obj.get("sites", [])
         if not any(kw in s.get("name", "") or kw in s.get("category", "") or kw in s.get("key", "").lower() for kw in nsfw_keywords)
     ]
-    
     clean_version_obj["lives"] = [
         l for l in clean_version_obj.get("lives", [])
         if not any(kw in l.get("name", "") for kw in nsfw_keywords)
@@ -557,36 +550,34 @@ try:
     if "notice" in clean_version_obj: clean_final_out["notice"] = clean_version_obj.pop("notice")
     clean_final_out.update(clean_version_obj)
 
-    # 分别设定两个版本的物理输出路径
-    full_output_path = f"datas/{base_output_filename}.json"
-    clean_output_path = f"datas/{base_output_filename}_Clean.json"
+    # 设定绝对写入路径
+    full_output_path = f"datas/{full_output_filename}"
+    clean_output_path = f"datas/{clean_output_filename}"
 
-    # 写出两个 JSON 底包文件
+    # 实体数据写出
     with open(full_output_path, 'w', encoding='utf-8') as f: json.dump(full_final_out, f, ensure_ascii=False, indent=4)
     with open(clean_output_path, 'w', encoding='utf-8') as f: json.dump(clean_final_out, f, ensure_ascii=False, indent=4)
     
-    # 历史追踪器依然记录全量版文件名，用于后续版本的变更 Diff 追踪
-    with open(tracker_path, 'w', encoding='utf-8') as f: f.write(f"{base_output_filename}.json")
-    print(f"🎉 矩阵编译成功！\n👉 全量版写出: {full_output_path}\n👉 纯净版写出: {clean_output_path}")
+    # 🟢 修正 2：同步改写追踪器，将当前最新的全量文件名记录下，确保下一次能正常比对
+    with open(tracker_path, 'w', encoding='utf-8') as f: f.write(full_output_filename)
+    print(f"🎉 矩阵编译成功！\n👉 全量版: {full_output_path}\n👉 纯净版: {clean_output_path}")
 
     # ====================================================================
-    # 🎯 【Python 直连高精度比对与 TG 推送机制（升级支持双版本链接下发）】
+    # 🎯 【Python 直连高精度比对与 TG 推送机制】
     # ====================================================================
     tg_token = os.getenv("TG_TOKEN")
     tg_chat_id = os.getenv("TG_CHAT_ID")
     repo_info = os.getenv("GITHUB_REPOSITORY", "GodLike631/test")
     branch_info = os.getenv("GITHUB_REF_NAME", "main")
     
-    # 构造全量版与纯净版的直连与代理订阅链接
-    full_raw_url = f"https://raw.githubusercontent.com/{repo_info}/{branch_info}/datas/{base_output_filename}.json"
-    clean_raw_url = f"https://raw.githubusercontent.com/{repo_info}/{branch_info}/datas/{base_output_filename}_Clean.json"
+    full_raw_url = f"https://raw.githubusercontent.com/{repo_info}/{branch_info}/datas/{full_output_filename}"
+    clean_raw_url = f"https://raw.githubusercontent.com/{repo_info}/{branch_info}/datas/{clean_output_filename}"
     
     full_sub_url = f"{GITHUB_PROXY}{full_raw_url}" if GITHUB_PROXY else full_raw_url
     clean_sub_url = f"{GITHUB_PROXY}{clean_raw_url}" if GITHUB_PROXY else clean_raw_url
     
     current_time = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
 
-    # 每月1号换密锁通知通道
     if is_new_token_generated and tg_token and tg_chat_id:
         try:
             pwd_msg = f"🔔 *老杨TV · 全新月份硬核双通道密码锁发布* 🔔\n\n"
@@ -605,7 +596,6 @@ try:
         except Exception as pwd_err:
             print(f"❌ [专属密码通道] 发送通知失败: {pwd_err}")
 
-    # 常规变动明细比对通道（使用全量版作为核心名录进行 Diff 智能计算）
     try:
         old_sites_names, old_lives_names = set(), set()
         if os.path.exists(tracker_path):
@@ -657,8 +647,8 @@ try:
                 full_msg += f"🚀 *变动说明*：检测到上游数据源更新或手工区调整，双版本配置已全自动编译上链！\n\n"
                 full_msg += f"{detail_msg}\n\n"
                 full_msg += f"📡 *【 最新多版本订阅矩阵 (点击可自动复制)】*：\n\n"
-                full_msg += f"🔞 *1. 全量至尊专线* (包含全部线路):\n`{full_sub_url}`\n\n"
-                full_msg += f"🏡 *2. 绿色客厅专线* (已自动全面过滤敏感内容):\n`{clean_sub_url}`\n\n"
+                full_msg += f"🔞 *1. 老杨TV全量版* (包含全部线路):\n`{full_sub_url}`\n\n"
+                full_msg += f"🏡 *2. 老杨TV纯净版* (已自动全面过滤敏感内容):\n`{clean_sub_url}`\n\n"
                 full_msg += f"👑 全量版与纯净版已在后台无缝更新。更新配置即可，若遇到断流请尝试重启软件或及时前往频道（@huliys9）获取当前最新密码锁！"
 
                 url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
