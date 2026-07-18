@@ -661,7 +661,13 @@ try:
                     with urllib.request.urlopen(req, timeout=15) as response:
                         print("🚀 Telegram 多版本矩阵变更通知纯文本直发成功！")
                 except Exception as net_err:
+                    # ❌ 原来的写法：只打印了抽象的错误
+                    # print(f"❌ Telegram 发送网络失败: {net_err}")
+                    
+                    # 🟢 修改为以下硬核排查写法：
                     print(f"❌ Telegram 发送网络失败: {net_err}")
+                    if hasattr(net_err, 'read'):
+                        print(f"🚨 TG服务器返回的真实死因: {net_err.read().decode('utf-8')}")
             else:
                 print("⚠️ 提示：未检测到绑定的 TG_TOKEN 或 TG_CHAT_ID，跳过通知发送。")
         else:
