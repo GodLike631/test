@@ -559,8 +559,8 @@ try:
     repo_info = os.getenv("GITHUB_REPOSITORY", "GodLike631/test")
     branch_info = os.getenv("GITHUB_REF_NAME", "main")
     
-    full_raw_url = f"https://raw.githubusercontent.com/{repo_info}/{branch_info}/datas/{full_output_filename}"
-    clean_raw_url = f"https://raw.githubusercontent.com/{repo_info}/{branch_info}/datas/{clean_output_filename}"
+    full_raw_url = f"https://raw.githubusercontent.com/{repo_info}/refs/heads/{branch_info}/datas/{full_output_filename}"
+    clean_raw_url = f"https://raw.githubusercontent.com/{repo_info}/refs/heads/{branch_info}/datas/{clean_output_filename}"
     
     full_sub_url = f"{GITHUB_PROXY}{full_raw_url}" if GITHUB_PROXY else full_raw_url
     clean_sub_url = f"{GITHUB_PROXY}{clean_raw_url}" if GITHUB_PROXY else clean_raw_url
