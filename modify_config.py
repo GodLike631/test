@@ -520,7 +520,7 @@ try:
         print(f"⚠️ 分类合并发生异常: {merge_err}")
 
     # ====================================================================
-    # 🔀 【双版本矩阵分流写出逻辑】
+    # 🔀 【双版本分流处理核心区 - 保证比对名录是最新清洗后的状态】
     # ====================================================================
     # 1. 构造【全量至尊版】
     full_version_obj = copy.deepcopy(ordered_obj)
@@ -554,14 +554,8 @@ try:
     full_output_path = f"datas/{full_output_filename}"
     clean_output_path = f"datas/{clean_output_filename}"
 
-    # 实体数据写出
-    with open(full_output_path, 'w', encoding='utf-8') as f: json.dump(full_final_out, f, ensure_ascii=False, indent=4)
-    with open(clean_output_path, 'w', encoding='utf-8') as f: json.dump(clean_final_out, f, ensure_ascii=False, indent=4)
-    
-    print(f"🎉 矩阵编译成功！\n👉 全量版: {full_output_path}\n👉 纯净版: {clean_output_path}")
-
     # ====================================================================
-    # 🎯 【Python 直连高精度比对与 TG 推送机制】
+    # 🎯 【完全向原版对齐：先做比对，发送通知，最后才落盘追踪器】
     # ====================================================================
     tg_token = os.getenv("TG_TOKEN")
     tg_chat_id = os.getenv("TG_CHAT_ID")
@@ -576,6 +570,7 @@ try:
     
     current_time = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
 
+    # 每月1号换密锁通知通道
     if is_new_token_generated and tg_token and tg_chat_id:
         try:
             pwd_msg = f"🔔 *老杨TV · 全新月份硬核双通道密码锁发布* 🔔\n\n"
@@ -594,7 +589,7 @@ try:
         except Exception as pwd_err:
             print(f"❌ [专属密码通道] 发送通知失败: {pwd_err}")
 
-    # 🟢 关键核心修正：在重写追踪器之前，先准确读取历史接口数据算 Diff
+    # 核心 Diff 计算：完全对齐原版逻辑架构，先拉取旧老本数据进行名录查重
     try:
         old_sites_names, old_lives_names = set(), set()
         if os.path.exists(tracker_path):
@@ -606,6 +601,7 @@ try:
                     old_sites_names = {s.get("name", "").strip() for s in old_data.get("sites", []) if s.get("name")}
                     old_lives_names = {l.get("name", "").strip() for l in old_data.get("lives", []) if l.get("name")}
 
+        # 完美拉取最新清洗后的全量熟肉数据，去跟历史熟肉数据作精准对齐比对
         new_sites_names = {s.get("name", "").strip() for s in full_final_out.get("sites", []) if s.get("name")}
         new_lives_names = {l.get("name", "").strip() for l in full_final_out.get("lives", []) if l.get("name")}
 
@@ -665,10 +661,13 @@ try:
     except Exception as diff_err:
         print(f"⚠️ 对比变动异常: {diff_err}")
 
-    # 🟢 核心修正位置：等所有 Diff 比对和通知发送完全大功告成后，才重写追踪器。
-    # 这样下一次运行，它就能拿到这一次的名录作为“历史记录”进行精准对比！
-    with open(tracker_path, 'w', encoding='utf-8') as f: 
-        f.write(full_output_filename)
+    # ====================================================================
+    # 📝 【完全对齐原版行为】数据写出与追踪器改写，雷打不动放在最后
+    # ====================================================================
+    with open(full_output_path, 'w', encoding='utf-8') as f: json.dump(full_final_out, f, ensure_ascii=False, indent=4)
+    with open(clean_output_path, 'w', encoding='utf-8') as f: json.dump(clean_final_out, f, ensure_ascii=False, indent=4)
+    with open(tracker_path, 'w', encoding='utf-8') as f: f.write(full_output_filename)
+    print(f"🎉 编译写出完成 -> 全量与纯净双通道实体构建完毕")
 
 except Exception as e:
     print(f"❌ 运行失败: {e}")
