@@ -200,7 +200,7 @@ if current_token in ["全量版", "纯净版"]:
     clean_output_filename = "老杨TV纯净版.json"
 else:
     full_output_filename = f"老杨TV全量版{current_token}.json"
-    clean_output_filename = f"老杨TV纯净版{current_token}.json"  # 🟢 修正 1：完美规范命名
+    clean_output_filename = f"老杨TV纯净版{current_token}.json"
 
 # ====================================================================
 # 🛡️ 【金蝉脱壳：全自动过期大轰炸提示（支持全量版与纯净版双线扫描）】
@@ -524,7 +524,7 @@ try:
     # ====================================================================
     # 1. 构造【全量至尊版】
     full_version_obj = copy.deepcopy(ordered_obj)
-    full_welcome_notice = "👑 欢迎使用【老杨TV粉丝专属全量至尊专线】！本接口结合豚佬&鱼佬的优质核心资源缝合而成，纯净无广告！🚨 重要提示：本接口密码不定期全自动更换！"
+    full_welcome_notice = "👑 欢迎使用【老杨TV粉丝专属全量至尊专线】！本接口结合佬&鱼佬的优质核心资源缝合而成，纯净无广告！🚨 重要提示：本接口密码不定期全自动更换！"
     full_version_obj["notice"] = full_welcome_notice + thanks_warning
     
     full_final_out = {}
@@ -558,8 +558,6 @@ try:
     with open(full_output_path, 'w', encoding='utf-8') as f: json.dump(full_final_out, f, ensure_ascii=False, indent=4)
     with open(clean_output_path, 'w', encoding='utf-8') as f: json.dump(clean_final_out, f, ensure_ascii=False, indent=4)
     
-    # 🟢 修正 2：同步改写追踪器，将当前最新的全量文件名记录下，确保下一次能正常比对
-    with open(tracker_path, 'w', encoding='utf-8') as f: f.write(full_output_filename)
     print(f"🎉 矩阵编译成功！\n👉 全量版: {full_output_path}\n👉 纯净版: {clean_output_path}")
 
     # ====================================================================
@@ -596,6 +594,7 @@ try:
         except Exception as pwd_err:
             print(f"❌ [专属密码通道] 发送通知失败: {pwd_err}")
 
+    # 🟢 关键核心修正：在重写追踪器之前，先准确读取历史接口数据算 Diff
     try:
         old_sites_names, old_lives_names = set(), set()
         if os.path.exists(tracker_path):
@@ -665,6 +664,11 @@ try:
             print("⏭️ 没有任何名录实际变动，智能拦截推送。")
     except Exception as diff_err:
         print(f"⚠️ 对比变动异常: {diff_err}")
+
+    # 🟢 核心修正位置：等所有 Diff 比对和通知发送完全大功告成后，才重写追踪器。
+    # 这样下一次运行，它就能拿到这一次的名录作为“历史记录”进行精准对比！
+    with open(tracker_path, 'w', encoding='utf-8') as f: 
+        f.write(full_output_filename)
 
 except Exception as e:
     print(f"❌ 运行失败: {e}")
