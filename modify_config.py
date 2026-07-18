@@ -530,7 +530,6 @@ try:
     # ====================================================================
     # 🔀 【双版本分流处理核心区】
     # ====================================================================
-    # 1. 构造【全量至尊版】
     full_version_obj = copy.deepcopy(ordered_obj)
     full_welcome_notice = "欢迎使用【老杨TV粉丝专属全量至尊专线】！本接口结合佬&鱼佬的优质核心资源缝合而成，纯净无广告！重要提示：本接口密码不定期全自动更换！"
     full_version_obj["notice"] = full_welcome_notice + thanks_warning
@@ -539,7 +538,6 @@ try:
     if "notice" in full_version_obj: full_final_out["notice"] = full_version_obj.pop("notice")
     full_final_out.update(full_version_obj)
 
-    # 2. 构造【客厅纯净版】
     clean_version_obj = copy.deepcopy(ordered_obj)
     clean_welcome_notice = "欢迎使用【老杨TV专属绿色客厅专线】！本接口已全面过滤敏感、擦边和福利内容，全家老少看电视更安全、更绿色！"
     clean_version_obj["notice"] = clean_welcome_notice + thanks_warning
@@ -558,12 +556,11 @@ try:
     if "notice" in clean_version_obj: clean_final_out["notice"] = clean_version_obj.pop("notice")
     clean_final_out.update(clean_version_obj)
 
-    # 设定绝对写入路径
     full_output_path = f"datas/{full_output_filename}"
     clean_output_path = f"datas/{clean_output_filename}"
 
     # ====================================================================
-    # 🎯 【进行比对与通知下发 - 🟢 彻底降级为纯文本，移除所有排版符号】
+    # 🎯 【进行比对与通知下发】
     # ====================================================================
     tg_token = os.getenv("TG_TOKEN")
     tg_chat_id = os.getenv("TG_CHAT_ID")
@@ -578,7 +575,7 @@ try:
     
     current_time = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
 
-    # 专属密码大通知（降级为普通无符号纯文本，绝不报400）
+    # 专属密码大通知
     if is_new_token_generated and tg_token and tg_chat_id:
         try:
             pwd_msg = "老杨TV . 全新硬核双通道密码锁发布\n\n"
@@ -596,6 +593,8 @@ try:
                 print("🚀 [专属密码通道] 纯文本独立通知直发成功！")
         except Exception as pwd_err:
             print(f"❌ [专属密码通道] 发送通知失败: {pwd_err}")
+            if hasattr(pwd_err, 'read'):
+                print(f"🚨 [专属密码通道] TG服务器返回的真实死因: {pwd_err.read().decode('utf-8')}")
 
     # 常规 Diff 名录比对
     try:
@@ -619,26 +618,39 @@ try:
 
         if added_sites or deleted_sites or added_lives or deleted_lives:
             msg_lines = ["【 变动明细预览 】", "━━━━━━━━━━━━━━"]
+            
+            # 🟢 核心增强：防止消息超过 4096 字符。如果列表过长，执行高精度强行安全截断！
+            MAX_DISPLAY = 15
+            
             if added_sites or deleted_sites:
                 msg_lines.append("【点播线路变动】")
                 if added_sites:
                     msg_lines.append(" 新增点播：")
-                    msg_lines.extend([f" {name}" for name in added_sites])
+                    msg_lines.extend([f"  {name}" for name in added_sites[:MAX_DISPLAY]])
+                    if len(added_sites) > MAX_DISPLAY:
+                        msg_lines.append(f"  ... 等更多共 {len(added_sites)} 个新点播源")
                 if deleted_sites:
                     if added_sites: msg_lines.append("")
                     msg_lines.append(" 剔除点播：")
-                    msg_lines.extend([f" {name}" for name in deleted_sites])
+                    msg_lines.extend([f"  {name}" for name in deleted_sites[:MAX_DISPLAY]])
+                    if len(deleted_sites) > MAX_DISPLAY:
+                        msg_lines.append(f"  ... 等更多共 {len(deleted_sites)} 个失效点播源")
                 msg_lines.append("━━━━━━━━━━━━━━")
+                
             if added_lives or deleted_lives:
                 if len(msg_lines) > 2: msg_lines.append("")
                 msg_lines.append("【直播源站变动】")
                 if added_lives:
                     msg_lines.append(" 新增直播：")
-                    msg_lines.extend([f" {name}" for name in added_lives])
+                    msg_lines.extend([f"  {name}" for name in added_lives[:MAX_DISPLAY]])
+                    if len(added_lives) > MAX_DISPLAY:
+                        msg_lines.append(f"  ... 等更多共 {len(added_lives)} 个新直播源")
                 if deleted_lives:
                     if added_lives: msg_lines.append("")
                     msg_lines.append(" 剔除直播：")
-                    msg_lines.extend([f" {name}" for name in deleted_lives])
+                    msg_lines.extend([f"  {name}" for name in deleted_lives[:MAX_DISPLAY]])
+                    if len(deleted_lives) > MAX_DISPLAY:
+                        msg_lines.append(f"  ... 等更多共 {len(deleted_lives)} 个失效直播源")
                 msg_lines.append("━━━━━━━━━━━━━━")
             
             if tg_token and tg_chat_id:
@@ -654,17 +666,12 @@ try:
                 full_msg += "全量版与纯净版已在后台无缝更新。更新配置即可，若遇到断流请尝试重启软件或及时前往频道（@huliys9）获取当前最新密码锁！"
 
                 url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
-                # 🟢 彻底移除 parse_mode，走纯文本通道
                 data = urllib.parse.urlencode({"chat_id": tg_chat_id, "text": full_msg}).encode("utf-8")
                 req = urllib.request.Request(url, data=data)
                 try:
                     with urllib.request.urlopen(req, timeout=15) as response:
                         print("🚀 Telegram 多版本矩阵变更通知纯文本直发成功！")
                 except Exception as net_err:
-                    # ❌ 原来的写法：只打印了抽象的错误
-                    # print(f"❌ Telegram 发送网络失败: {net_err}")
-                    
-                    # 🟢 修改为以下硬核排查写法：
                     print(f"❌ Telegram 发送网络失败: {net_err}")
                     if hasattr(net_err, 'read'):
                         print(f"🚨 TG服务器返回的真实死因: {net_err.read().decode('utf-8')}")
