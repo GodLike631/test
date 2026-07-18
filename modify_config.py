@@ -25,7 +25,7 @@ GITHUB_PROXY = "https://gh-proxy.org/"
 DEFAULT_LOGO_URL = "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg"
 
 # ====================================================================
-# 🚫 【自定义黑名单关键词过滤区】
+# 🚫 【新增：自定义黑名单关键词过滤区】
 # ====================================================================
 BLOCK_KEYWORDS = ["羊壳", "弹幕", "不可用"]
 
@@ -160,7 +160,7 @@ MY_CUSTOM_LIVES = [
 ]
 
 # ====================================================================
-# ⏰ 【自动换锁与手动更改密码检测逻辑】
+# ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑】
 # ====================================================================
 today = datetime.datetime.now()
 current_month = str(today.month) 
@@ -169,22 +169,20 @@ is_reset_day = (today.day == 1)
 saved_month = ""
 saved_code = ""
 is_new_token_generated = False
-original_old_password = ""
 
 if os.path.exists(lock_file_path):
     with open(lock_file_path, 'r', encoding='utf-8') as f:
         content = f.read().strip()
         if "-" in content:
             saved_month, saved_code = content.split("-", 1)
-            original_old_password = saved_code.strip()
         else:
             saved_code = content
-            original_old_password = saved_code.strip()
 
 if is_reset_day and saved_month != current_month:
     current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
     with open(lock_file_path, 'w', encoding='utf-8') as f:
         f.write(f"{current_month}-{current_token}")
+    print(f"⏰ 【每月1号全新硬核洗牌】已全自动抽签生成本月新密锁: {current_token}")
     is_new_token_generated = True
 elif is_reset_day and saved_month == current_month:
     current_token = saved_code
@@ -195,12 +193,6 @@ else:
             f.write(f"{current_month}-{current_token}")
     else:
         current_token = saved_code
-
-if current_token.strip() != original_old_password and original_old_password != "":
-    is_new_token_generated = True
-    with open(lock_file_path, 'w', encoding='utf-8') as f:
-        f.write(f"{current_month}-{current_token.strip()}")
-    print(f"🎯 检测到密码发生主动变更！成功捕获新密锁: {current_token}，已强行开启专属通道大推送！")
 
 # 确定动态密码命名规则
 if current_token in ["全量版", "纯净版"]:
@@ -560,7 +552,7 @@ try:
     clean_output_path = f"datas/{clean_output_filename}"
 
     # ====================================================================
-    # 🎯 【进行比对与通知下发】
+    # 🎯 【精妙重构：换密码与不换密码的双向判定区域】
     # ====================================================================
     tg_token = os.getenv("TG_TOKEN")
     tg_chat_id = os.getenv("TG_CHAT_ID")
@@ -575,8 +567,20 @@ try:
     
     current_time = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
 
-    # 专属密码大通知
-    if is_new_token_generated and tg_token and tg_chat_id:
+    # 🟢 核心高阶调整：先去读取追踪器中记录的上一次老文件名，直接通过新旧文件名进行判定！
+    is_password_changed = False
+    old_file_name = ""
+    
+    if os.path.exists(tracker_path):
+        with open(tracker_path, 'r', encoding='utf-8') as f: 
+            old_file_name = f.read().strip()
+            
+    # 只要当前生成的新文件名，和记录的旧文件名对不上，说明 100% 换了密码（无论是手动改的还是1号自动抽签的）
+    if old_file_name != full_output_filename and old_file_name != "":
+        is_password_changed = True
+
+    # 🟢 情况一：如果触发了密码变更 ➡️ 只推送专属新密码大通知，强行抹除并跳过名录变动通知！
+    if is_password_changed or is_new_token_generated:
         try:
             pwd_msg = "老杨TV . 全新硬核双通道密码锁发布\n\n"
             pwd_msg += f"生效时间：{current_time} (北京时间)\n"
@@ -590,17 +594,16 @@ try:
             pwd_data = urllib.parse.urlencode({"chat_id": tg_chat_id, "text": pwd_msg}).encode("utf-8")
             pwd_req = urllib.request.Request(pwd_url, data=pwd_data)
             with urllib.request.urlopen(pwd_req, timeout=15) as response:
-                print("🚀 [专属密码通道] 纯文本独立通知直发成功！")
+                print("🚀 [专属密码通道] 密锁全自动双通道独立通知直发成功！")
         except Exception as pwd_err:
             print(f"❌ [专属密码通道] 发送通知失败: {pwd_err}")
             if hasattr(pwd_err, 'read'):
                 print(f"🚨 [专属密码通道] TG服务器返回的真实死因: {pwd_err.read().decode('utf-8')}")
-
-    # 常规 Diff 名录比对
-    try:
-        old_sites_names, old_lives_names = set(), set()
-        if os.path.exists(tracker_path):
-            with open(tracker_path, 'r', encoding='utf-8') as f: old_file_name = f.read().strip()
+                
+    # 🟢 情况二：如果没有换密码 ➡️ 走原版的常规节目名单查重 Diff 流程
+    else:
+        try:
+            old_sites_names, old_lives_names = set(), set()
             old_file_path = f"datas/{old_file_name}"
             if os.path.exists(old_file_path):
                 with open(old_file_path, 'r', encoding='utf-8') as f:
@@ -608,79 +611,71 @@ try:
                     old_sites_names = {s.get("name", "").strip() for s in old_data.get("sites", []) if s.get("name")}
                     old_lives_names = {l.get("name", "").strip() for l in old_data.get("lives", []) if l.get("name")}
 
-        new_sites_names = {s.get("name", "").strip() for s in full_final_out.get("sites", []) if s.get("name")}
-        new_lives_names = {l.get("name", "").strip() for l in full_final_out.get("lives", []) if l.get("name")}
+            new_sites_names = {s.get("name", "").strip() for s in full_final_out.get("sites", []) if s.get("name")}
+            new_lives_names = {l.get("name", "").strip() for l in full_final_out.get("lives", []) if l.get("name")}
 
-        added_sites = sorted(list(new_sites_names - old_sites_names))
-        deleted_sites = sorted(list(old_sites_names - new_sites_names))
-        added_lives = sorted(list(new_lives_names - old_lives_names))
-        deleted_lives = sorted(list(old_lives_names - new_lives_names))
+            added_sites = sorted(list(new_sites_names - old_sites_names))
+            deleted_sites = sorted(list(old_sites_names - new_sites_names))
+            added_lives = sorted(list(new_lives_names - old_lives_names))
+            deleted_lives = sorted(list(old_lives_names - new_lives_names))
 
-        if added_sites or deleted_sites or added_lives or deleted_lives:
-            msg_lines = ["【 变动明细预览 】", "━━━━━━━━━━━━━━"]
-            
-            # 🟢 核心增强：防止消息超过 4096 字符。如果列表过长，执行高精度强行安全截断！
-            MAX_DISPLAY = 15
-            
-            if added_sites or deleted_sites:
-                msg_lines.append("【点播线路变动】")
-                if added_sites:
-                    msg_lines.append(" 新增点播：")
-                    msg_lines.extend([f"  {name}" for name in added_sites[:MAX_DISPLAY]])
-                    if len(added_sites) > MAX_DISPLAY:
-                        msg_lines.append(f"  ... 等更多共 {len(added_sites)} 个新点播源")
-                if deleted_sites:
-                    if added_sites: msg_lines.append("")
-                    msg_lines.append(" 剔除点播：")
-                    msg_lines.extend([f"  {name}" for name in deleted_sites[:MAX_DISPLAY]])
-                    if len(deleted_sites) > MAX_DISPLAY:
-                        msg_lines.append(f"  ... 等更多共 {len(deleted_sites)} 个失效点播源")
-                msg_lines.append("━━━━━━━━━━━━━━")
+            if added_sites or deleted_sites or added_lives or deleted_lives:
+                msg_lines = ["【 变动明细预览 】", "━━━━━━━━━━━━━━"]
+                MAX_DISPLAY = 15
                 
-            if added_lives or deleted_lives:
-                if len(msg_lines) > 2: msg_lines.append("")
-                msg_lines.append("【直播源站变动】")
-                if added_lives:
-                    msg_lines.append(" 新增直播：")
-                    msg_lines.extend([f"  {name}" for name in added_lives[:MAX_DISPLAY]])
-                    if len(added_lives) > MAX_DISPLAY:
-                        msg_lines.append(f"  ... 等更多共 {len(added_lives)} 个新直播源")
-                if deleted_lives:
-                    if added_lives: msg_lines.append("")
-                    msg_lines.append(" 剔除直播：")
-                    msg_lines.extend([f"  {name}" for name in deleted_lives[:MAX_DISPLAY]])
-                    if len(deleted_lives) > MAX_DISPLAY:
-                        msg_lines.append(f"  ... 等更多共 {len(deleted_lives)} 个失效直播源")
-                msg_lines.append("━━━━━━━━━━━━━━")
-            
-            if tg_token and tg_chat_id:
-                detail_msg = "\n".join(msg_lines)
+                if added_sites or deleted_sites:
+                    msg_lines.append("【点播线路变动】")
+                    if added_sites:
+                        msg_lines.append(" 新增点播：")
+                        msg_lines.extend([f"  {name}" for name in added_sites[:MAX_DISPLAY]])
+                        if len(added_sites) > MAX_DISPLAY: msg_lines.append(f"  ... 等更多共 {len(added_sites)} 个新点播源")
+                    if deleted_sites:
+                        if added_sites: msg_lines.append("")
+                        msg_lines.append(" 剔除点播：")
+                        msg_lines.extend([f"  {name}" for name in deleted_sites[:MAX_DISPLAY]])
+                        if len(deleted_sites) > MAX_DISPLAY: msg_lines.append(f"  ... 等更多共 {len(deleted_sites)} 个失效点播源")
+                    msg_lines.append("━━━━━━━━━━━━━━")
+                    
+                if added_lives or deleted_lives:
+                    if len(msg_lines) > 2: msg_lines.append("")
+                    msg_lines.append("【直播源站变动】")
+                    if added_lives:
+                        msg_lines.append(" 新增直播：")
+                        msg_lines.extend([f"  {name}" for name in added_lives[:MAX_DISPLAY]])
+                        if len(added_lives) > MAX_DISPLAY: msg_lines.append(f"  ... 等更多共 {len(added_lives)} 个新直播源")
+                    if deleted_lives:
+                        if added_lives: msg_lines.append("")
+                        msg_lines.append(" 剔除直播：")
+                        msg_lines.extend([f"  {name}" for name in deleted_lives[:MAX_DISPLAY]])
+                        if len(deleted_lives) > MAX_DISPLAY: msg_lines.append(f"  ... 等更多共 {len(deleted_lives)} 个失效直播源")
+                    msg_lines.append("━━━━━━━━━━━━━━")
                 
-                full_msg = "老杨TV 缝合矩阵接口变更通知\n\n"
-                full_msg += f"更新时间：{current_time} (北京时间)\n"
-                full_msg += "变动说明：检测到上游数据源更新或手工区调整，双版本配置已全自动编译上链！\n\n"
-                full_msg += f"{detail_msg}\n\n"
-                full_msg += "【 最新多版本订阅矩阵 】：\n\n"
-                full_msg += f"1. 老杨TV全量版 (包含全部线路):\n{full_sub_url}\n\n"
-                full_msg += f"2. 老杨TV纯净版 (已自动全面过滤敏感内容):\n{clean_sub_url}\n\n"
-                full_msg += "全量版与纯净版已在后台无缝更新。更新配置即可，若遇到断流请尝试重启软件或及时前往频道（@huliys9）获取当前最新密码锁！"
+                if tg_token and tg_chat_id:
+                    detail_msg = "\n".join(msg_lines)
+                    
+                    full_msg = "老杨TV 缝合矩阵接口变更通知\n\n"
+                    full_msg += f"更新时间：{current_time} (北京时间)\n"
+                    full_msg += "变动说明：检测到上游数据源更新或手工区调整，双版本配置已全自动编译上链！\n\n"
+                    full_msg += f"{detail_msg}\n\n"
+                    full_msg += "【 最新多版本订阅矩阵 】：\n\n"
+                    full_msg += f"1. 老杨TV全量版 (包含全部线路):\n{full_sub_url}\n\n"
+                    full_msg += f"2. 老杨TV纯净版 (已自动全面过滤敏感内容):\n{clean_sub_url}\n\n"
+                    full_msg += "全量版与纯净版已在后台无缝更新。更新配置即可，若遇到断流请尝试重启软件或及时前往频道（@huliys9）获取当前最新密码锁！"
 
-                url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
-                data = urllib.parse.urlencode({"chat_id": tg_chat_id, "text": full_msg}).encode("utf-8")
-                req = urllib.request.Request(url, data=data)
-                try:
-                    with urllib.request.urlopen(req, timeout=15) as response:
-                        print("🚀 Telegram 多版本矩阵变更通知纯文本直发成功！")
-                except Exception as net_err:
-                    print(f"❌ Telegram 发送网络失败: {net_err}")
-                    if hasattr(net_err, 'read'):
-                        print(f"🚨 TG服务器返回的真实死因: {net_err.read().decode('utf-8')}")
+                    url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
+                    data = urllib.parse.urlencode({"chat_id": tg_chat_id, "text": full_msg}).encode("utf-8")
+                    req = urllib.request.Request(url, data=data)
+                    try:
+                        with urllib.request.urlopen(req, timeout=15) as response:
+                            print("🚀 Telegram 多版本矩阵变更通知纯文本直发成功！")
+                    except Exception as net_err:
+                        print(f"❌ Telegram 发送网络失败: {net_err}")
+                        if hasattr(net_err, 'read'):
+                            print(f"🚨 TG服务器返回的真实死因: {net_err.read().decode('utf-8')}")
             else:
-                print("⚠️ 提示：未检测到绑定的 TG_TOKEN 或 TG_CHAT_ID，跳过通知发送。")
-        else:
-            print("⏭️ 没有任何名录实际变动，智能拦截名录变更通知。")
-    except Exception as diff_err:
-        print(f"⚠️ 对比变动异常: {diff_err}")
+                print("⏭️ 没有任何名录实际变动，智能拦截名录变更通知。")
+        except Exception as diff_err:
+            print(f"⚠️ 对比变动异常: {diff_err}")
 
     # 数据落盘与改写追踪器
     with open(full_output_path, 'w', encoding='utf-8') as f: json.dump(full_final_out, f, ensure_ascii=False, indent=4)
