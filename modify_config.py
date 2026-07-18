@@ -160,7 +160,7 @@ MY_CUSTOM_LIVES = [
 ]
 
 # ====================================================================
-# ⏰ 【自动换锁与手动更改密码检测逻辑 - 核心升级】
+# ⏰ 【自动换锁与手动更改密码检测逻辑】
 # ====================================================================
 today = datetime.datetime.now()
 current_month = str(today.month) 
@@ -169,8 +169,6 @@ is_reset_day = (today.day == 1)
 saved_month = ""
 saved_code = ""
 is_new_token_generated = False
-
-# 🟢 核心增强：读取原有的“老密码”，用来跟最终确定的新密码做对比
 original_old_password = ""
 
 if os.path.exists(lock_file_path):
@@ -183,7 +181,6 @@ if os.path.exists(lock_file_path):
             saved_code = content
             original_old_password = saved_code.strip()
 
-# 执行传统的 1 号洗牌逻辑
 if is_reset_day and saved_month != current_month:
     current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
     with open(lock_file_path, 'w', encoding='utf-8') as f:
@@ -199,10 +196,8 @@ else:
     else:
         current_token = saved_code
 
-# 🟢 核心增强：不管脚本掉进哪个分支，只要最终确定的密码和文件里读出来的老密码对不上，100% 强行触发专属推送
 if current_token.strip() != original_old_password and original_old_password != "":
     is_new_token_generated = True
-    # 如果是你平时手动改了密码导致不一致，顺便把控制开关的月份自动校正为当前最新月份，保持文件整洁
     with open(lock_file_path, 'w', encoding='utf-8') as f:
         f.write(f"{current_month}-{current_token.strip()}")
     print(f"🎯 检测到密码发生主动变更！成功捕获新密锁: {current_token}，已强行开启专属通道大推送！")
@@ -537,7 +532,7 @@ try:
     # ====================================================================
     # 1. 构造【全量至尊版】
     full_version_obj = copy.deepcopy(ordered_obj)
-    full_welcome_notice = "👑 欢迎使用【老杨TV粉丝专属全量至尊专线】！本接口结合佬&鱼佬的优质核心资源缝合而成，纯净无广告！🚨 重要提示：本接口密码不定期全自动更换！"
+    full_welcome_notice = "欢迎使用【老杨TV粉丝专属全量至尊专线】！本接口结合佬&鱼佬的优质核心资源缝合而成，纯净无广告！重要提示：本接口密码不定期全自动更换！"
     full_version_obj["notice"] = full_welcome_notice + thanks_warning
     
     full_final_out = {}
@@ -546,7 +541,7 @@ try:
 
     # 2. 构造【客厅纯净版】
     clean_version_obj = copy.deepcopy(ordered_obj)
-    clean_welcome_notice = "🏡 欢迎使用【老杨TV专属绿色客厅专线】！本接口已全面过滤敏感、擦边和福利内容，全家老少看电视更安全、更绿色！"
+    clean_welcome_notice = "欢迎使用【老杨TV专属绿色客厅专线】！本接口已全面过滤敏感、擦边和福利内容，全家老少看电视更安全、更绿色！"
     clean_version_obj["notice"] = clean_welcome_notice + thanks_warning
     
     nsfw_keywords = ["🔞", "福利", "探花", "约炮", "色播", "av", "爆料", "蜜桃"]
@@ -568,7 +563,7 @@ try:
     clean_output_path = f"datas/{clean_output_filename}"
 
     # ====================================================================
-    # 🎯 【进行比对与通知下发】
+    # 🎯 【进行比对与通知下发 - 🟢 彻底降级为纯文本，移除所有排版符号】
     # ====================================================================
     tg_token = os.getenv("TG_TOKEN")
     tg_chat_id = os.getenv("TG_CHAT_ID")
@@ -583,22 +578,22 @@ try:
     
     current_time = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
 
-    # 🟢 联动增强：只要密码锁触发了更新，必发这个专属的密码大通知
+    # 专属密码大通知（降级为普通无符号纯文本，绝不报400）
     if is_new_token_generated and tg_token and tg_chat_id:
         try:
-            pwd_msg = f"🔔 *老杨TV · 全新硬核双通道密码锁发布* 🔔\n\n"
-            pwd_msg += f"📅 *生效时间*：{current_time} (北京时间)\n"
-            pwd_msg += f"🔑 *全新专线密锁*：`{current_token}`\n\n"
-            pwd_msg += f"🚀 *重要提示*：\n密码锁已成功交替！旧接口已全线开启【金蝉脱壳】大轰炸，老链接彻底作废，请及时复制下方对应通道的最新链接！\n\n"
-            pwd_msg += f"🔞 *最新【老杨TV全量版】矩阵订阅*：\n`{full_sub_url}`\n\n"
-            pwd_msg += f"🏡 *最新【老杨TV纯净版】客厅订阅*：\n`{clean_sub_url}`\n\n"
-            pwd_msg += f"👑 全量版与纯净版已在后台全自动换锁，请及时前往电视端更新。若电视端遇到断流请尝试重启软件或前往频道（@huliys9）获取支持！"
+            pwd_msg = "老杨TV . 全新硬核双通道密码锁发布\n\n"
+            pwd_msg += f"生效时间：{current_time} (北京时间)\n"
+            pwd_msg += f"全新专线密锁：{current_token}\n\n"
+            pwd_msg += "🚀 重要提示：\n密码锁已成功交替！旧接口已全线开启金蝉脱壳大轰炸，老链接彻底作废，请及时复制下方对应通道的最新链接！\n\n"
+            pwd_msg += f"1. 最新【老杨TV全量版】矩阵订阅：\n{full_sub_url}\n\n"
+            pwd_msg += f"2. 最新【老杨TV纯净版】客厅订阅：\n{clean_sub_url}\n\n"
+            pwd_msg += "全量版与纯净版已在后台全自动换锁，请及时前往电视端更新。若电视端遇到断流请尝试重启软件或前往频道（@huliys9）获取支持！"
 
             pwd_url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
-            pwd_data = urllib.parse.urlencode({"chat_id": tg_chat_id, "parse_mode": "html", "text": pwd_msg}).encode("utf-8")
+            pwd_data = urllib.parse.urlencode({"chat_id": tg_chat_id, "text": pwd_msg}).encode("utf-8")
             pwd_req = urllib.request.Request(pwd_url, data=pwd_data)
             with urllib.request.urlopen(pwd_req, timeout=15) as response:
-                print("🚀 [专属密码通道] 密锁全自动双通道独立通知直发成功！")
+                print("🚀 [专属密码通道] 纯文本独立通知直发成功！")
         except Exception as pwd_err:
             print(f"❌ [专属密码通道] 发送通知失败: {pwd_err}")
 
@@ -622,49 +617,49 @@ try:
         added_lives = sorted(list(new_lives_names - old_lives_names))
         deleted_lives = sorted(list(old_lives_names - new_lives_names))
 
-        # 🟢 联动增强：如果是换密码触发的运行，为了防止频道被大通知和常规变更通知同时刷屏，只有在“真的发生了名录增减”时才并发出常规变更通知；如果没有名录增减，则优雅略过，只发密码大通知。
         if added_sites or deleted_sites or added_lives or deleted_lives:
-            msg_lines = ["📝 *【 变动明细预览 】*", "📊 *━━━━━━━━━━━━━━*"]
+            msg_lines = ["【 变动明细预览 】", "━━━━━━━━━━━━━━"]
             if added_sites or deleted_sites:
-                msg_lines.append("📺 *【点播线路变动】*")
+                msg_lines.append("【点播线路变动】")
                 if added_sites:
-                    msg_lines.append("➕ *新增点播*：")
-                    msg_lines.extend([f"{name}" for name in added_sites])
+                    msg_lines.append(" 新增点播：")
+                    msg_lines.extend([f" {name}" for name in added_sites])
                 if deleted_sites:
                     if added_sites: msg_lines.append("")
-                    msg_lines.append("➖ *剔除点播*：")
-                    msg_lines.extend([f"{name}" for name in deleted_sites])
-                msg_lines.append("📊 *━━━━━━━━━━━━━━*")
+                    msg_lines.append(" 剔除点播：")
+                    msg_lines.extend([f" {name}" for name in deleted_sites])
+                msg_lines.append("━━━━━━━━━━━━━━")
             if added_lives or deleted_lives:
                 if len(msg_lines) > 2: msg_lines.append("")
-                msg_lines.append("📡 *【直播源站变动】*")
+                msg_lines.append("【直播源站变动】")
                 if added_lives:
-                    msg_lines.append("➕ *新增直播*：")
-                    msg_lines.extend([f"{name}" for name in added_lives])
+                    msg_lines.append(" 新增直播：")
+                    msg_lines.extend([f" {name}" for name in added_lives])
                 if deleted_lives:
                     if added_lives: msg_lines.append("")
-                    msg_lines.append("➖ *剔除直播*：")
-                    msg_lines.extend([f"{name}" for name in deleted_lives])
-                msg_lines.append("📊 *━━━━━━━━━━━━━━*")
+                    msg_lines.append(" 剔除直播：")
+                    msg_lines.extend([f" {name}" for name in deleted_lives])
+                msg_lines.append("━━━━━━━━━━━━━━")
             
             if tg_token and tg_chat_id:
                 detail_msg = "\n".join(msg_lines)
                 
-                full_msg = f"🔔 *老杨TV 缝合矩阵接口变更通知* 🔔\n\n"
-                full_msg += f"📅 *更新时间*：{current_time} (北京时间)\n"
-                full_msg += f"🚀 *变动说明*：检测到上游数据源更新或手工区调整，双版本配置已全自动编译上链！\n\n"
+                full_msg = "老杨TV 缝合矩阵接口变更通知\n\n"
+                full_msg += f"更新时间：{current_time} (北京时间)\n"
+                full_msg += "变动说明：检测到上游数据源更新或手工区调整，双版本配置已全自动编译上链！\n\n"
                 full_msg += f"{detail_msg}\n\n"
-                full_msg += f"📡 *【 最新多版本订阅矩阵 (点击可自动复制)】*：\n\n"
-                full_msg += f"🔞 *1. 老杨TV全量版* (包含全部线路):\n`{full_sub_url}`\n\n"
-                full_msg += f"🏡 *2. 老杨TV纯净版* (已自动全面过滤敏感内容):\n`{clean_sub_url}`\n\n"
-                full_msg += f"👑 全量版与纯净版已在后台无缝更新。更新配置即可，若遇到断流请尝试重启软件或及时前往频道（@huliys9）获取当前最新密码锁！"
+                full_msg += "【 最新多版本订阅矩阵 】：\n\n"
+                full_msg += f"1. 老杨TV全量版 (包含全部线路):\n{full_sub_url}\n\n"
+                full_msg += f"2. 老杨TV纯净版 (已自动全面过滤敏感内容):\n{clean_sub_url}\n\n"
+                full_msg += "全量版与纯净版已在后台无缝更新。更新配置即可，若遇到断流请尝试重启软件或及时前往频道（@huliys9）获取当前最新密码锁！"
 
                 url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
-                data = urllib.parse.urlencode({"chat_id": tg_chat_id, "parse_mode": "html", "text": full_msg}).encode("utf-8")
+                # 🟢 彻底移除 parse_mode，走纯文本通道
+                data = urllib.parse.urlencode({"chat_id": tg_chat_id, "text": full_msg}).encode("utf-8")
                 req = urllib.request.Request(url, data=data)
                 try:
                     with urllib.request.urlopen(req, timeout=15) as response:
-                        print("🚀 Telegram 多版本矩阵变更通知通过 Python 直发成功！")
+                        print("🚀 Telegram 多版本矩阵变更通知纯文本直发成功！")
                 except Exception as net_err:
                     print(f"❌ Telegram 发送网络失败: {net_err}")
             else:
