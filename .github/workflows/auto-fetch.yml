@@ -31,12 +31,11 @@ jobs:
 
     - name: Text Merge JSON and Send TG Notice
       env:
-        # 把密钥安全传给 Python 核心去直发
         TG_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         TG_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       run: |
-        # 🟢 核心修正：将原本的 modify_config.py 修改为你实际的脚本名称
-        python 老杨TV全量版.py
+        # 跑你仓库里对应的这个 modify_config.py 脚本
+        python modify_config.py
 
     - name: Commit and Push changes
       run: |
@@ -44,10 +43,8 @@ jobs:
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --global core.quotepath false
         
-        # 完美自动捕获并上传 datas/ 下的所有文件（包括全量版、纯净版 JSON、控制开关及备份）
         git add datas/
         if ! git diff --cached --exit-code --quiet; then
-          # 动态更新日志信息，注明已升级为多版本矩阵分流
           git commit -m "双源自适应矩阵合并 (老杨TV全量版 & 客厅纯净版双版本): $(date +'%Y-%m-%d %H:%M:%S')"
           git push origin HEAD:${{ github.ref_name }}
         else
