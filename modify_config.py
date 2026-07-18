@@ -149,7 +149,7 @@ MY_CUSTOM_LIVES = [
       "playerType": 2
     },
     {
-      "name": "myTV「香港」｜Tg：@huliys9",
+      "name": "myTV「香港」1｜Tg：@huliys9",
       "type": 3,
       "url": "https://iptv.yang-1989.xyz/myTV/playlist.m3u",
       "epg":"https://material.yang-1989.xyz/epg.xml.gz",
@@ -160,7 +160,7 @@ MY_CUSTOM_LIVES = [
 ]
 
 # ====================================================================
-# ⏰ 【每月 1 号自动大洗牌与控制开关自动生成逻辑】
+# ⏰ 【自动换锁与手动更改密码检测逻辑 - 核心升级】
 # ====================================================================
 today = datetime.datetime.now()
 current_month = str(today.month) 
@@ -170,19 +170,24 @@ saved_month = ""
 saved_code = ""
 is_new_token_generated = False
 
+# 🟢 核心增强：读取原有的“老密码”，用来跟最终确定的新密码做对比
+original_old_password = ""
+
 if os.path.exists(lock_file_path):
     with open(lock_file_path, 'r', encoding='utf-8') as f:
         content = f.read().strip()
         if "-" in content:
             saved_month, saved_code = content.split("-", 1)
+            original_old_password = saved_code.strip()
         else:
             saved_code = content
+            original_old_password = saved_code.strip()
 
+# 执行传统的 1 号洗牌逻辑
 if is_reset_day and saved_month != current_month:
     current_token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
     with open(lock_file_path, 'w', encoding='utf-8') as f:
         f.write(f"{current_month}-{current_token}")
-    print(f"⏰ 【每月1号全新硬核洗牌】已全自动抽签生成本月新密锁: {current_token}")
     is_new_token_generated = True
 elif is_reset_day and saved_month == current_month:
     current_token = saved_code
@@ -193,6 +198,14 @@ else:
             f.write(f"{current_month}-{current_token}")
     else:
         current_token = saved_code
+
+# 🟢 核心增强：不管脚本掉进哪个分支，只要最终确定的密码和文件里读出来的老密码对不上，100% 强行触发专属推送
+if current_token.strip() != original_old_password and original_old_password != "":
+    is_new_token_generated = True
+    # 如果是你平时手动改了密码导致不一致，顺便把控制开关的月份自动校正为当前最新月份，保持文件整洁
+    with open(lock_file_path, 'w', encoding='utf-8') as f:
+        f.write(f"{current_month}-{current_token.strip()}")
+    print(f"🎯 检测到密码发生主动变更！成功捕获新密锁: {current_token}，已强行开启专属通道大推送！")
 
 # 确定动态密码命名规则
 if current_token in ["全量版", "纯净版"]:
@@ -520,7 +533,7 @@ try:
         print(f"⚠️ 分类合并发生异常: {merge_err}")
 
     # ====================================================================
-    # 🔀 【双版本分流处理核心区 - 保证比对名录是最新清洗后的状态】
+    # 🔀 【双版本分流处理核心区】
     # ====================================================================
     # 1. 构造【全量至尊版】
     full_version_obj = copy.deepcopy(ordered_obj)
@@ -555,7 +568,7 @@ try:
     clean_output_path = f"datas/{clean_output_filename}"
 
     # ====================================================================
-    # 🎯 【完全向原版对齐：先做比对，发送通知，最后才落盘追踪器】
+    # 🎯 【进行比对与通知下发】
     # ====================================================================
     tg_token = os.getenv("TG_TOKEN")
     tg_chat_id = os.getenv("TG_CHAT_ID")
@@ -570,26 +583,26 @@ try:
     
     current_time = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
 
-    # 每月1号换密锁通知通道
+    # 🟢 联动增强：只要密码锁触发了更新，必发这个专属的密码大通知
     if is_new_token_generated and tg_token and tg_chat_id:
         try:
-            pwd_msg = f"🔔 *老杨TV · 全新月份硬核双通道密码锁发布* 🔔\n\n"
-            pwd_msg += f"📅 *生效时间*：{(datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime('%Y年%m月01日')} (北京时间)\n"
-            pwd_msg += f"🔑 *本月全新密锁*：`{current_token}`\n\n"
-            pwd_msg += f"🚀 *重要提示*：\n旧接口已全线开启【金蝉脱壳】大轰炸提示，旧链接已彻底作废断流！请根据设备需求更新对应的新接口！\n\n"
-            pwd_msg += f"🔞 *最新【全量至尊专线】订阅链接*：\n`{full_sub_url}`\n\n"
-            pwd_msg += f"🏡 *最新【绿色客厅专线】订阅链接*：\n`{clean_sub_url}`\n\n"
-            pwd_msg += f"👑 矩阵连接已在后台全自动换锁，请及时更新电视端。若电视端遇到断流请尝试重启软件或前往频道（@huliys9）获取最新支持！"
+            pwd_msg = f"🔔 *老杨TV · 全新硬核双通道密码锁发布* 🔔\n\n"
+            pwd_msg += f"📅 *生效时间*：{current_time} (北京时间)\n"
+            pwd_msg += f"🔑 *全新专线密锁*：`{current_token}`\n\n"
+            pwd_msg += f"🚀 *重要提示*：\n密码锁已成功交替！旧接口已全线开启【金蝉脱壳】大轰炸，老链接彻底作废，请及时复制下方对应通道的最新链接！\n\n"
+            pwd_msg += f"🔞 *最新【老杨TV全量版】矩阵订阅*：\n`{full_sub_url}`\n\n"
+            pwd_msg += f"🏡 *最新【老杨TV纯净版】客厅订阅*：\n`{clean_sub_url}`\n\n"
+            pwd_msg += f"👑 全量版与纯净版已在后台全自动换锁，请及时前往电视端更新。若电视端遇到断流请尝试重启软件或前往频道（@huliys9）获取支持！"
 
             pwd_url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
             pwd_data = urllib.parse.urlencode({"chat_id": tg_chat_id, "parse_mode": "Markdown", "text": pwd_msg}).encode("utf-8")
             pwd_req = urllib.request.Request(pwd_url, data=pwd_data)
             with urllib.request.urlopen(pwd_req, timeout=15) as response:
-                print("🚀 [专属密码通道] 每月1号新密锁双通道独立通知直发成功！")
+                print("🚀 [专属密码通道] 密锁全自动双通道独立通知直发成功！")
         except Exception as pwd_err:
             print(f"❌ [专属密码通道] 发送通知失败: {pwd_err}")
 
-    # 核心 Diff 计算：完全对齐原版逻辑架构，先拉取旧老本数据进行名录查重
+    # 常规 Diff 名录比对
     try:
         old_sites_names, old_lives_names = set(), set()
         if os.path.exists(tracker_path):
@@ -601,7 +614,6 @@ try:
                     old_sites_names = {s.get("name", "").strip() for s in old_data.get("sites", []) if s.get("name")}
                     old_lives_names = {l.get("name", "").strip() for l in old_data.get("lives", []) if l.get("name")}
 
-        # 完美拉取最新清洗后的全量熟肉数据，去跟历史熟肉数据作精准对齐比对
         new_sites_names = {s.get("name", "").strip() for s in full_final_out.get("sites", []) if s.get("name")}
         new_lives_names = {l.get("name", "").strip() for l in full_final_out.get("lives", []) if l.get("name")}
 
@@ -610,6 +622,7 @@ try:
         added_lives = sorted(list(new_lives_names - old_lives_names))
         deleted_lives = sorted(list(old_lives_names - new_lives_names))
 
+        # 🟢 联动增强：如果是换密码触发的运行，为了防止频道被大通知和常规变更通知同时刷屏，只有在“真的发生了名录增减”时才并发出常规变更通知；如果没有名录增减，则优雅略过，只发密码大通知。
         if added_sites or deleted_sites or added_lives or deleted_lives:
             msg_lines = ["📝 *【 变动明细预览 】*", "📊 *━━━━━━━━━━━━━━*"]
             if added_sites or deleted_sites:
@@ -657,13 +670,11 @@ try:
             else:
                 print("⚠️ 提示：未检测到绑定的 TG_TOKEN 或 TG_CHAT_ID，跳过通知发送。")
         else:
-            print("⏭️ 没有任何名录实际变动，智能拦截推送。")
+            print("⏭️ 没有任何名录实际变动，智能拦截名录变更通知。")
     except Exception as diff_err:
         print(f"⚠️ 对比变动异常: {diff_err}")
 
-    # ====================================================================
-    # 📝 【完全对齐原版行为】数据写出与追踪器改写，雷打不动放在最后
-    # ====================================================================
+    # 数据落盘与改写追踪器
     with open(full_output_path, 'w', encoding='utf-8') as f: json.dump(full_final_out, f, ensure_ascii=False, indent=4)
     with open(clean_output_path, 'w', encoding='utf-8') as f: json.dump(clean_final_out, f, ensure_ascii=False, indent=4)
     with open(tracker_path, 'w', encoding='utf-8') as f: f.write(full_output_filename)
