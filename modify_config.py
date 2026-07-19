@@ -11,6 +11,7 @@ import random
 import string
 import copy
 import datetime
+import logging  # 🎯 补上了这行，彻底解决 NameError 报错
 from pathlib import Path
 
 # 引入优化请求库
@@ -44,7 +45,6 @@ class CustomFormatter(logging.Formatter):
         formatter = logging.Formatter(log_fmt, datefmt='%Y-%m-%d %H:%M:%S')
         return formatter.format(record)
 
-import logging
 _logger = logging.getLogger("CompilerEngine")
 _logger.setLevel(logging.DEBUG)
 _logger.handlers.clear()
