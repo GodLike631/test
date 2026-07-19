@@ -41,9 +41,9 @@ UPSTREAM_DIRTY_WORDS = ('🐬', '海豚影视', '海豚', '完全免费，如有
 AD_HOSTS_LIST = ["vip.wwgz.cn", "lziplayer.com", "m3u8.apibdzy.com", "cj.ffzyapi.com", "api.hbzyapi.com"]
 
 # 纯净版敏感词分流
-NSFW_KEYWORDS = ("🔞", "福利", "探花", "约炮", "色播", "av", "爆料", "蜜桃")
+NSFW_KEYWORDS = ("🔞", "福利", "探花", "约炮", "色播", "av", "爆料", "蜜桃", "三级片")
 # 上游全线杂质强力永久丢弃词
-BLOCK_MALICIOUS_KEYWORDS = ("日本女优", "日本女友", "三级片")
+BLOCK_MALICIOUS_KEYWORDS = ("日本女优", "日本女友")
 
 # ====================================================================
 # 👑 【三、专属品牌与视觉定制区】
