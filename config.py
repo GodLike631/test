@@ -28,9 +28,9 @@ UPSTREAM_DIRTY_WORDS = ['🐬', '海豚影视', '海豚', '完全免费，如有
 AD_HOSTS_LIST = ["vip.wwgz.cn", "lziplayer.com", "m3u8.apibdzy.com", "cj.ffzyapi.com", "api.hbzyapi.com"]
 
 # 纯净版分流依据
-NSFW_KEYWORDS = ["🔞", "福利", "探花", "约炮", "色播", "av", "爆料", "蜜桃"]
+NSFW_KEYWORDS = ["🔞", "福利", "探花", "约炮", "色播", "av", "爆料", "蜜桃", "三级片"]
 # 上游全线杂质强力清洗
-BLOCK_MALICIOUS_KEYWORDS = ["日本女优", "日本女友", "三级片"]
+BLOCK_MALICIOUS_KEYWORDS = ["日本女优", "日本女友"]
 
 # ====================================================================
 # 👑 【三、老杨专属品牌：引流后缀、自定义替换与视觉定制区】
@@ -66,7 +66,7 @@ TRAP_LIVE_CHANNEL = f"👉 线路已过期 ➡️ 加QQ群“{MY_QQ_GROUP}”获
 # 📡 【五、客户端通知弹窗与 DOH/JS 注入高级规则配置区】
 # ====================================================================
 THANKS_WARNING = f"\n\n👑如果遇到失效 or 断流，请及时回 Telegram 频道（{MY_PROMO_CHANNEL}）或微信群获取当前最新密码锁！"
-WELCOME_NOTICE_FULL = "欢迎使用【老杨TV粉丝专属全量专线】！本接口结合佬&鱼佬的优质核心资源缝合而成，纯净无广告！重要提示：本接口密码不定期全自动更换！"
+WELCOME_NOTICE_FULL = "欢迎使用【老杨TV粉丝专属全量专线】！本接口结合豚佬&鱼佬的优质核心资源缝合而成，纯净无广告！重要提示：本接口密码不定期全自动更换！"
 WELCOME_NOTICE_CLEAN = "欢迎使用【老杨TV专属绿色客厅专线】！本接口已全面过滤敏感、擦边 and 福利内容，全家老少看电视更安全、更绿色！"
 
 ALI_DOH_CONFIG = {"name": "AliDNS", "url": "https://dns.alidns.com/dns-query", "ips": ["223.5.5.5", "223.6.6.6"]}
