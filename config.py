@@ -237,7 +237,7 @@ MY_CUSTOM_LIVES = [
       "playerType": 2
     },
     {
-      "name": f"myTV「香港」1{MY_TG_SUFFIX}",
+      "name": f"myTV「香港」{MY_TG_SUFFIX}",
       "type": 3,
       "url": "https://iptv.yang-1989.xyz/myTV/playlist.m3u",
       "epg":"https://material.yang-1989.xyz/epg.xml.gz",
