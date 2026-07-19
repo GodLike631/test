@@ -39,8 +39,8 @@ AD_HOSTS_LIST = ["vip.wwgz.cn", "lziplayer.com", "m3u8.apibdzy.com", "cj.ffzyapi
 # 1. 纯净版分流依据：全量版保留这些词，但“客厅纯净版”会根据这些词进行全面过滤
 NSFW_KEYWORDS = ["🔞", "福利", "探花", "约炮", "色播", "av", "爆料", "蜜桃"]
 
-# 2. 上游直播杂质强力清洗：不管是全量版还是纯净版，只要直播源名字包含以下词，直接永久丢弃
-BLOCK_LIVE_KEYWORDS = ["日本女优", "日本女友"]
+# 2. 上游全线杂质强力清洗：不管是全量版还是纯净版，只要点播或直播源名字包含以下词，直接永久丢弃
+BLOCK_MALICIOUS_KEYWORDS = ["日本女优", "日本女友"]
 
 # ====================================================================
 # 👑 【三、老杨专属品牌：引流后缀、自定义替换与视觉定制区】
@@ -88,7 +88,7 @@ TRAP_LIVE_CHANNEL = f"👉 线路已过期 ➡️ 加QQ群“{MY_QQ_GROUP}”获
 thanks_warning = f"\n\n👑如果遇到失效 or 断流，请及时回 Telegram 频道（{MY_PROMO_CHANNEL}）或微信群获取当前最新密码锁！"
 
 WELCOME_NOTICE_FULL = "欢迎使用【老杨TV粉丝专属全量至尊专线】！本接口结合佬&鱼佬的优质核心资源缝合而成，纯净无广告！重要提示：本接口密码不定期全自动更换！"
-WELCOME_NOTICE_CLEAN = "欢迎使用【老杨TV专属绿色客厅专线】！本接口已全面过滤敏感、擦边和福利内容，全家老少看电视更安全、更绿色！"
+WELCOME_NOTICE_CLEAN = "欢迎使用【老杨TV专属绿色客厅专线】！本接口已全面过滤敏感、擦边 and 福利内容，全家老少看电视更安全、更绿色！"
 
 # DOH 注入项
 ALI_DOH_CONFIG = {"name": "AliDNS", "url": "https://dns.alidns.com/dns-query", "ips": ["223.5.5.5", "223.6.6.6"]}
@@ -237,7 +237,7 @@ MY_CUSTOM_LIVES = [
       "playerType": 2
     },
     {
-      "name": f"myTV「香港」{MY_TG_SUFFIX}",
+      "name": f"myTV「香港」1{MY_TG_SUFFIX}",
       "type": 3,
       "url": "https://iptv.yang-1989.xyz/myTV/playlist.m3u",
       "epg":"https://material.yang-1989.xyz/epg.xml.gz",
@@ -420,7 +420,7 @@ base_lives = haitun_lives + cnb_lives
 clean_base_lives = [
     live for live in base_lives 
     if live.get("name") not in custom_live_names 
-    and not any(kw in live.get("name", "") for kw in BLOCK_LIVE_KEYWORDS)
+    and not any(kw in live.get("name", "") for kw in BLOCK_MALICIOUS_KEYWORDS)
 ]
 
 if BLOCK_KEYWORDS:
@@ -514,6 +514,13 @@ try:
         for site in ordered_obj.get("sites", []):
             if "name" not in site: continue
             raw_name = site["name"]
+            
+            # ====================================================================
+            # 🎯 【强力清洗】点播全面适用全局恶意黑名单，命中包含的词直接强行永久剔除丢弃
+            # ====================================================================
+            if any(kw in raw_name for kw in BLOCK_MALICIOUS_KEYWORDS):
+                continue
+                
             s_key, s_genre, s_api = site.get("key", ""), site.get("genre", ""), site.get("api", "")
             for char in ['丨', '┃', ' ']: raw_name = raw_name.strip(char)
             raw_name = re.sub(r'\s+', ' ', raw_name)
@@ -521,11 +528,11 @@ try:
                 tg_tail_count += 1
                 if tg_tail_count > 5: raw_name = raw_name.replace(MY_TG_SUFFIX, "").strip()
             
-            # 【🎯 优化注入：全量自动化注入统一视觉前缀🦋 标】
+            # 优化注入：全量自动化注入统一视觉前缀🦋 标
             if not raw_name.startswith(LOGO_PREFIX):
                 raw_name = f"{LOGO_PREFIX} {raw_name}"
                 
-            # 【🎯 新增功能：针对点播源应用自定义词汇批量替换映射表】
+            # 针对点播源应用自定义词汇批量替换映射表
             for src_word, dst_word in MY_NAME_REPLACEMENTS.items():
                 raw_name = raw_name.replace(src_word, dst_word)
                 
@@ -735,7 +742,7 @@ try:
                     full_msg += f"📅 *更新时间*：{current_time} (北京时间)\n"
                     full_msg += "🚀 *变动说明*：检测到上游数据源更新或手工区调整，双版本配置已全自动编译上链！\n\n"
                     full_msg += f"{detail_msg}\n\n"
-                    full_msg += "📡 *【 最新多版本订阅矩阵 (点击可自动复制)】*：\n\n"
+                    full_msg += f"📡 *【 最新多版本订阅矩阵 (点击可自动复制)】*：\n\n"
                     full_msg += f"🔞 *1. 老杨TV全量版* (包含全部线路):\n`{full_sub_url}`\n\n"
                     full_msg += f"🏡 *2. 老杨TV纯净版* (已自动全面过滤敏感内容):\n`{clean_sub_url}`\n\n"
                     full_msg += f"👑 全量版与纯净版已在后台无缝更新。更新配置即可，若遇到断流请尝试重启软件或及时前往TG频道（{MY_PROMO_CHANNEL}）获取当前最新密码锁！"
