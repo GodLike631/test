@@ -1,5 +1,5 @@
 {
-    "notice": "欢迎使用【老杨TV粉丝专属全量至尊专线】！本接口结合佬&鱼佬的优质核心资源缝合而成，纯净无广告！重要提示：本接口密码不定期全自动更换！\n\n👑如果遇到失效 or 断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码锁！",
+    "notice": "欢迎使用【老杨TV粉丝专属全量专线】！本接口结合豚佬&鱼佬的优质核心资源缝合而成，纯净无广告！重要提示：本接口密码不定期全自动更换！\n\n👑如果遇到失效 or 断流，请及时回 Telegram 频道（@huliys9）或微信群获取当前最新密码锁！",
     "spider": "https://cnb.cool/fish2018/xs/-/git/raw/main/spider.jar",
     "wallpaper": "https://img.naixiai.cn/2026/wallpapers/full_vip.jpg",
     "logo": "https://img.naixiai.cn/2026/06/18/IMG_6638.jpeg",
@@ -7,7 +7,7 @@
     "sites": [
         {
             "key": "热播影视",
-            "name": "热播 • APP｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜Tg：@huliys9",
+            "name": "🦋热播 • APP｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜Tg：@huliys9",
             "type": 3,
             "api": "csp_AppRJ",
             "searchable": 1,
@@ -371,6 +371,36 @@
             "searchable": 1
         },
         {
+            "key": "ikun",
+            "name": "🦋 爱坤┃影视(有三级片)",
+            "type": 1,
+            "api": "https://ikunzyapi.com/api.php/provide/vod/from/ikm3u8/at/json",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "category": "综合"
+        },
+        {
+            "key": "U酷資源",
+            "name": "🦋 U酷資源(有三级片)",
+            "type": 1,
+            "api": "https://api.ukuapi.com/api.php/provide/vod/",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "category": "综合"
+        },
+        {
+            "key": "虎牙资源",
+            "name": "🦋 虎牙资源(有三级片)",
+            "type": 1,
+            "api": "https://www.huyaapi.com/api.php/provide/vod/",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "category": "综合"
+        },
+        {
             "key": "非凡",
             "name": "🦋 非凡影视",
             "type": 1,
@@ -408,6 +438,24 @@
                 "港台动漫",
                 "海外动漫"
             ],
+            "category": "综合"
+        },
+        {
+            "key": "天涯资源",
+            "name": "🦋 天涯资源(有三级片)",
+            "type": 0,
+            "api": "https://tyyszyapi.com/api.php/provide/vod/at/xml/?ac=list",
+            "searchable": 1,
+            "quickSearch": 1,
+            "category": "综合"
+        },
+        {
+            "key": "iKun资源",
+            "name": "🦋 iKun资源(有三级片)",
+            "type": 0,
+            "api": "https://ikunzyapi.com/api.php/provide/vod/at/xml",
+            "searchable": 1,
+            "quickSearch": 1,
             "category": "综合"
         },
         {
@@ -2340,6 +2388,26 @@
             "searchable": 1
         },
         {
+            "key": "aidan",
+            "name": "🦋 艾旦影视(聚)(有三级片)🔞",
+            "type": 1,
+            "api": "https://lovedan.net/api.php/provide/vod/",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "category": "福利"
+        },
+        {
+            "key": "ttzy",
+            "name": "🦋 天天┃影视(有三级片)🔞",
+            "type": 1,
+            "api": "https://api.1080zyku.com/inc/apijson.php",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "category": "福利"
+        },
+        {
             "key": "smdj",
             "name": "🦋 星芽短剧.py",
             "type": 3,
@@ -3626,7 +3694,7 @@
                 "www.maolvys.com"
             ],
             "script": [
-                "console.log('老楊TV高級WebView攔截器啟動');",
+                "console.log('老楊TV高級WebView攔確器啟動');",
                 "window.addEventListener('DOMContentLoaded', function() {",
                 "   document.querySelectorAll('video').forEach(v => { v.muted = true; v.play().catch(e=>{}); });",
                 "   Function.prototype.__constructor__ = Function.prototype.constructor;",
