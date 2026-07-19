@@ -69,6 +69,32 @@ THANKS_WARNING = f"\n\n👑如果遇到失效 or 断流，请及时回 Telegram 
 WELCOME_NOTICE_FULL = "欢迎使用【老杨TV粉丝专属全量专线】！本接口结合豚佬&鱼佬的优质核心资源缝合而成，纯净无广告！重要提示：本接口密码不定期全自动更换！"
 WELCOME_NOTICE_CLEAN = "欢迎使用【老杨TV专属绿色客厅专线】！本接口已全面过滤敏感、擦边 and 福利内容，全家老少看电视更安全、更绿色！"
 
+# 🎯 【新增】TG 推送排版与模板配置
+TG_MAX_DISPLAY = 15  # 原 MAX_DISPLAY，控制单次通知显示的最大线路差集数
+
+# 🔑 密码变更时的推送模板
+TG_PWD_MSG_TEMPLATE = (
+    "🔔 *老杨TV · 全新硬核双通道密码锁发布* 🔔\n\n"
+    "📅 *生效时间*：`{current_time}` (北京时间)\n"
+    "🔑 *全新专线密锁*：`{current_token}`\n\n"
+    "🚀 *重要提示*：\n密码锁已成功交替！旧接口已全线开启【金蝉脱壳】大轰炸，老链接彻底作废，请及时复制下方对应通道的最新链接！\n\n"
+    "🔞 *最新【老杨TV全量版】矩阵订阅*：\n`{full_sub_url}`\n\n"
+    "🏡 *最新【老杨TV纯净版】客厅订阅*：\n`{clean_sub_url}`\n\n"
+    f"👑 全量版与纯净版已在后台全自动换锁，请及时前往电视端更新。若电视端遇到断流请尝试重启软件或前往TG频道（{MY_PROMO_CHANNEL}）获取支持！"
+)
+
+# 📝 接口普通更新（Diff变动）时的推送模板
+TG_UPDATE_MSG_TEMPLATE = (
+    "🔔 *老杨TV 缝合矩阵接口变更通知* 🔔\n\n"
+    "📅 *更新时间*：{current_time} (北京时间)\n"
+    "🚀 *变动说明*：检测到上游数据源更新或手工区调整，双版本配置已全自动编译上链！\n\n"
+    "{detail_msg}\n\n"
+    "📡 *【 最新多版本订阅矩阵 (点击可自动复制)】*：\n\n"
+    "🔞 *1. 老杨TV全量版* (包含全部线路):\n`{full_sub_url}`\n\n"
+    "🏡 *2. 老杨TV纯净版* (已自动全面过滤敏感内容):\n`{clean_sub_url}`\n\n"
+    f"👑 全量版与纯净版已在后台无缝更新。更新配置即可，若遇到断流请尝试重启软件或及时前往TG频道（{MY_PROMO_CHANNEL}）获取当前最新密码锁！"
+)
+
 ALI_DOH_CONFIG = {"name": "AliDNS", "url": "https://dns.alidns.com/dns-query", "ips": ["223.5.5.5", "223.6.6.6"]}
 
 CUSTOM_AD_BLOCK_JS = [
@@ -90,8 +116,6 @@ PATH_REPLACEMENTS = {
     './py/': 'https://cnb.cool/fish2018/xs/-/git/raw/main/py/',
     'http://127.0.0.1:9978/file/TVBox/logo.png': DEFAULT_LOGO_URL
 }
-
-MAX_DISPLAY = 15
 
 # ====================================================================
 # ✍️ 【通道一：老杨专属点播手工加线区】
