@@ -435,7 +435,7 @@ def text_level_wash_and_compile(json_cnb, combined_parses):
 # ====================================================================
 def build_and_dispatch_matrix(ordered_obj, current_token, full_output_filename, clean_output_filename, is_new_token_generated):
     """处理双版本精细分流，比对差异，构建并下发最终订阅链路"""
-    import os  # 用于环境变量拉取
+    import os
     
     # 1. 深度克隆构建全量与纯净版
     full_version_obj = copy.deepcopy(ordered_obj)
@@ -486,16 +486,14 @@ def build_and_dispatch_matrix(ordered_obj, current_token, full_output_filename, 
     if old_file_name != full_output_filename and old_file_name != "":
         is_password_changed = True
 
-    # 🟢 情况一：触发密码变更 ➡️ 发送硬核重置大通知
+    # 🟢 情况一：触发密码变更 ➡️ 从 config 加载模板渲染并发送
     if is_password_changed or is_new_token_generated:
-        pwd_msg = "🔔 *老杨TV · 全新硬核双通道密码锁发布* 🔔\n\n"
-        pwd_msg += f"📅 *生效时间*：`{current_time}` (北京时间)\n"
-        pwd_msg += f"🔑 *全新专线密锁*：`{current_token}`\n\n"
-        pwd_msg += "🚀 *重要提示*：\n密码锁已成功交替！旧接口已全线开启【金蝉脱壳】大轰炸，老链接彻底作废，请及时复制下方对应通道的最新链接！\n\n"
-        pwd_msg += f"🔞 *最新【老杨TV全量版】矩阵订阅*：\n`{full_sub_url}`\n\n"
-        pwd_msg += f"🏡 *最新【老杨TV纯净版】客厅订阅*：\n`{clean_sub_url}`\n\n"
-        pwd_msg += f"👑 全量版与纯净版已在后台全自动换锁，请及时前往电视端更新。若电视端遇到断流请尝试重启软件或前往TG频道（{config.MY_PROMO_CHANNEL}）获取支持！"
-        
+        pwd_msg = config.TG_PWD_MSG_TEMPLATE.format(
+            current_time=current_time,
+            current_token=current_token,
+            full_sub_url=full_sub_url,
+            clean_sub_url=clean_sub_url
+        )
         send_telegram_request(tg_token, tg_chat_id, pwd_msg)
                 
     # 🟢 情况二：没有换密码 ➡️ 正常对比高精度限流 Diff 变动明细
@@ -523,14 +521,14 @@ def build_and_dispatch_matrix(ordered_obj, current_token, full_output_filename, 
                     msg_lines.append("📺 *【点播线路变动】*")
                     if added_sites:
                         msg_lines.append("➕ *新增点播*：")
-                        msg_lines.extend([f"  {name}" for name in added_sites[:config.MAX_DISPLAY]])
-                        if len(added_sites) > config.MAX_DISPLAY: 
+                        msg_lines.extend([f"  {name}" for name in added_sites[:config.TG_MAX_DISPLAY]])
+                        if len(added_sites) > config.TG_MAX_DISPLAY: 
                             msg_lines.append(f"  ... 等更多共 {len(added_sites)} 个新点播源")
                     if deleted_sites:
                         if added_sites: msg_lines.append("")
                         msg_lines.append("➖ *剔除点播*：")
-                        msg_lines.extend([f"  {name}" for name in deleted_sites[:config.MAX_DISPLAY]])
-                        if len(deleted_sites) > config.MAX_DISPLAY: 
+                        msg_lines.extend([f"  {name}" for name in deleted_sites[:config.TG_MAX_DISPLAY]])
+                        if len(deleted_sites) > config.TG_MAX_DISPLAY: 
                             msg_lines.append(f"  ... 等更多共 {len(deleted_sites)} 个失效点播源")
                     msg_lines.append("📊 *━━━━━━━━━━━━━━*")
                     
@@ -540,27 +538,26 @@ def build_and_dispatch_matrix(ordered_obj, current_token, full_output_filename, 
                     msg_lines.append("📡 *【直播源站变动】*")
                     if added_lives:
                         msg_lines.append("➕ *新增直播*：")
-                        msg_lines.extend([f"  {name}" for name in added_lives[:config.MAX_DISPLAY]])
-                        if len(added_lives) > config.MAX_DISPLAY: 
+                        msg_lines.extend([f"  {name}" for name in added_lives[:config.TG_MAX_DISPLAY]])
+                        if len(added_lives) > config.TG_MAX_DISPLAY: 
                             msg_lines.append(f"  ... 等更多共 {len(added_lives)} 个新直播源")
                     if deleted_lives:
                         if added_lives: msg_lines.append("")
                         msg_lines.append("➖ *剔除直播*：")
-                        msg_lines.extend([f"  {name}" for name in deleted_lives[:config.MAX_DISPLAY]])
-                        if len(deleted_lives) > config.MAX_DISPLAY: 
+                        msg_lines.extend([f"  {name}" for name in deleted_lives[:config.TG_MAX_DISPLAY]])
+                        if len(deleted_lives) > config.TG_MAX_DISPLAY: 
                             msg_lines.append(f"  ... 等更多共 {len(deleted_lives)} 个失效直播源")
                     msg_lines.append("📊 *━━━━━━━━━━━━━━*")
                 
                 detail_msg = "\n".join(msg_lines)
                 
-                full_msg = "🔔 *老杨TV 缝合矩阵接口变更通知* 🔔\n\n"
-                full_msg += f"📅 *更新时间*：{current_time} (北京时间)\n"
-                full_msg += "🚀 *变动说明*：检测到上游数据源更新或手工区调整，双版本配置已全自动编译上链！\n\n"
-                full_msg += f"{detail_msg}\n\n"
-                full_msg += "📡 *【 最新多版本订阅矩阵 (点击可自动复制)】*：\n\n"
-                full_msg += f"🔞 *1. 老杨TV全量版* (包含全部线路):\n`{full_sub_url}`\n\n"
-                full_msg += f"🏡 *2. 老杨TV纯净版* (已自动全面过滤敏感内容):\n`{clean_sub_url}`\n\n"
-                full_msg += f"👑 全量版与纯净版已在后台无缝更新。更新配置即可，若遇到断流请尝试重启软件或及时前往TG频道（{config.MY_PROMO_CHANNEL}）获取当前最新密码锁！"
+                # 从 config 引入更新通知模板并动态渲染
+                full_msg = config.TG_UPDATE_MSG_TEMPLATE.format(
+                    current_time=current_time,
+                    detail_msg=detail_msg,
+                    full_sub_url=full_sub_url,
+                    clean_sub_url=clean_sub_url
+                )
 
                 send_telegram_request(tg_token, tg_chat_id, full_msg)
             else:
