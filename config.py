@@ -120,7 +120,7 @@ MY_CUSTOM_SITES = [
 # ====================================================================
 MY_CUSTOM_LIVES = [
     {
-        "name": f"乡村电视 {MY_TG_SUFFIX}",
+        "name": f"乡村电视1 {MY_TG_SUFFIX}",
         "type": 0,
         "playerType": 2,
         "ua": "okhttp/5.3.2",
