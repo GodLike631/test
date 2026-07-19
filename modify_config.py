@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-核心自动编译流主程序
+核心自动编译流主程序 (广告强力清洗修正版)
 """
 import re
 import os
@@ -11,7 +11,7 @@ import random
 import string
 import copy
 import datetime
-import logging  # 🎯 补上了这行，彻底解决 NameError 报错
+import logging
 from pathlib import Path
 
 # 引入优化请求库
@@ -23,7 +23,7 @@ from urllib3.util import Retry
 import config
 
 # ====================================================================
-# 🎛️ 【高可用场景色彩日志控制中心】 (已内置合并)
+# 🎛️ 【高可用场景色彩日志控制中心】
 # ====================================================================
 class CustomFormatter(logging.Formatter):
     green = "\033[92m"
@@ -205,7 +205,7 @@ def execute_trap_boom(full_output_filename, clean_output_filename):
         except Exception: pass
 
 # ====================================================================
-# ⚙️ 【核心业务：对象级链式清洗与归类编译引擎】
+# ⚙️ 【核心业务：对象级链式清洗与归类编译引擎】 (🎯 已完美修复清洗逻辑)
 # ====================================================================
 def object_level_wash_and_compile():
     """100%纯内存对象流操作，杜绝二次重载"""
@@ -232,10 +232,18 @@ def object_level_wash_and_compile():
                     item["api"] = api_str.replace("./", "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/")
             lz_nsfw_list.append(item)
 
+    # 🎯 【第一层强力物理清洗】：在上游底包做任何加工（打尾巴、加前缀）之前，直接对名字里的广告词执行粉碎性替换！
     for item in haitun_sites:
-        if "name" in item: item["name"] = f"{item['name']}{config.MY_TG_SUFFIX}"
+        if "name" in item:
+            for dirty in config.UPSTREAM_DIRTY_WORDS:
+                item["name"] = item["name"].replace(dirty, "")
+            item["name"] = f"{item['name'].strip()}{config.MY_TG_SUFFIX}"
+
     for item in haitun_lives:
-        if "name" in item: item["name"] = f"{item['name']}{config.MY_TG_SUFFIX}"
+        if "name" in item:
+            for dirty in config.UPSTREAM_DIRTY_WORDS:
+                item["name"] = item["name"].replace(dirty, "")
+            item["name"] = f"{item['name'].strip()}{config.MY_TG_SUFFIX}"
 
     cnb_sites = json_cnb.get("sites", [])
     cnb_lives = json_cnb.get("lives", [])
@@ -261,6 +269,7 @@ def object_level_wash_and_compile():
         if any(kw in name for kw in config.BLOCK_KEYWORDS) or any(mkw in name for mkw in config.BLOCK_MALICIOUS_KEYWORDS):
             continue
 
+        # 🎯 【第二层多源清洗】：对除海豚外其他杂牌上游源站名字里的广告词再次兜底复核清洗
         for dirty in config.UPSTREAM_DIRTY_WORDS:
             name = name.replace(dirty, "")
 
