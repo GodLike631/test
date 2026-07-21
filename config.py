@@ -149,8 +149,8 @@ TG_UPDATE_MSG_TEMPLATE = (
 # ====================================================================
 MY_CUSTOM_SITES = [
     {
-			"key": "采集合集py｜{MY_TG_SUFFIX.strip('｜')}",
-			"name": "🦋采集合集(py)+",
+			"key": "采集合集py",
+			"name": f"🦋采集合集(py)｜{MY_TG_SUFFIX.strip('｜')}",
 			"type": 3,
 			"api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/采集合集.py",
 			"searchable": 1,
