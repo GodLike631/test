@@ -148,8 +148,6 @@ TG_UPDATE_MSG_TEMPLATE = (
 # ✍️ 【通道一：老杨专属点播手工加线区】
 # ====================================================================
 MY_CUSTOM_SITES = [
-    {"key": "山楂影视", "name": "山楂影视.py", "type": 3, "api": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E5%B1%B1%E6%A5%82%E5%BD%B1%E8%A7%86.py", "searchable": 1, "quickSearch": 1},
-    {"key": "红果短剧", "name": "红果短剧.py", "type": 3, "api": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E7%BA%A2%E6%9E%9C%E7%9F%AD%E5%89%A7.py", "searchable": 1, "quickSearch": 1},
     {
 			"key": "js_douban",
 			"name": "豆瓣(js)",
@@ -171,7 +169,7 @@ MY_CUSTOM_SITES = [
 			"changeable": 1,
 			"playerType": 2,
 			"ext": "0"
-	},
+	}
 ]
 
 # ====================================================================
