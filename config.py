@@ -149,16 +149,6 @@ TG_UPDATE_MSG_TEMPLATE = (
 # ====================================================================
 MY_CUSTOM_SITES = [
     {
-			"key": "js_douban",
-			"name": "豆瓣(js)",
-			"type": 3,
-			"api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/douban_min.js",
-			"searchable": 0,
-			"quickSearch": 0,
-			"filterable": 1,
-			"changeable": 0
-	},
-    {
 			"key": "采集合集py",
 			"name": "采集合集(py)+",
 			"type": 3,
@@ -169,6 +159,16 @@ MY_CUSTOM_SITES = [
 			"changeable": 1,
 			"playerType": 2,
 			"ext": "0"
+	},
+	{
+			"key": "js_douban",
+			"name": "豆瓣(js)",
+			"type": 3,
+			"api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/douban_min.js",
+			"searchable": 0,
+			"quickSearch": 0,
+			"filterable": 1,
+			"changeable": 0
 	}
 ]
 
