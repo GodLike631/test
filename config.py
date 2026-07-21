@@ -59,8 +59,8 @@ LOGO_PREFIX = "🦋"
 WALLPAPER_FULL = "https://img.naixiai.cn/2026/wallpapers/full_vip.jpg"
 WALLPAPER_CLEAN = "https://img.naixiai.cn/2026/wallpapers/home_clean.jpg"
 
-HOT_VIDEO_KEY = "热播影视"
-HOT_VIDEO_SITE_NAME = f"🦋热播 • APP｜此接口非原创，合并自海豚佬 and 鱼佬接口，感谢两位大佬的付出，如有侵权，联系删除｜{MY_TG_SUFFIX.strip('｜')}"
+HOT_VIDEO_KEY = "js_douban"
+HOT_VIDEO_SITE_NAME = f"豆瓣(js),该接口完全免费，如有收费都是骗子｜{MY_TG_SUFFIX.strip('｜')}"
 
 MY_NAME_REPLACEMENTS = {
     # 示例: "原词": "目标新词",
@@ -148,7 +148,17 @@ TG_UPDATE_MSG_TEMPLATE = (
 # ====================================================================
 MY_CUSTOM_SITES = [
     {"key": "山楂影视", "name": "山楂影视.py", "type": 3, "api": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E5%B1%B1%E6%A5%82%E5%BD%B1%E8%A7%86.py", "searchable": 1, "quickSearch": 1},
-    {"key": "红果短剧", "name": "红果短剧.py", "type": 3, "api": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E7%BA%A2%E6%9E%9C%E7%9F%AD%E5%89%A7.py", "searchable": 1, "quickSearch": 1}
+    {"key": "红果短剧", "name": "红果短剧.py", "type": 3, "api": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E7%BA%A2%E6%9E%9C%E7%9F%AD%E5%89%A7.py", "searchable": 1, "quickSearch": 1},
+    {
+			"key": "js_douban",
+			"name": "豆瓣(js)",
+			"type": 3,
+			"api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/douban_min.js",
+			"searchable": 0,
+			"quickSearch": 0,
+			"filterable": 1,
+			"changeable": 0
+		}
 ]
 
 # ====================================================================
