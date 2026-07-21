@@ -17,8 +17,9 @@ GLOBAL_SPIDER_JAR = "https://cnb.cool/fish2035/xs/-/git/raw/main/spider.jar"
 DEFAULT_TIMEOUT = 10     # 默认网络请求超时时间 (秒)
 TG_TIMEOUT = 15          # Telegram 通知专用超时时间 (秒)
 TOKEN_LENGTH = 3         # 动态密码锁随机字符长度
-INSERT_POS = 5           # 手工非福利直播源的正向插入起始位置
 TG_MAX_DISPLAY = 15      # 变动明细单次最大展示行数
+INSERT_POS = 5           # 手工非福利直播源的正向插入起始位置
+SITE_INSERT_POS = 1      # 手工点播源的插入位置 (1 表示插入到第 2 位)
 
 # ====================================================================
 # 🌐 【一、全局核心路径与网络代理配置区】
