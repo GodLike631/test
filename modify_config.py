@@ -319,7 +319,7 @@ def object_level_wash_and_compile():
         if site.get("ext") == {}: site["ext"] = ""
         compiled_sites.append(site)
 
-    compiled_sites.extend(config.MY_CUSTOM_SITES)
+    
 
     bucket_map = {category: [] for category in config.CATEGORY_RULES.keys()}
     bucket_map["综合"] = []
@@ -373,6 +373,15 @@ def object_level_wash_and_compile():
     for cate in ["综合", "短剧", "动漫", "体育/直播", "少儿", "音乐", "网盘/磁力", "福利"]:
         if cate in bucket_map:
             ordered_sites.extend(bucket_map[cate])
+    # 🎯 【读取配置文件中的位置进行插入】
+    target_pos = getattr(config, "SITE_INSERT_POS", 1)  # 默认第 2 位 (索引 1)
+    
+    for custom_site in reversed(config.MY_CUSTOM_SITES):
+        if "searchable" not in custom_site:
+            custom_site["searchable"] = 1
+        idx = min(target_pos, len(ordered_sites))
+        ordered_sites.insert(idx, custom_site)
+            
 
     custom_live_names = {l.get("name") for l in config.MY_CUSTOM_LIVES if l.get("name")}
     clean_base_lives = [
