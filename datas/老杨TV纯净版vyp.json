@@ -6,17 +6,6 @@
     "danmaku": "http://127.0.0.1:9978/proxy?do=danmaku&name={name}&episode={episode}",
     "sites": [
         {
-            "key": "js_douban",
-            "name": "豆瓣(js),该接口完全免费，如有收费都是骗子｜Tg：@huliys9",
-            "type": 3,
-            "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/douban_min.js",
-            "searchable": 0,
-            "quickSearch": 0,
-            "filterable": 1,
-            "changeable": 0,
-            "category": "综合"
-        },
-        {
             "key": "YK",
             "name": "🦋 优酷视频.py｜Tg：@huliys9",
             "type": 3,
@@ -24,6 +13,28 @@
             "ext": "",
             "category": "综合",
             "searchable": 1
+        },
+        {
+            "key": "js_douban",
+            "name": "豆瓣(js)",
+            "type": 3,
+            "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/douban_min.js",
+            "searchable": 0,
+            "quickSearch": 0,
+            "filterable": 1,
+            "changeable": 0
+        },
+        {
+            "key": "采集合集py",
+            "name": "采集合集(py)+",
+            "type": 3,
+            "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/采集合集.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "changeable": 1,
+            "playerType": 2,
+            "ext": "0"
         },
         {
             "key": "YK",
@@ -1637,28 +1648,6 @@
             "category": "综合"
         },
         {
-            "key": "山楂影视",
-            "name": "山楂影视.py",
-            "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E5%B1%B1%E6%A5%82%E5%BD%B1%E8%A7%86.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "category": "综合"
-        },
-        {
-            "key": "采集合集py",
-            "name": "采集合集(py)+",
-            "type": 3,
-            "api": "https://gh-proxy.com/https://raw.githubusercontent.com/ediart/tvbox/refs/heads/main/lz/py/采集合集.py",
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 1,
-            "changeable": 1,
-            "playerType": 2,
-            "ext": "0",
-            "category": "综合"
-        },
-        {
             "key": "cj_360资源",
             "name": "🦋 360丨短剧",
             "type": 1,
@@ -1747,15 +1736,6 @@
             "filterable": 1,
             "genre": "shortdrama",
             "ext": "",
-            "category": "短剧"
-        },
-        {
-            "key": "红果短剧",
-            "name": "红果短剧.py",
-            "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/GodLike631/test/refs/heads/main/datas/%E7%BA%A2%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
-            "searchable": 1,
-            "quickSearch": 1,
             "category": "短剧"
         },
         {
