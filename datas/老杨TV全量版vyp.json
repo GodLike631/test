@@ -17,15 +17,6 @@
             "category": "综合"
         },
         {
-            "key": "YK",
-            "name": "🦋 优酷视频.py｜Tg：@huliys9",
-            "type": 3,
-            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/优酷视频.py",
-            "ext": "",
-            "category": "综合",
-            "searchable": 1
-        },
-        {
             "key": "采集合集py",
             "name": "采集合集(py)+",
             "type": 3,
@@ -36,6 +27,15 @@
             "changeable": 1,
             "playerType": 2,
             "ext": "0"
+        },
+        {
+            "key": "YK",
+            "name": "🦋 优酷视频.py｜Tg：@huliys9",
+            "type": 3,
+            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/优酷视频.py",
+            "ext": "",
+            "category": "综合",
+            "searchable": 1
         },
         {
             "key": "YK",
