@@ -373,17 +373,28 @@ def object_level_wash_and_compile():
     for cate in ["综合", "短剧", "动漫", "体育/直播", "少儿", "音乐", "网盘/磁力", "福利"]:
         if cate in bucket_map:
             ordered_sites.extend(bucket_map[cate])
-    # 🎯 【读取配置文件中的位置进行插入】
+    
+    # 🎯 【读取配置文件中的位置进行插入（含首位置顶逻辑）】
     target_pos = getattr(config, "SITE_INSERT_POS", 1)  # 默认第 2 位 (索引 1)
     
+    # 逆序遍历手工站点，确保配置中的相对顺序不变
     for custom_site in reversed(config.MY_CUSTOM_SITES):
+        s_key = custom_site.get("key", "")
+        
+        # 1. 如果该手工站点的 key 匹配了 HOT_VIDEO_KEY，强制置顶到第 1 位 (索引 0)
+        if s_key and s_key == getattr(config, "HOT_VIDEO_KEY", ""):
+            custom_site["name"] = getattr(config, "HOT_VIDEO_SITE_NAME", custom_site.get("name"))
+            custom_site["category"] = "综合"
+            # 强制插入到最顶部 (第 1 位)
+            ordered_sites.insert(0, custom_site)
+            continue
+
+        # 2. 普通手工站点，补全属性后插入到指定位置 (例如第 2 位)
         if "searchable" not in custom_site:
             custom_site["searchable"] = 1
+            
         idx = min(target_pos, len(ordered_sites))
         ordered_sites.insert(idx, custom_site)
-            
-
-    custom_live_names = {l.get("name") for l in config.MY_CUSTOM_LIVES if l.get("name")}
     clean_base_lives = [
         l for l in (haitun_lives + cnb_lives)
         if l.get("name") not in custom_live_names and not any(kw in l.get("name", "") for kw in config.BLOCK_MALICIOUS_KEYWORDS)
