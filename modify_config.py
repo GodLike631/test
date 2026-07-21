@@ -375,26 +375,35 @@ def object_level_wash_and_compile():
             ordered_sites.extend(bucket_map[cate])
     
     # 🎯 【读取配置文件中的位置进行插入（含首位置顶逻辑）】
-    target_pos = getattr(config, "SITE_INSERT_POS", 1)  # 默认第 2 位 (索引 1)
-    
-    # 逆序遍历手工站点，确保配置中的相对顺序不变
-    for custom_site in reversed(config.MY_CUSTOM_SITES):
-        s_key = custom_site.get("key", "")
-        
-        # 1. 如果该手工站点的 key 匹配了 HOT_VIDEO_KEY，强制置顶到第 1 位 (索引 0)
-        if s_key and s_key == getattr(config, "HOT_VIDEO_KEY", ""):
-            custom_site["name"] = getattr(config, "HOT_VIDEO_SITE_NAME", custom_site.get("name"))
-            custom_site["category"] = "综合"
-            # 强制插入到最顶部 (第 1 位)
-            ordered_sites.insert(0, custom_site)
-            continue
+    target_pos = getattr(config, "SITE_INSERT_POS", 1)
+hot_key = getattr(config, "HOT_VIDEO_KEY", "")
+hot_name = getattr(config, "HOT_VIDEO_SITE_NAME", "")
 
-        # 2. 普通手工站点，补全属性后插入到指定位置 (例如第 2 位)
-        if "searchable" not in custom_site:
-            custom_site["searchable"] = 1
-            
-        idx = min(target_pos, len(ordered_sites))
-        ordered_sites.insert(idx, custom_site)
+# 存放置顶站点和普通站点
+hot_sites = []
+normal_sites = []
+
+for custom_site in config.MY_CUSTOM_SITES:
+    site = custom_site.copy()
+    s_key = site.get("key", "")
+    
+    if s_key and s_key == hot_key:
+        site["name"] = hot_name or site.get("name")
+        site["category"] = "综合"
+        hot_sites.append(site)
+    else:
+        if "searchable" not in site:
+            site["searchable"] = 1
+        normal_sites.append(site)
+
+# 1. 先插入普通站点（逆序插入保障配置原顺序）
+for site in reversed(normal_sites):
+    idx = min(target_pos, len(ordered_sites))
+    ordered_sites.insert(idx, site)
+
+# 2. 无论普通站点怎么插，置顶站点统一最后插入到最前面（索引 0）
+for site in reversed(hot_sites):
+    ordered_sites.insert(0, site)
     clean_base_lives = [
         l for l in (haitun_lives + cnb_lives)
         if l.get("name") not in custom_live_names and not any(kw in l.get("name", "") for kw in config.BLOCK_MALICIOUS_KEYWORDS)
