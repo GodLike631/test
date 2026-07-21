@@ -287,11 +287,30 @@ def object_level_wash_and_compile():
 
         site["name"] = name
 
+        # 🎯 【终极路径双向清洗补丁】：同时强力洗净 api 和 ext 两个核心字段
+        # 1. 优先清洗 api 字段
         api_field = site.get("api", "")
         if isinstance(api_field, str):
             for pattern, target in config.PATH_REPLACEMENTS.items():
                 api_field = re.sub(pattern, target, api_field)
             site["api"] = api_field
+
+        # 2. 深度清洗 ext 字段 (彻底干掉藏在里面的相对路径)
+        ext_field = site.get("ext", "")
+        if isinstance(ext_field, str):
+            # 如果 ext 是字符串路径，直接用正则替换
+            for pattern, target in config.PATH_REPLACEMENTS.items():
+                ext_field = re.sub(pattern, target, ext_field)
+            site["ext"] = ext_field
+        elif isinstance(ext_field, dict):
+            # 如果 ext 是字典（比如某些魔改壳的特殊配置），转成 JSON 字符串洗完再变回字典
+            try:
+                ext_str = json.dumps(ext_field, ensure_ascii=False)
+                for pattern, target in config.PATH_REPLACEMENTS.items():
+                    ext_str = re.sub(pattern, target, ext_str)
+                site["ext"] = json.loads(ext_str)
+            except Exception:
+                pass
             if "PanWebShare" in api_field:
                 site["api"] = "csp_PanWebShare"
                 site["changeable"] = 1
@@ -404,6 +423,28 @@ def object_level_wash_and_compile():
                     if h not in ad_hosts: ad_hosts.append(h)
         js_rule = {"name": "云端高级去广告JS注入", "hosts": ad_hosts, "script": config.CUSTOM_AD_BLOCK_JS}
         final_obj["rules"] = [js_rule] + [r for r in current_rules if r.get("name") != "云端高级去广告JS注入"]
+    # ====================================================================
+    # 🎯 【终极三源合流：Jar 高可用性与直播源空对象闭环补丁】
+    # ====================================================================
+
+    # 1. 最外层总包定位：直接读取 config.py 里配置好的全局主 Jar 地址
+    final_obj["spider"] = config.GLOBAL_SPIDER_JAR
+
+    # 2. 站点层级微操：放行海豚底包特定的本地相对线路
+    for site in final_obj.get("sites", []):
+        s_key = site.get("key", "")
+        if s_key in ["hajim-腾讯备", "茫茫"]:
+            site["spider"] = "./tvbox.jar"
+
+    # 3. 直播源终极复核防御：彻底干掉合并中残留下来的空大括号 {} 对象
+    if "lives" in final_obj and isinstance(final_obj["lives"], list):
+        clean_lives = []
+        for live in final_obj["lives"]:
+        # 🚨 如果 live 是空的 {} 或者根本不是字典，直接跳过踢出队列，防止盒子卡死闪退
+            if not live or not isinstance(live, dict) or len(live) == 0:
+                continue
+            clean_lives.append(live)
+        final_obj["lives"] = clean_lives
 
     return final_obj
 
@@ -427,7 +468,7 @@ def build_and_dispatch_matrix(ordered_obj, current_token, full_out_name, clean_o
         s for s in clean_version_obj.get("sites", [])
         if not any(kw in s.get("name", "") or kw in s.get("category", "") or kw in s.get("key", "").lower() for kw in config.NSFW_KEYWORDS)
     ]
-    clean_version_obj["lives"] = [
+    clean_version_obj[""] = [
         l for l in clean_version_obj.get("lives", [])
         if not any(kw in l.get("name", "") for kw in config.NSFW_KEYWORDS)
     ]
